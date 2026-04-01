@@ -25,7 +25,7 @@
         "name": "Fabio Martinelli",
         "url": "https://github.com/zupy-fmartinelli"
       },
-      "skills": ["./skills/kuka"]
+      "skills": ["./apps/kuka-agent/skills/kuka"]
     }
   ]
 }
