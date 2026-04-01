@@ -39,7 +39,12 @@ Examples:
 
 ## On Activation
 
-Load the Solana Glossary data from the project's `data/terms/*.json` files (14 category files, 1,001 terms total) and i18n translations from `data/i18n/{locale}.json`.
+Load the Solana Glossary data (14 category files, 1,001 terms total) and i18n translations. Search for data in this order:
+1. `{project-root}/data/terms/*.json` — if running inside the solana-glossary repo
+2. `{project-root}/node_modules/@stbr/solana-glossary/data/terms/*.json` — if SDK is installed via npm
+3. The plugin's own base directory `data/terms/*.json` — if installed as a Claude Code plugin
+
+For i18n, load from the same location: `data/i18n/{locale}.json` (available: `pt`, `es`).
 
 Load sidecar memory from `{project-root}/.kuka/memory/index.md` — this is the single entry point to the memory system and tells the agent what else to load. Load `./references/memory-system.md` for memory discipline. If sidecar doesn't exist, load `./references/init.md` for first-run onboarding.
 

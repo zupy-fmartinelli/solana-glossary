@@ -15,7 +15,32 @@ A Claude Code plugin that turns the Solana Glossary into an intelligent, persist
 
 ## Install
 
-### Option 1: Claude Code Plugin (Recommended)
+### Option 1: Clone and Use (Recommended)
+
+```bash
+# Clone the glossary repo (includes all 1,001 terms + Kuka)
+git clone https://github.com/solanabr/solana-glossary.git
+cd solana-glossary
+
+# Symlink the skill into Claude Code
+ln -s $(pwd)/apps/kuka-agent/skills/kuka .claude/skills/kuka
+
+# Start Claude Code
+claude
+```
+
+### Option 2: Add to Any Project
+
+```bash
+# Clone the glossary repo
+git clone https://github.com/solanabr/solana-glossary.git
+
+# Copy skill + glossary data to your project
+cp -r solana-glossary/apps/kuka-agent/skills/kuka your-project/.claude/skills/kuka
+cp -r solana-glossary/data your-project/data
+```
+
+### Option 3: Claude Code Plugin
 
 ```bash
 # From inside Claude Code:
@@ -24,46 +49,10 @@ A Claude Code plugin that turns the Solana Glossary into an intelligent, persist
 /reload-plugins
 ```
 
-### Option 2: Local Install (Development)
-
-```bash
-# Clone the repo
-git clone https://github.com/solanabr/solana-glossary.git
-cd solana-glossary
-
-# Copy the skill to your project
-cp -r apps/kuka-agent/skills/kuka .claude/skills/kuka
-
-# Or symlink for development
-ln -s $(pwd)/apps/kuka-agent/skills/kuka .claude/skills/kuka
-```
-
-### Option 3: Manual Copy
-
-Copy the `skills/kuka/` folder to your project's `.claude/skills/` directory:
-
-```
-your-project/
-├── .claude/
-│   └── skills/
-│       └── kuka/
-│           ├── SKILL.md
-│           └── references/
-│               ├── term-lookup.md
-│               ├── knowledge-graph.md
-│               ├── learning-paths.md
-│               ├── quiz-mode.md
-│               ├── context-injection.md
-│               ├── memory-system.md
-│               ├── init.md
-│               ├── autonomous-wake.md
-│               └── save-memory.md
-├── data/
-│   ├── terms/*.json          # Glossary data (required)
-│   └── i18n/*.json           # Translations (optional)
-```
-
-**Important:** Kuka needs access to the glossary data files (`data/terms/*.json`). Either install within the solana-glossary repo or copy the data files to your project.
+**Glossary data:** Kuka needs the glossary data files to work. It searches in this order:
+1. `data/terms/*.json` in your project root — if inside the solana-glossary repo
+2. `node_modules/@stbr/solana-glossary/data/terms/*.json` — if SDK installed via npm
+3. Plugin cache directory — if installed as Claude Code plugin
 
 ## Usage
 
