@@ -80,20 +80,35 @@ What is Proof of History?
 Explain PDAs to me
 ```
 
-### First Run
+### First Run (Guided Onboarding)
 
-On first use, Kuka will ask you:
-1. Your name
-2. Your Solana experience level (beginner / intermediate / advanced)
-3. What you're building
-4. Preferred language (English, Portuguese, or Spanish)
+On first use, Kuka gives you a **guided tour** — not a form to fill out:
 
-This creates persistent memory at `.kuka/memory/` so Kuka remembers you across sessions.
+1. **Instant demo** — shows a live term lookup before asking anything
+2. **Quick calibration** — your name and Solana level (2 questions max)
+3. **Guided tour** — demonstrates 3 capabilities live, adapted to your level
+4. **Data expansion** — shows how you can propose new glossary terms
+5. **Memory created** — persistent profile, progress tracking, proposals staging
+
+Kuka detects your language from how you respond — no need to configure it.
+
+### Menu / Help
+
+Say **"ajuda"**, **"help"**, or **"menu"** anytime to see all capabilities:
+
+```
+LEARN      — Look up term · Deep dive · Learning path · Quiz
+EXPLORE    — Knowledge graph · Ecosystem explorer · Code walkthrough
+OPTIMIZE   — Generate context block · Check coverage gaps
+CONTRIBUTE — Propose terms · Apply locally · Submit PR · Sync upstream
+MEMORY     — Save progress · View stats
+```
 
 ### Capabilities
 
 | Command | What It Does |
 |---------|-------------|
+| Help / Ajuda | "ajuda" — shows all capabilities organized by intent |
 | Look up a term | "What is a PDA?" — resolves by ID, alias, or search |
 | Explore connections | "How does PoH connect to slots?" — walks the knowledge graph |
 | Start a learning path | "Teach me DeFi" — progressive path through 135 DeFi terms |
@@ -102,6 +117,8 @@ This creates persistent memory at `.kuka/memory/` so Kuka remembers you across s
 | Explore ecosystem | "Compare Anchor vs Pinocchio" — research with confidence levels |
 | Take a quiz | "Quiz me on security" — code challenges, scenario questions, scored |
 | Generate context | "Give me context for my AMM project" — token-optimized LLM block |
+| Check coverage | "What gaps do I have in ZK?" — analyzes what you know vs what's missing |
+| Propose a term | Automatic when a concept isn't in the glossary — or say "this should be in the glossary" |
 | Save memory | "Save" — explicitly persist current session to memory |
 
 ### Headless Mode (Autonomous)
