@@ -2,13 +2,21 @@
 
 A Claude Code plugin that turns the Solana Glossary into an intelligent, persistent teaching companion. Named after Pedro Marafiotti ([@kukasolana](https://x.com/kukasolana)), Superteam Brasil Lead.
 
+## Video Demo
+
+[![Kuka Demo](https://img.youtube.com/vi/Y-PWPEL4MYY/maxresdefault.jpg)](https://www.youtube.com/watch?v=Y-PWPEL4MYY)
+
 ## What Kuka Does
 
 - **Term Lookup** — Resolve any of the 1,001 glossary terms by ID, alias, or natural language search
 - **Knowledge Graph** — Walk cross-reference relationships to reveal how Solana concepts connect
-- **Learning Paths** — Progressive learning sequences across 14 categories, adapted to your level
-- **Quiz Mode** — Interactive quizzes with score tracking to reinforce understanding
+- **Learning Paths** — Progressive learning sequences across 14 categories, with beginner/intermediate/advanced templates
+- **Quiz Mode** — Adaptive quizzes with code challenges, scenario-based questions, and score tracking
 - **Context Injection** — Token-optimized glossary blocks for LLM system prompts (save tokens!)
+- **Concept Deep Dive** — Full teaching lessons: definition, TradFi analogy, mechanism, code example, exercise
+- **Code Walkthrough** — Break down Solana code step-by-step, mapping every concept to glossary terms
+- **Ecosystem Explorer** — Research protocols, SDKs, and tools with comparisons and confidence levels
+- **Term Proposal** — Automatically propose new glossary terms discovered through conversations (data expansion!)
 - **Persistent Memory** — Kuka remembers your skill level, progress, and what you're building
 - **Headless Mode** — Autonomous context preparation, daily term briefings, and progress reports
 - **i18n** — Speaks English, Portuguese, and Spanish natively
@@ -72,25 +80,45 @@ What is Proof of History?
 Explain PDAs to me
 ```
 
-### First Run
+### First Run (Guided Onboarding)
 
-On first use, Kuka will ask you:
-1. Your name
-2. Your Solana experience level (beginner / intermediate / advanced)
-3. What you're building
-4. Preferred language (English, Portuguese, or Spanish)
+On first use, Kuka gives you a **guided tour** — not a form to fill out:
 
-This creates persistent memory at `.kuka/memory/` so Kuka remembers you across sessions.
+1. **Instant demo** — shows a live term lookup before asking anything
+2. **Quick calibration** — your name and Solana level (2 questions max)
+3. **Guided tour** — demonstrates 3 capabilities live, adapted to your level
+4. **Data expansion** — shows how you can propose new glossary terms
+5. **Memory created** — persistent profile, progress tracking, proposals staging
+
+Kuka detects your language from how you respond — no need to configure it.
+
+### Menu / Help
+
+Say **"ajuda"**, **"help"**, or **"menu"** anytime to see all capabilities:
+
+```
+LEARN      — Look up term · Deep dive · Learning path · Quiz
+EXPLORE    — Knowledge graph · Ecosystem explorer · Code walkthrough
+OPTIMIZE   — Generate context block · Check coverage gaps
+CONTRIBUTE — Propose terms · Apply locally · Submit PR · Sync upstream
+MEMORY     — Save progress · View stats
+```
 
 ### Capabilities
 
 | Command | What It Does |
 |---------|-------------|
+| Help / Ajuda | "ajuda" — shows all capabilities organized by intent |
 | Look up a term | "What is a PDA?" — resolves by ID, alias, or search |
 | Explore connections | "How does PoH connect to slots?" — walks the knowledge graph |
 | Start a learning path | "Teach me DeFi" — progressive path through 135 DeFi terms |
-| Take a quiz | "Quiz me on security" — 5-10 questions, tracks your score |
+| Deep dive | "Explain PDAs deeply" — full lesson with analogy, code, and exercise |
+| Code walkthrough | "Explain this program" — step-by-step breakdown mapped to glossary |
+| Explore ecosystem | "Compare Anchor vs Pinocchio" — research with confidence levels |
+| Take a quiz | "Quiz me on security" — code challenges, scenario questions, scored |
 | Generate context | "Give me context for my AMM project" — token-optimized LLM block |
+| Check coverage | "What gaps do I have in ZK?" — analyzes what you know vs what's missing |
+| Propose a term | Automatic when a concept isn't in the glossary — or say "this should be in the glossary" |
 | Save memory | "Save" — explicitly persist current session to memory |
 
 ### Headless Mode (Autonomous)
@@ -159,12 +187,80 @@ The Context Injection capability produces formatted glossary blocks optimized fo
 # Output: compact, structured text ready for system prompts
 ```
 
+### Term Proposals (Data Expansion)
+
+Kuka automatically detects glossary gaps during conversations and proposes new terms:
+
+```
+You: "What are Jito bundles?"
+Kuka: teaches the concept, then...
+  → Detects "jito-bundles" is not in the glossary
+  → Generates a structured term proposal (JSON, matching glossary schema)
+  → Validates via script (schema, duplicates, related terms)
+  → Saves to .kuka/proposals/jito-bundles.json
+
+You: "Show my pending proposals"
+Kuka: lists all proposals with validation status
+
+You: "Apply proposals locally"
+Kuka: injects into your glossary copy (instant, you benefit right away)
+
+You: "Submit proposals as PR"
+Kuka: opens a PR to solanabr/solana-glossary via gh CLI
+```
+
+Every conversation makes the glossary better. The data expands through teaching.
+
+## Scripts
+
+Two TypeScript scripts power the deterministic operations:
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/glossary-coverage.ts` | Match topics/code against 1,001 terms, cross-reference with developer progress, identify knowledge gaps |
+| `scripts/validate-term-proposal.ts` | Validate proposed new terms against glossary JSON schema and existing data |
+| `scripts/submit-proposals.ts` | Inject validated proposals into glossary files and optionally open a PR via gh CLI |
+| `scripts/sync-glossary.ts` | Sync local glossary with upstream, reconcile proposals (merged/pending), update category files |
+
+Both import directly from the `@stbr/solana-glossary` SDK — zero extra dependencies.
+
+```bash
+# Find glossary gaps for a topic
+npx tsx apps/kuka-agent/skills/kuka/scripts/glossary-coverage.ts \
+  --topic "compressed tokens with light protocol" \
+  --progress .kuka/memory/progress.md
+
+# Validate a term proposal
+npx tsx apps/kuka-agent/skills/kuka/scripts/validate-term-proposal.ts \
+  --proposal .kuka/proposals/jito-bundles.json
+
+# Dry run — see what would change
+npx tsx apps/kuka-agent/skills/kuka/scripts/submit-proposals.ts \
+  --proposals-dir .kuka/proposals --dry-run
+
+# Apply locally — inject into your glossary copy
+npx tsx apps/kuka-agent/skills/kuka/scripts/submit-proposals.ts \
+  --proposals-dir .kuka/proposals --apply
+
+# Apply and open a PR to the community glossary
+npx tsx apps/kuka-agent/skills/kuka/scripts/submit-proposals.ts \
+  --proposals-dir .kuka/proposals --pr --pr-repo solanabr/solana-glossary
+
+# Sync local glossary with upstream (pull new community terms)
+npx tsx apps/kuka-agent/skills/kuka/scripts/sync-glossary.ts --apply
+
+# Dry-run sync — see what's new without changing files
+npx tsx apps/kuka-agent/skills/kuka/scripts/sync-glossary.ts --dry-run
+```
+
 ## Tech Stack
 
 - **Runtime:** Pure markdown skill — zero npm dependencies for the agent
+- **Scripts:** TypeScript, importing from the project's own SDK
 - **Data:** `@stbr/solana-glossary` SDK data files (1,001 terms, JSON)
 - **i18n:** Glossary's own translation layer (Portuguese, Spanish)
 - **Memory:** File-based persistent sidecar (`.kuka/memory/`)
+- **Proposals:** Term expansion staging area (`.kuka/proposals/`)
 - **Platform:** Claude Code plugin system
 
 ## Contributing

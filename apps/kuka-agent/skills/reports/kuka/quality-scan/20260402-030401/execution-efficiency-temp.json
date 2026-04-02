@@ -1,0 +1,105 @@
+{
+  "scanner": "execution-efficiency",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "medium",
+      "category": "resource-loading",
+      "title": "Full glossary (1,001 terms across 14 files) loaded on every activation regardless of capability",
+      "detail": "On Activation instructs to load all 14 category files totaling 1,001 terms before knowing which capability the user will invoke. For a simple term lookup of a single term, or a save-memory operation, or a quiz with 5 questions, the full dataset is still loaded. This is a significant token cost per activation. Estimated savings: 60-80% of glossary tokens for most single-capability invocations if selective loading were used.",
+      "action": "Consider a two-tier loading strategy: (1) On activation, load only a lightweight term index (IDs, aliases, categories) sufficient for routing and matching. (2) Load full term definitions on demand when a specific capability needs them (e.g., deep dive loads the target term and its related terms, quiz loads only the terms being quizzed). The scripts already handle selective matching — the agent prompt could follow the same pattern."
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 12,
+      "severity": "low",
+      "category": "parallelization",
+      "title": "Steps 1 and 2 of default wake behavior are independent and could be parallelized",
+      "detail": "The autonomous wake lists 5 sequential steps. Step 1 (read memory for skill level) and Step 2 (scan recent git changes for Solana terms) are independent data-gathering operations. Running them in parallel would reduce latency. Estimated savings: modest, as both are fast read operations, but it establishes a good pattern.",
+      "action": "Restructure the steps to indicate steps 1 and 2 can run in parallel: 'In parallel: (a) Read memory for developer context, (b) Scan recent git changes for Solana concepts. Then: Cross-reference, generate briefing, save.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 60,
+      "severity": "strength",
+      "category": "memory-optimization",
+      "title": "Memory system uses excellent selective loading with index-first routing",
+      "detail": "The memory system loads index.md on activation as a routing entry point, then loads specific files (progress.md, patterns.md, chronology.md) only when the active capability needs them. Access-boundaries.md is loaded on every activation for security. This is textbook selective memory loading and avoids the common anti-pattern of loading all sidecar files at once.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 69,
+      "severity": "strength",
+      "category": "resource-optimization",
+      "title": "Capability references loaded on demand via progressive disclosure",
+      "detail": "Each of the 10 capabilities routes to its own reference file loaded only when that capability activates. This means a term-lookup session never loads quiz-mode.md or learning-paths.md. This is clean progressive disclosure that keeps context lean per interaction path.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "medium",
+      "category": "resource-loading",
+      "title": "i18n translations loaded on every activation even when developer speaks English",
+      "detail": "On Activation says 'Load the Solana Glossary data and i18n translations' unconditionally. If the developer's preferred language is English (known from memory index.md), loading pt and es translation files is unnecessary token waste. The memory system already stores the developer's language preference.",
+      "action": "Load i18n files conditionally: check the developer's preferred language from memory index.md first, then load only the needed locale file (if not English). This saves loading 1-2 translation files for English-speaking developers."
+    },
+    {
+      "file": "references/memory-system.md",
+      "line": 24,
+      "severity": "strength",
+      "category": "memory-optimization",
+      "title": "Access boundaries loaded on every activation for security",
+      "detail": "The memory system correctly marks access-boundaries.md as 'Load on activation' alongside index.md, ensuring security constraints are always present regardless of the capability invoked. This follows the scan guideline that access boundaries must be loaded on every activation for security.",
+      "action": ""
+    },
+    {
+      "file": "references/save-memory.md",
+      "line": 5,
+      "severity": "low",
+      "category": "batching",
+      "title": "Save Memory updates 4 files sequentially but they are independent writes",
+      "detail": "The Save Memory capability updates index.md, progress.md, patterns.md, and chronology.md sequentially. These are independent write operations to different files. Batching them into a single parallel write operation would reduce latency slightly. Estimated savings: minor, as file writes are fast, but the pattern is worth noting.",
+      "action": "Indicate that the 4 file updates can be performed in parallel since they target different files with no interdependencies: 'In parallel: update index.md, checkpoint progress.md, update patterns.md, append to chronology.md.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 56,
+      "severity": "low",
+      "category": "resource-loading",
+      "title": "Glossary data search cascade checks 3 locations sequentially",
+      "detail": "On Activation tries 3 paths in order to find glossary data: project-root data, node_modules SDK, plugin base directory. This is a correct fallback pattern but each check involves filesystem probing. The result is deterministic per-project and could be cached in memory.",
+      "action": "Consider noting in the On Activation instructions that once the glossary data location is found on first activation, it should be saved to memory index.md so subsequent activations skip the cascade and go directly to the known location."
+    }
+  ],
+  "assessments": {
+    "execution_profile": {
+      "parallelization": "good — capability references use progressive disclosure; minor opportunities in autonomous wake and save-memory",
+      "memory_loading": "excellent — index-first routing, selective per-capability loading, access boundaries always loaded",
+      "resource_loading": "mixed — capability references are demand-loaded (good), but glossary data and i18n are loaded in full on every activation (costly for single-term lookups)",
+      "subagent_usage": "not applicable — this is an interactive teaching companion, not a multi-source analysis agent; no subagent patterns expected or needed",
+      "batching": "adequate — no significant sequential independent tool calls identified beyond minor save-memory case"
+    }
+  },
+  "summary": {
+    "total_findings": 8,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 3,
+      "strength": 3
+    },
+    "by_category": {
+      "resource-loading": 3,
+      "parallelization": 1,
+      "memory-optimization": 2,
+      "resource-optimization": 1,
+      "batching": 1
+    },
+    "assessment": "Well-designed execution patterns with excellent memory loading discipline (index-first routing, selective per-capability loading). The main efficiency concern is loading the full 1,001-term glossary on every activation regardless of which capability will be used — a lightweight index-then-expand strategy would significantly reduce token cost for most interactions."
+  }
+}

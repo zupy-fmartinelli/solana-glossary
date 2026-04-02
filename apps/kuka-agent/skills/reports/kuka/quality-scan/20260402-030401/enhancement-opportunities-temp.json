@@ -1,0 +1,288 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "findings": [
+    {
+      "file": "references/autonomous-wake.md",
+      "severity": "high-opportunity",
+      "category": "autonomous-potential",
+      "title": "Headless mode lacks a 'glossary-audit' task for CI/PR pipelines",
+      "detail": "The agent has 2 named headless tasks (daily-term, progress) and a default wake behavior. But the most valuable automation for a glossary project is auditing PRs: when a contributor adds a new term, an autonomous task could validate it against schema, check for duplicates/alias collisions, verify cross-references resolve, and post a structured review. This turns Kuka from a teaching companion into a glossary quality gate — dramatically more useful in a team/open-source context where PRs with new terms arrive regularly.",
+      "action": "Add a --headless:audit-pr task that accepts a file path or git diff, runs validate-term-proposal.ts on each new/changed term file, cross-checks related terms, and outputs a structured JSON review to .kuka/memory/audit-{date}.json. This can be invoked by CI or another agent."
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "severity": "high-opportunity",
+      "category": "autonomous-potential",
+      "title": "No headless task for bulk coverage analysis across a codebase",
+      "detail": "The glossary-coverage.ts script analyzes a single topic or file, but there is no headless task that scans an entire project directory to produce a comprehensive 'Solana concept inventory' — which terms appear in the codebase, which are understood by the developer, and which are knowledge gaps. For a team onboarding to Solana, this would be the killer automation: point Kuka at a repo and get back a full learning roadmap.",
+      "action": "Add a --headless:repo-scan task that walks *.rs, *.ts, *.tsx files in the project, aggregates glossary-coverage results per file, and produces a repo-level knowledge map with prioritized learning paths. Output to .kuka/memory/repo-scan-{date}.json."
+    },
+    {
+      "file": "references/quiz-mode.md",
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "Quiz mode has no spaced repetition — missed terms never resurface systematically",
+      "detail": "Quiz mode tracks per-category accuracy and celebrates streaks, but there is no mechanism to resurface terms the developer got wrong after a delay. Spaced repetition (SM-2 or similar) is the single most evidence-backed technique for long-term retention. Without it, a developer who misses 'routing/aggregation' in the DeFi quiz will only encounter it again by chance. The progress.md already tracks gaps — the infrastructure is there, the algorithm is not.",
+      "action": "Add a spaced-repetition queue to progress.md (term, next-review-date, interval, ease-factor). Quiz mode should prioritize terms from this queue. The --headless:daily-term task should also pull from it. A new script (spaced-repetition-engine.ts) could manage the queue deterministically."
+    },
+    {
+      "file": "references/learning-paths.md",
+      "severity": "high-opportunity",
+      "category": "delight-opportunity",
+      "title": "Learning paths are templates, not dynamically generated from the glossary graph",
+      "detail": "The learning paths in learning-paths.md are hardcoded templates (Beginner weeks 1-6, Intermediate modules, Advanced tracks). But the glossary has 1,001 terms with rich 'related' cross-references — a knowledge graph. The real power is generating paths dynamically: given the developer's current progress, their active project context, and the glossary graph, compute the optimal next-term sequence using topological sort of prerequisites. The templates are a good starting point but become stale as the glossary grows.",
+      "action": "Add a script (generate-learning-path.ts) that takes developer progress + target category/topic as input, performs a dependency-aware topological sort on the glossary graph, and outputs a personalized learning sequence. The learning-paths.md templates become fallbacks for when no progress data exists."
+    },
+    {
+      "file": "references/context-injection.md",
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Context injection could auto-detect the user's current file and inject relevant terms proactively",
+      "detail": "Context injection currently requires the developer to explicitly request terms. But in a Claude Code environment, the agent can see what file the developer is editing. If the developer is working on a Solana program (Anchor or Pinocchio), Kuka could proactively generate a context block for the concepts in that file — without being asked. This transforms context injection from a manual tool into an ambient intelligence feature.",
+      "action": "Add a --headless:context-for-file task that accepts a file path, runs glossary-coverage.ts on it, and generates a compact context block. This can be wired as a hook that fires when certain file patterns are opened, or invoked by another agent preparing context for a coding session."
+    },
+    {
+      "file": "references/term-proposal.md",
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Term proposals are saved locally but have no path to automated PR creation",
+      "detail": "The term proposal flow saves validated JSON to .kuka/proposals/ and mentions 'submit as PR or issue' but this is a manual step the developer must do themselves. For an open-source glossary, the last-mile automation — creating a branch, committing the term file, and opening a PR with a structured description — would close the loop from teaching conversation to glossary contribution without friction.",
+      "action": "Add a --headless:submit-proposals task that reads .kuka/proposals/*.json, creates a git branch, copies validated proposals into data/terms/ (appending to the correct category file), and opens a PR via gh CLI. Include the validation output in the PR description."
+    },
+    {
+      "file": "references/code-walkthrough.md",
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Code walkthrough has no handling for non-Solana code submitted by confused users",
+      "detail": "Code walkthrough assumes the developer will submit Solana-related code (Anchor, Pinocchio, TypeScript clients). But a confused user might paste EVM Solidity code, generic Rust, or even Python. The current behavior would be to try to map concepts to the Solana glossary and fail silently — producing a confusing walkthrough with no glossary hits. There is no detection or graceful redirect.",
+      "action": "Add a pre-check in the walkthrough flow: if glossary-coverage.ts returns zero matches for the submitted code, inform the developer that no Solana concepts were detected, ask if they meant to submit Solana code, and offer to redirect to a general code review or suggest what Solana-specific code to try."
+    },
+    {
+      "file": "references/init.md",
+      "severity": "medium-opportunity",
+      "category": "journey-friction",
+      "title": "First-run onboarding asks 4 questions serially — could infer most from project context",
+      "detail": "Init asks: name, experience level, what you're building, preferred language. In a Claude Code environment, the agent has access to the project structure, git history, and CLAUDE.md. For a Solana project, it could infer experience level from code complexity (Pinocchio = advanced, Anchor scaffold = beginner), active project from package.json/Cargo.toml, and language from git config or existing comments. Asking questions the agent can answer itself creates unnecessary friction for returning developers and power users.",
+      "action": "Add an 'auto-calibrate' step before the questions: scan project files for Solana markers, check git log for the developer's name, detect language from code comments. Pre-fill answers and present them for confirmation instead of asking from scratch: 'Based on your project, you seem intermediate-level, building with Anchor in Portuguese. Sound right?'"
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Glossary data loading has 3 fallback paths but no error message if all fail",
+      "detail": "SKILL.md specifies 3 locations to find glossary data (project root, node_modules, plugin base). But if none exist — say the agent is invoked in a directory that is not the solana-glossary repo, doesn't have the npm package installed, and isn't the plugin directory — the agent has no instruction for what to do. It would likely crash or produce nonsensical responses with no glossary backing.",
+      "action": "Add a fallback instruction: if no glossary data is found at any of the 3 paths, inform the developer clearly ('I could not find the Solana Glossary data. Install @stbr/solana-glossary or invoke me from within the glossary repo.'), offer to help install it, and gracefully degrade to model-only knowledge with clear confidence-level warnings."
+    },
+    {
+      "file": "references/memory-system.md",
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Memory system has no corruption recovery or conflict resolution for concurrent sessions",
+      "detail": "The memory system uses file-based persistence with write-through and checkpoint strategies. But if two Claude Code sessions invoke Kuka simultaneously (e.g., one in a terminal, one in a subagent), both could write to progress.md at the same time, causing data loss or corruption. There is no locking, versioning, or conflict detection. Additionally, if a memory file becomes corrupted (malformed markdown), there is no recovery path — the agent would fail to load memory and might lose all developer context.",
+      "action": "Add a memory integrity check on load: validate that each memory file parses correctly, and if corrupted, log the error and fall back to a fresh state with a warning. For concurrent access, consider atomic writes (write to .tmp then rename) or a simple file-lock check. Document the limitation in memory-system.md if full resolution is deferred."
+    },
+    {
+      "file": "references/knowledge-graph.md",
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Knowledge graph traversal is text-only — visual graph rendering would be transformative",
+      "detail": "The knowledge graph capability presents relationships as narrative text. But graph visualization is one of the most powerful ways to build mental models. Mermaid diagrams are mentioned in code-walkthrough.md but not in knowledge-graph.md. A mermaid graph showing nodes (terms) and edges (related connections) with color-coding for explored vs gap terms would make the cross-reference network instantly comprehensible.",
+      "action": "Add mermaid diagram generation to the knowledge graph capability. Color-code nodes: green for explored terms, amber for in-progress, red for gaps. Include the diagram alongside the narrative explanation. A script (render-knowledge-graph.ts) could generate the mermaid syntax deterministically from glossary data + progress."
+    },
+    {
+      "file": "references/ecosystem-explorer.md",
+      "severity": "low-opportunity",
+      "category": "assumption-risk",
+      "title": "Ecosystem explorer's confidence levels assume the glossary is always accurate and current",
+      "detail": "The explorer assigns 'High' confidence to anything in the glossary. But the Solana ecosystem moves fast — a glossary term written 3 months ago about a DeFi protocol might be outdated (protocol upgraded, renamed, or deprecated). The glossary has no 'last-updated' or 'verified-date' field per term, so the agent cannot distinguish a freshly curated entry from a stale one.",
+      "action": "Consider adding an optional 'updated_at' field to the glossary schema. In the interim, add a note in ecosystem-explorer.md: for protocol-specific terms (especially in defi, solana-ecosystem categories), add a caveat that the information reflects the glossary snapshot date and the developer should verify against current documentation."
+    },
+    {
+      "file": "references/save-memory.md",
+      "severity": "low-opportunity",
+      "category": "experience-gap",
+      "title": "Save memory is manual-trigger only — no auto-save on session end or context compaction",
+      "detail": "Memory persistence relies on explicit triggers (quiz complete, path step done) or the developer manually asking to save. But in Claude Code, sessions can end abruptly (terminal closed, context compaction drops state, timeout). Progress from a rich teaching session could be lost if the developer forgets to trigger save and the session ends. The memory-system.md mentions 'end of teaching session (5+ exchanges)' as a checkpoint trigger but there is no mechanism to detect session end.",
+      "action": "Add a note in SKILL.md's On Activation section: after every 5 substantive exchanges, proactively checkpoint memory without being asked. When the developer appears to be wrapping up (thanks, goodbye, switching topics), immediately persist. This is a 'better safe than sorry' approach that costs almost nothing."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No soft-gate elicitation between capabilities — transitions are menu-driven",
+      "detail": "When a developer finishes a term lookup or deep dive, the natural next step is driven by the capability table in SKILL.md — essentially a menu. But soft-gate transitions ('Want to see how this connects to what you explored yesterday, or shall we move on?') draw out context the developer didn't know they had. The agent's warm persona is perfect for this pattern but the capability routing doesn't leverage it.",
+      "action": "Add guidance in each capability reference file for natural transitions: after a term lookup, suggest the knowledge graph for that term; after a deep dive, suggest a quiz; after a quiz, suggest the next path step. Frame as soft gates ('Quer ver como isso conecta com X, ou bora pra outro assunto?') rather than menus."
+    },
+    {
+      "file": "references/term-proposal.md",
+      "severity": "low-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Term proposals lack a review loop with the developer before saving",
+      "detail": "When Kuka generates a term proposal, it validates the JSON schema and saves to .kuka/proposals/. But there is no step where the developer reviews and refines the proposal — especially the definition text. Since the best definitions come from teaching conversations (as the reference file itself states), the developer who just learned the concept is uniquely positioned to improve the wording. Skipping review means the proposal quality depends entirely on Kuka's first draft.",
+      "action": "Add a review step: after generating the proposal, present it to the developer with the definition highlighted, ask 'How does this definition read? Anything you would change based on how you understand it now?', incorporate feedback, then validate and save. This is both a facilitative pattern and a quality gate."
+    },
+    {
+      "file": "references/quiz-mode.md",
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Quiz mode has no multiplayer or social dimension despite Kuka's community-builder identity",
+      "detail": "Kuka's identity is built around community — 'a gente sobe junto', 19,000+ builders, 52+ events. But quiz mode is purely solo. There is no way to share quiz results, challenge a friend, or compare progress with the community. For a community-driven educator, the absence of any social dimension is a missed opportunity to embody the persona.",
+      "action": "Add an optional 'share quiz result' capability that generates a shareable markdown snippet or image-ready text block with the developer's score, streak, and a challenge invitation. Could output to clipboard or a file for posting in Discord/Telegram. Low engineering effort, high persona alignment."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "edge-case",
+      "title": "i18n loads pt and es translations but quiz mode and learning paths don't reference i18n",
+      "detail": "The SKILL.md activation loads i18n files (pt.json, es.json) and the agent persona naturally switches languages. But quiz-mode.md and learning-paths.md make no mention of i18n — quiz questions, path descriptions, and milestone celebrations all appear to be English-only in the reference files. A Portuguese-speaking developer taking a quiz would get English question templates mixed with Portuguese conversation, creating a jarring bilingual experience.",
+      "action": "Add i18n guidance to quiz-mode.md and learning-paths.md: quiz question templates should be generated in the developer's preferred language (from memory). Path step descriptions and milestone messages should also be localized. If the i18n files don't cover quiz/path content, note that as a gap to fill."
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "A Solana development teaching companion that uses a curated 1,001-term glossary as its knowledge base. It teaches through term lookups, deep dives, code walkthroughs, quizzes, and learning paths — always anchoring on the glossary data rather than model knowledge. It also grows the glossary through term proposals discovered during teaching.",
+      "primary_user": "Solana developers at any level (beginner to advanced) who want to systematically learn blockchain concepts, especially Portuguese-speaking developers in the Brazilian Solana community.",
+      "key_assumptions": [
+        "The developer is working in a Solana-related project or wants to learn Solana concepts",
+        "The glossary data (14 JSON files, 1,001 terms) is accessible at one of three known paths",
+        "Sessions are long enough for the memory system to persist progress (5+ exchanges)",
+        "The developer interacts primarily through one Claude Code session at a time",
+        "The developer's skill level is relatively stable within a session"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A developer new to Solana invokes Kuka for the first time. The init flow asks 4 questions, creates memory, and offers a menu of capabilities. The beginner learning path provides a structured 4-6 week roadmap. Term lookups and deep dives adapt to beginner level with analogies. Quiz mode reinforces learning.",
+        "friction_points": [
+          "4 serial questions on first run when most could be inferred from project context",
+          "No guidance on which capability to start with — the menu can be overwhelming",
+          "If the developer's project is not Solana-related, there is no graceful redirect"
+        ],
+        "bright_spots": [
+          "Warm persona and TradFi analogies make complex concepts approachable",
+          "Beginner learning path is well-structured with weekly milestones",
+          "Quiz mode with celebration of streaks creates positive reinforcement"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "An advanced Solana developer invokes Kuka wanting a quick term lookup or context injection for their AI tools. They know exactly what they want and don't need teaching preamble.",
+        "friction_points": [
+          "No 'quick mode' — even term lookups include related terms, deep dive offers, and memory updates",
+          "Context injection requires explicitly specifying scope rather than auto-detecting from current work",
+          "Advanced tracks in learning paths are hardcoded templates that may not match the expert's specific interests"
+        ],
+        "bright_spots": [
+          "Direct term/topic argument on invocation skips the greeting flow",
+          "Context injection with token estimation is uniquely valuable for power users",
+          "Ecosystem explorer's confidence levels match the expert's need for source reliability"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "A developer invokes Kuka by accident or with non-Solana intent. They might paste EVM code for walkthrough or ask about Ethereum concepts.",
+        "friction_points": [
+          "Code walkthrough has no detection for non-Solana code — would produce confusing output with zero glossary matches",
+          "No graceful handling of 'wrong agent' scenarios — the agent would try to map everything to Solana",
+          "If glossary data is not found (wrong project context), no clear error message"
+        ],
+        "bright_spots": [
+          "The warm persona would likely handle confusion gracefully through natural conversation even without explicit instructions"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "A developer provides technically valid but unexpected input: a 5,000-line Solana program for walkthrough, a term proposal for a concept that exists as an alias, or requests a quiz on a category with only 2 terms explored.",
+        "friction_points": [
+          "No size limit guidance for code walkthrough input — very large files would consume significant context",
+          "Quiz mode with insufficient explored terms in a category has no minimum threshold or fallback",
+          "Term proposal for an alias of an existing term would be caught by validation but the error message path is not documented in the agent flow"
+        ],
+        "bright_spots": [
+          "validate-term-proposal.ts catches alias collisions and provides clear fix suggestions",
+          "glossary-coverage.ts has --max-results to bound output size"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "Kuka is invoked in an environment where glossary data files are missing, memory sidecar is read-only, or the project root is ambiguous (e.g., inside a monorepo subdirectory).",
+        "friction_points": [
+          "Three-path glossary discovery has no error handling if all paths fail",
+          "Memory sidecar write failures (permissions, disk full) have no fallback — the agent would silently lose progress",
+          "No instruction for what happens when i18n files are missing — would the agent fall back to English or error?"
+        ],
+        "bright_spots": [
+          "Three fallback paths for glossary discovery is more resilient than most agents",
+          "Memory system's file structure is simple enough that manual recovery is straightforward"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A CI pipeline or another agent wants to invoke Kuka headlessly to validate term proposals, generate coverage reports, or produce context blocks for downstream agents.",
+        "friction_points": [
+          "Only 2 named headless tasks (daily-term, progress) plus default wake — no task for validation, coverage, or context generation",
+          "Scripts exist for coverage and validation but are CLI tools, not headless agent tasks — the agent adds value (memory, graph traversal, learning path generation) that scripts alone don't provide",
+          "No structured output contract for headless tasks — the output is markdown files, not JSON that pipelines can parse",
+          "No way to pass developer context to headless mode for personalized output without an existing memory sidecar"
+        ],
+        "bright_spots": [
+          "The two existing scripts (glossary-coverage.ts, validate-term-proposal.ts) output structured JSON to stdout — excellent for pipeline integration",
+          "Headless mode already has a logging mechanism (autonomous-log.md)",
+          "The headless architecture is clean and extensible — adding new tasks is straightforward"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "easily-adaptable",
+      "hitl_points": 8,
+      "auto_resolvable": 5,
+      "needs_input": 3,
+      "suggested_output_contract": "Headless tasks should return JSON to stdout with a consistent envelope: {task, status, output_files[], summary}. File-based outputs (.kuka/memory/*.md) remain for persistence, but the JSON return enables pipeline chaining.",
+      "required_inputs": [
+        "--headless:audit-pr <file-or-diff-path> — for term validation in CI",
+        "--headless:repo-scan <directory> — for codebase-wide coverage analysis",
+        "--headless:context <topic-or-file> — for context injection without interaction",
+        "--headless:quiz-review — for spaced-repetition review generation without interaction"
+      ],
+      "notes": "The agent is already partially headless-ready with 2 named tasks and a default wake. The interactive capabilities (term lookup, deep dive, quiz, code walkthrough) are fundamentally interactive — their value IS the conversation. But coverage analysis, term validation, context injection, and progress reporting are all automatable. The biggest gap is that headless tasks output markdown files when pipelines want JSON. The existing scripts already produce JSON — the headless tasks should follow that pattern."
+    },
+    "top_insights": [
+      {
+        "title": "Spaced repetition would transform quiz mode from fun to genuinely effective learning",
+        "detail": "The quiz infrastructure (scoring, per-category tracking, gap detection) is already built. Adding a spaced repetition queue (SM-2 algorithm) would make Kuka one of the few AI teaching tools that actually optimizes for long-term retention. The developer's wrong answer on 'routing/aggregation' in the DeFi quiz would automatically resurface at increasing intervals until mastered.",
+        "action": "Implement a spaced-repetition-engine.ts script that maintains a review queue in progress.md. Wire it into quiz mode (prioritize due reviews) and daily-term headless task (pick from queue). This is the highest-impact single feature for learning outcomes."
+      },
+      {
+        "title": "A headless audit-pr task would make Kuka a glossary quality gate for the open-source community",
+        "detail": "The solana-glossary is a community project. Every PR with a new term needs validation. Right now that is manual. A headless task that validates PRs would turn Kuka from a personal teaching companion into community infrastructure — the guardian of glossary quality. It would also demonstrate the agent's value to contributors who never interact with it directly.",
+        "action": "Add --headless:audit-pr that accepts a git diff or file path, validates all new/changed terms, and outputs a structured review JSON. Wire into GitHub Actions for automated PR review."
+      },
+      {
+        "title": "Dynamic learning path generation from the knowledge graph would unlock the glossary's deepest value",
+        "detail": "The glossary has 1,001 terms with rich cross-references — it is a knowledge graph, not a flat list. But learning paths are hardcoded templates. A script that performs topological sort on the graph, weighted by the developer's progress and goals, would generate truly personalized curricula that no template can match.",
+        "action": "Build generate-learning-path.ts: input is target category/topic + progress data, output is an ordered term sequence with dependency reasoning. Replace hardcoded templates with dynamic generation, keeping templates as fallbacks."
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 17,
+    "by_severity": {
+      "high-opportunity": 4,
+      "medium-opportunity": 7,
+      "low-opportunity": 6
+    },
+    "by_category": {
+      "edge_case": 4,
+      "experience_gap": 2,
+      "delight_opportunity": 4,
+      "assumption_risk": 1,
+      "journey_friction": 1,
+      "autonomous_potential": 3,
+      "facilitative_pattern": 2
+    },
+    "assessment": "Kuka is an exceptionally well-designed teaching agent with a strong persona, rich data foundation, and thoughtful memory system. The two existing scripts and headless mode show the builder already thinks about automation. The biggest untapped potential is threefold: (1) spaced repetition to make learning actually stick, (2) dynamic path generation from the knowledge graph rather than static templates, and (3) expanding headless mode into a glossary quality gate for CI/CD pipelines. The agent's community-builder identity creates natural openings for social features (shareable quiz results, PR-based term contributions) that would multiply its reach beyond individual developers. Edge case handling — especially for non-Solana input, missing glossary data, and concurrent memory access — would harden the agent for real-world messiness."
+  }
+}
+

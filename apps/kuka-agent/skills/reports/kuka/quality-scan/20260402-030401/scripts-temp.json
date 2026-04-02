@@ -1,0 +1,170 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "timestamp": "2026-04-02T06:04:15.798558+00:00",
+  "status": "warning",
+  "findings": [
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 8,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "npx tsx without version pinning",
+      "detail": "",
+      "action": "Pin version: npx tsx@<version>"
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for glossary-coverage.ts",
+      "detail": "",
+      "action": "Create scripts/tests/test-glossary-coverage.ts with test cases"
+    },
+    {
+      "file": "scripts/validate-term-proposal.ts",
+      "line": 8,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "npx tsx without version pinning",
+      "detail": "",
+      "action": "Pin version: npx tsx@<version>"
+    },
+    {
+      "file": "scripts/validate-term-proposal.ts",
+      "line": 13,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "npx tsx without version pinning",
+      "detail": "",
+      "action": "Pin version: npx tsx@<version>"
+    },
+    {
+      "file": "scripts/validate-term-proposal.ts",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for validate-term-proposal.ts",
+      "detail": "",
+      "action": "Create scripts/tests/test-validate-term-proposal.ts with test cases"
+    },
+    {
+      "file": "scripts/tests/",
+      "line": 0,
+      "severity": "high",
+      "category": "tests",
+      "title": "scripts/tests/ directory does not exist \u2014 no unit tests",
+      "detail": "",
+      "action": "Create scripts/tests/ with test files for each script"
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 246,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/style/useTemplate] Template literals are preferred over string concatenation.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 250,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/style/useTemplate] Template literals are preferred over string concatenation.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 255,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/style/useTemplate] Template literals are preferred over string concatenation.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 100,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/style/noNonNullAssertion] Forbidden non-null assertion.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 222,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/style/noNonNullAssertion] Forbidden non-null assertion.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/glossary-coverage.ts",
+      "line": 23,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/correctness/noUnusedImports] Several of these imports are unused.",
+      "detail": "",
+      "action": ""
+    },
+    {
+      "file": "scripts/validate-term-proposal.ts",
+      "line": 23,
+      "severity": "high",
+      "category": "lint",
+      "title": "[lint/correctness/noUnusedImports] Several of these imports are unused.",
+      "detail": "",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [
+        "biome"
+      ],
+      "files_linted": 2,
+      "lint_issues": 7
+    },
+    "script_summary": {
+      "total_scripts": 2,
+      "by_type": {
+        "python": 0,
+        "shell": 0,
+        "node": 2,
+        "other": 0
+      },
+      "scripts": {
+        "node": [
+          "glossary-coverage.ts",
+          "validate-term-proposal.ts"
+        ]
+      },
+      "missing_tests": [
+        "glossary-coverage.ts",
+        "validate-term-proposal.ts"
+      ]
+    }
+  },
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {
+      "critical": 0,
+      "high": 8,
+      "medium": 5,
+      "low": 0
+    },
+    "by_category": {
+      "dependencies": 3,
+      "tests": 3,
+      "lint": 7
+    },
+    "assessment": ""
+  }
+}

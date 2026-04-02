@@ -1,0 +1,153 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "findings": [
+    {
+      "file": "references/context-injection.md",
+      "line": 12,
+      "severity": "high",
+      "category": "transformation",
+      "title": "LLM manually formats glossary terms into token-optimized context blocks",
+      "detail": "Determinism confidence: certain. Estimated token savings: 800-2000 per invocation depending on scope. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any skill needing glossary context injection). Help pattern savings: ~150 tokens by calling --help instead of inlining interface. The Context Injection capability asks the LLM to accept a scope (terms, category, topic), select matching terms from the glossary, strip metadata, format as compact text/markdown/JSON, and estimate token count. Every one of these operations is deterministic: term selection is keyword/category matching (already done by glossary-coverage.ts), metadata stripping is field filtering, formatting is template application, and token counting is tiktoken. The LLM adds zero judgment value to any of these steps.",
+      "action": "Create `scripts/context-builder.ts` that accepts --terms, --category, --topic, --format (text|markdown|json), --max-tokens flags. Uses the SDK's allTerms/getTermsByCategory/searchTerms. Strips aliases and metadata per the prompt's instructions. Outputs the formatted context block to stdout with a token count estimate (use a simple word-count heuristic or tiktoken equivalent). The LLM prompt then only needs to decide WHAT context to generate (scope selection based on conversation), not HOW to format it."
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 14,
+      "severity": "high",
+      "category": "preprocessing",
+      "title": "LLM scans git changes and cross-references against glossary during autonomous wake",
+      "detail": "Determinism confidence: high. Estimated token savings: 1000-3000 per invocation. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes — this is the textbook prepass pattern. Feeds scanner: n/a but feeds the LLM's briefing generation. Reusable across skills: yes (any glossary-aware agent with autonomous mode). Help pattern savings: ~100 tokens. The autonomous wake behavior instructs the LLM to: (1) scan recent git changes for Solana-related terms, (2) cross-reference found concepts against the glossary, (3) identify new terms not yet explored. Steps 1-2 are entirely deterministic — git log/diff extraction is shell, and cross-referencing is exactly what glossary-coverage.ts already does. The LLM should only handle step 3's narrative briefing generation, not the data gathering.",
+      "action": "Create `scripts/wake-context.ts` that: (1) runs git log --oneline -20 and git diff HEAD~5 to extract recent changes, (2) pipes extracted text through the glossary-coverage matching engine (reuse buildSearchIndex/matchTerms from glossary-coverage.ts — factor into shared module), (3) loads progress.md to identify explored vs gap terms, (4) outputs a compact JSON summary: {recent_files, matched_terms[], explored[], gaps[], suggested_next[]}. The LLM then receives this structured JSON and only writes the narrative briefing — saving it from reading raw git output and doing keyword matching."
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 26,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM generates progress report from structured memory files",
+      "detail": "Determinism confidence: high. Estimated token savings: 500-1000 per invocation. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a but feeds narrative generation. Reusable across skills: yes (any agent with progress tracking). Help pattern savings: ~80 tokens. The --headless:progress task asks the LLM to read memory files (progress.md, chronology.md) and compute: categories covered count, quiz accuracy trends, terms explored this week, learning path completion percentages. All of these are deterministic extraction and counting operations — parsing markdown for backtick-wrapped term IDs, counting per-category, calculating accuracy percentages, filtering by date.",
+      "action": "Create `scripts/progress-stats.ts` that parses .kuka/memory/progress.md and chronology.md to extract: {categories: {explored: n, total: 14}, terms_explored: {total: n, this_week: n, by_category: {}}, quiz_scores: {overall_accuracy: n, by_category: {}, streaks: n}, paths: {completed: [], in_progress: [], suggested_next: []}, milestones: []}. The LLM then receives this compact JSON and writes a human-friendly progress narrative — saving it from parsing markdown and doing arithmetic."
+    },
+    {
+      "file": "references/learning-paths.md",
+      "line": 14,
+      "severity": "medium",
+      "category": "graph",
+      "title": "LLM manually sequences terms by prerequisite ordering using cross-references",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 500-800 per invocation. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any agent building learning sequences from graph data). Help pattern savings: ~120 tokens. The Learning Paths capability instructs the LLM to 'sequence terms so prerequisites come before dependent concepts' and 'use the related cross-references to determine natural ordering.' This is a topological sort on the glossary's related-terms graph — a deterministic graph algorithm. The LLM adds value in adapting path length/depth to skill level and writing narrative descriptions, but the ordering itself is mechanical.",
+      "action": "Create `scripts/learning-path.ts` that accepts --category and --explored (term IDs or progress.md path). Builds a directed graph from related[] edges, runs topological sort (Kahn's algorithm) within the category, filters out already-explored terms, and outputs: {category, total_terms, explored_count, gap_count, ordered_path: [{id, term, related_count, is_prerequisite_for: []}]}. The LLM then takes this ordered list and adds pedagogical narrative, analogies, and skill-level adaptation — which IS its core value-add."
+    },
+    {
+      "file": "references/knowledge-graph.md",
+      "line": 11,
+      "severity": "medium",
+      "category": "graph",
+      "title": "LLM walks the cross-reference graph to configurable depth",
+      "detail": "Determinism confidence: certain. Estimated token savings: 400-800 per invocation. Implementation complexity: trivial. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any glossary-powered agent). Help pattern savings: ~80 tokens. The Knowledge Graph capability tells the LLM to 'start from any term and walk its related references to a configurable depth (default: 2 levels)' and 'for large clusters (10+ terms), group by theme or category.' BFS/DFS graph traversal and category-based grouping are entirely deterministic. The LLM should receive the traversed subgraph as structured data and only generate the narrative 'concept map' explanation.",
+      "action": "Create `scripts/graph-walk.ts` that accepts --term <id> --depth <n> --explored <progress.md>. Performs BFS from the starting term through related[] edges to the specified depth. Groups results by category. Marks explored vs unexplored. Outputs: {root: id, depth: n, nodes: [{id, term, category, depth_level, explored}], edges: [{from, to}], clusters: {category: [ids]}, stats: {total_nodes, explored, gaps}}. The LLM receives this compact graph structure and generates the narrative concept map — its actual strength."
+    },
+    {
+      "file": "references/quiz-mode.md",
+      "line": 16,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM selects quiz terms based on category gaps and progress data",
+      "detail": "Determinism confidence: high. Estimated token savings: 300-600 per invocation. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no (quiz-specific). Help pattern savings: ~60 tokens. The Quiz Mode tells the LLM to 'focus on categories the developer is actively learning or where gaps exist (from memory)' and to 'track scores in memory: per-category accuracy, streaks.' Term selection for quizzes based on gap analysis is deterministic — it's filtering terms by unexplored categories, weighting by category accuracy scores. The actual question generation and adaptation to skill level IS creative LLM work, but the term selection pool is mechanical.",
+      "action": "Create `scripts/quiz-pool.ts` that accepts --count <n> --progress <progress.md> --category <optional>. Parses progress.md for per-category accuracy and explored terms. Selects n terms prioritizing: (1) categories with lowest accuracy, (2) unexplored terms in active categories, (3) terms with many cross-references (higher teaching value). Outputs: {quiz_pool: [{id, term, definition, category, related, difficulty_hint}], selection_rationale: {weak_categories: [], gap_count: n}}. The LLM then crafts actual questions, adapts difficulty, and generates the interactive quiz experience."
+    },
+    {
+      "file": "references/code-walkthrough.md",
+      "line": 27,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM identifies Solana concepts in code and maps them to glossary terms",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 300-500 per invocation. Implementation complexity: moderate. Language: TypeScript. Could be prepass: yes. Feeds scanner: code-walkthrough LLM prompt. Reusable across skills: yes (any glossary-aware code analysis). Help pattern savings: ~60 tokens. The Code Walkthrough tells the LLM to 'map every Solana concept in the code to glossary terms.' While understanding what code DOES requires LLM judgment, the mechanical step of extracting identifiers and matching them against the glossary is deterministic. This is essentially what glossary-coverage.ts already does with --code-file, but the output could be enriched to include line numbers and inline definitions for the LLM to reference.",
+      "action": "Extend `scripts/glossary-coverage.ts` with a --annotate flag that, when used with --code-file, outputs: {file, matched_terms: [{id, term, one_line_definition, matched_on: 'identifier|comment|string', line_numbers: []}]}. This gives the LLM a pre-mapped annotation layer so it can focus on explaining WHY each concept matters in context rather than spending tokens on identification and glossary lookup."
+    },
+    {
+      "file": "references/term-proposal.md",
+      "line": 56,
+      "severity": "low",
+      "category": "structure",
+      "title": "LLM lists and summarizes pending proposals from .kuka/proposals/ directory",
+      "detail": "Determinism confidence: certain. Estimated token savings: 200-400 per invocation. Implementation complexity: trivial. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~40 tokens. The Batch Submission section tells the LLM to 'list all pending proposals from .kuka/proposals/' and 'show a summary for review.' Reading JSON files from a directory and producing a summary table is entirely deterministic.",
+      "action": "Extend `scripts/validate-term-proposal.ts` with a --list-all flag that scans the proposals directory and outputs: {pending_count: n, proposals: [{id, term, category, definition_length, related_count, validation_status}]}. This gives the LLM a compact inventory instead of having it read and parse each JSON file individually."
+    },
+    {
+      "file": "references/memory-system.md",
+      "line": 93,
+      "severity": "low",
+      "category": "validation",
+      "title": "LLM verifies memory sidecar structure on activation",
+      "detail": "Determinism confidence: certain. Estimated token savings: 150-300 per invocation (every activation). Implementation complexity: trivial. Language: TypeScript. Could be prepass: yes — runs on every activation. Feeds scanner: n/a. Reusable across skills: yes (any agent with sidecar memory). Help pattern savings: ~30 tokens. On every activation, the LLM loads index.md and verifies the memory structure exists. Checking file existence and required sections in markdown files is deterministic. The SKILL.md On Activation section also instructs the LLM to search for glossary data in 3 locations — another deterministic file-existence check.",
+      "action": "Create `scripts/memory-health.ts` that checks: (1) .kuka/memory/ directory exists, (2) required files present (index.md, access-boundaries.md, progress.md, patterns.md, chronology.md), (3) each file has expected markdown sections, (4) glossary data location (checks the 3 paths from SKILL.md). Outputs: {memory_exists: bool, files: {name: {exists, sections: [], size_bytes}}, glossary_path: string, needs_init: bool}. Saves the LLM from file-existence checking on every single activation."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "low",
+      "category": "structure",
+      "title": "LLM searches 3 locations for glossary data on every activation",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100-200 per activation. Implementation complexity: trivial. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any plugin with multiple data source paths). Help pattern savings: ~20 tokens. The On Activation section instructs the LLM to check 3 different paths for glossary data files. This is pure file-system probing — zero judgment required. Could be folded into the memory-health script above.",
+      "action": "Include in `scripts/memory-health.ts` (see finding above) — add glossary data resolution to the same activation prepass script. Output includes the resolved glossary_path so the LLM doesn't need to probe at all."
+    },
+    {
+      "file": "references/term-lookup.md",
+      "line": 11,
+      "severity": "low",
+      "category": "extraction",
+      "title": "LLM performs fuzzy matching across term names and definitions for lookup",
+      "detail": "Determinism confidence: high. Estimated token savings: 100-300 per invocation. Implementation complexity: trivial (SDK already has searchTerms). Language: TypeScript. Could be prepass: yes. Feeds scanner: term-lookup LLM prompt. Reusable across skills: yes. Help pattern savings: ~30 tokens. The Term Lookup capability says 'match by exact ID first, then alias, then fuzzy search across names and definitions.' The SDK already exposes getTerm() and searchTerms() which do exactly this. However, the LLM is still instructed to do this matching itself rather than being given pre-resolved results. A thin script wrapper could resolve the term before the LLM even starts its teaching response.",
+      "action": "Create `scripts/resolve-term.ts` that accepts a query string, runs getTerm() for exact/alias match, falls back to searchTerms() for fuzzy, and outputs: {query, exact_match: {id, term, definition, category, related, aliases} | null, fuzzy_matches: [{id, term, relevance}], i18n: {pt: {term, definition}, es: {term, definition}} | null}. The LLM receives the pre-resolved term data and jumps straight to teaching — zero tokens spent on matching logic."
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 22,
+      "severity": "low",
+      "category": "extraction",
+      "title": "LLM picks 'term of the day' by scanning unexplored categories",
+      "detail": "Determinism confidence: high. Estimated token savings: 200-400 per invocation. Implementation complexity: trivial. Language: TypeScript. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~40 tokens. The --headless:daily-term task tells the LLM to 'pick an interesting term from a category the developer hasn't explored much.' Category gap analysis and random term selection from underexplored categories are deterministic operations. The 'interesting' qualifier adds slight judgment, but selecting from high-cross-reference terms in gap categories is a reasonable deterministic proxy.",
+      "action": "Could be handled by `scripts/quiz-pool.ts --count 1` (see finding above) or a dedicated --daily-term flag on progress-stats.ts that selects one term from the weakest category, prioritizing terms with the most cross-references (as a proxy for 'interesting'). Output: {term: {id, term, definition, category, related}, rationale: 'Least explored category: X, this term has N cross-references'}."
+    }
+  ],
+  "assessments": {
+    "existing_scripts": [
+      "scripts/glossary-coverage.ts",
+      "scripts/validate-term-proposal.ts"
+    ],
+    "script_ecosystem_notes": "Both existing scripts import from the project's TypeScript SDK (@stbr/solana-glossary via relative path ../../../../../src/index). New scripts should follow the same pattern. The SDK provides allTerms, getTerm, searchTerms, getTermsByCategory, getCategories, and getLocalizedTerms — a rich foundation that makes several proposed scripts trivially implementable. The glossary-coverage.ts script's buildSearchIndex and matchTerms functions should be factored into a shared utility module (e.g., scripts/lib/search.ts) since at least 3 proposed scripts would reuse them.",
+    "refactoring_opportunity": "glossary-coverage.ts contains general-purpose search infrastructure (buildSearchIndex, matchTerms, extractKeywords, loadProgress) that would be reused by wake-context.ts, graph-walk.ts, and the --annotate extension. Factor these into scripts/lib/glossary-search.ts before building new scripts to avoid duplication.",
+    "consolidation_map": {
+      "memory-health.ts": "Combines findings #9 and #10 — memory sidecar validation + glossary path resolution. Single activation prepass.",
+      "context-builder.ts": "Standalone — no overlap with existing scripts.",
+      "wake-context.ts": "Reuses search infrastructure from glossary-coverage.ts.",
+      "progress-stats.ts": "Could absorb daily-term selection (finding #12) as a --pick-term flag.",
+      "learning-path.ts": "Depends on graph infrastructure that graph-walk.ts also needs — share via lib/graph.ts.",
+      "graph-walk.ts": "Shares graph traversal with learning-path.ts.",
+      "quiz-pool.ts": "Reuses progress parsing from progress-stats.ts.",
+      "resolve-term.ts": "Thinnest script — mostly SDK wrapper."
+    }
+  },
+  "summary": {
+    "total_findings": 12,
+    "by_severity": {
+      "high": 2,
+      "medium": 4,
+      "low": 6
+    },
+    "by_category": {
+      "transformation": 1,
+      "preprocessing": 1,
+      "extraction": 4,
+      "graph": 2,
+      "structure": 2,
+      "validation": 1,
+      "counting": 0,
+      "comparison": 0,
+      "postprocessing": 0
+    },
+    "assessment": "The Kuka agent has strong script foundations with glossary-coverage.ts and validate-term-proposal.ts, but 12 deterministic operations remain in LLM prompts. Estimated total token savings: 4,150-9,500 tokens per session across all capabilities. The single highest-value opportunity is context-builder.ts (finding #1) — the Context Injection capability is entirely deterministic and costs 800-2000 tokens per invocation for work that is pure formatting and filtering. The second highest is wake-context.ts (finding #2) which eliminates 1000-3000 tokens of git parsing and cross-referencing on every autonomous wake. Of the 12 findings, 10 could serve as prepass scripts feeding compact JSON to the LLM. A shared utility module (scripts/lib/glossary-search.ts) factored from glossary-coverage.ts would enable 5 of the proposed scripts with minimal new code. Net recommendation: build 6 new scripts (context-builder, wake-context, progress-stats, learning-path, graph-walk, memory-health) plus extend 2 existing scripts (glossary-coverage --annotate, validate-term-proposal --list-all), with a shared lib for search and graph utilities."
+  }
+}
+

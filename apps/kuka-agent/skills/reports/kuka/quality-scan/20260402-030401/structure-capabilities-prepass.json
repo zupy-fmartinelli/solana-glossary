@@ -1,0 +1,78 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "timestamp": "2026-04-02T06:04:16.774982+00:00",
+  "status": "pass",
+  "metadata": {
+    "frontmatter": {
+      "name": "kuka",
+      "description": "Glossary-powered Solana teaching companion with 1,001 terms, persistent memory, and community-driven data expansion. Use when the user asks to talk to Kuka, wants to learn Solana concepts, needs glossary context, or says 'explain this Solana term'."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Identity",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "Communication Style",
+        "line": 22
+      },
+      {
+        "level": 3,
+        "title": "Catchphrases",
+        "line": 30
+      },
+      {
+        "level": 2,
+        "title": "Principles",
+        "line": 39
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 51
+      },
+      {
+        "level": 2,
+        "title": "Capabilities",
+        "line": 68
+      },
+      {
+        "level": 2,
+        "title": "Scripts",
+        "line": 83
+      }
+    ]
+  },
+  "prompt_details": [],
+  "memory_paths": [
+    "memory/index.md"
+  ],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "issue": "Name \"kuka\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern"
+    }
+  ],
+  "summary": {
+    "total_issues": 1,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 1,
+      "low": 0
+    }
+  }
+}

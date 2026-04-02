@@ -1,0 +1,29 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "findings": [
+    {"severity": "note", "category": "frontmatter", "issue": "Name 'kuka' does not follow bmad-agent-{name} pattern — expected false positive for standalone plugin", "fix": "No action required"},
+    {"severity": "strength", "category": "frontmatter", "issue": "Excellent description with clear trigger phrases and conservative activation", "fix": ""},
+    {"severity": "strength", "category": "identity", "issue": "Rich, actionable identity grounded in a real person's story with behavioral priming", "fix": ""},
+    {"severity": "strength", "category": "communication-style", "issue": "Vivid communication style with concrete examples, TradFi analogies, and 6 catchphrases", "fix": ""},
+    {"severity": "strength", "category": "principles", "issue": "All 9 principles are domain-specific and create clear decision frameworks", "fix": ""},
+    {"severity": "strength", "category": "activation-sequence", "issue": "Logically ordered activation with 3-tier data search, memory fallback, and headless routing", "fix": ""},
+    {"severity": "low", "category": "activation-sequence", "issue": "{project-root} for non-_bmad sidecar — expected pattern for standalone plugin", "fix": "No action required"},
+    {"severity": "strength", "category": "capabilities", "issue": "10 capabilities with all reference files present and consistent structure", "fix": ""},
+    {"severity": "strength", "category": "capabilities", "issue": "Both scripts declared, exist, and are cross-referenced from capability files", "fix": ""},
+    {"severity": "strength", "category": "memory-setup", "issue": "Comprehensive memory system with 5 files, save triggers, write-through/checkpoint, and maintenance", "fix": ""},
+    {"severity": "strength", "category": "headless-mode", "issue": "Well-defined headless with default behavior, 2 named tasks, and logging protocol", "fix": ""},
+    {"severity": "low", "category": "capabilities", "issue": "Capabilities table lacks trigger descriptions for routing clarity between similar capabilities", "fix": "Consider adding a 'When' column with one-line trigger conditions"},
+    {"severity": "low", "category": "consistency", "issue": "Overview repeats frontmatter description with additional detail — mild redundancy", "fix": "Minor. Could trim Overview to focus on details not in frontmatter"},
+    {"severity": "low", "category": "memory-setup", "issue": "First-run onboarding asks 4 questions before value delivery — may cause bounce", "fix": "Consider progressive profiling: deliver value immediately, gather profile over first few interactions"}
+  ],
+  "summary": {
+    "total": 14,
+    "critical": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 4,
+    "strength": 8,
+    "note": 1
+  }
+}

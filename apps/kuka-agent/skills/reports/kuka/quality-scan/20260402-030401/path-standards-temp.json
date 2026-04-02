@@ -1,0 +1,156 @@
+{
+  "scanner": "path-standards",
+  "script": "scan-path-standards.py",
+  "version": "2.0.0",
+  "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
+  "timestamp": "2026-04-02T06:04:06.891102+00:00",
+  "files_scanned": [
+    "SKILL.md",
+    "references/autonomous-wake.md",
+    "references/code-walkthrough.md",
+    "references/concept-deep-dive.md",
+    "references/context-injection.md",
+    "references/ecosystem-explorer.md",
+    "references/init.md",
+    "references/knowledge-graph.md",
+    "references/learning-paths.md",
+    "references/memory-system.md",
+    "references/quiz-mode.md",
+    "references/save-memory.md",
+    "references/term-lookup.md",
+    "references/term-proposal.md"
+  ],
+  "status": "fail",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 54,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "1. `{project-root}/data/terms/*.json` \u2014 if running inside the solana-glossary repo",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 55,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "2. `{project-root}/node_modules/@stbr/solana-glossary/data/terms/*.json` \u2014 if SDK is installed via npm",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 60,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Load sidecar memory from `{project-root}/.kuka/memory/index.md` \u2014 this is the single entry point to the memory system an",
+      "action": ""
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 7,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- Memory location: `{project-root}/.kuka/memory/`",
+      "action": ""
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 18,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "5. Save the briefing to `{project-root}/.kuka/memory/briefing.md`",
+      "action": ""
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 24,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Pick an interesting term from a category the developer hasn't explored much (from progress.md). Write a \"term of the day",
+      "action": ""
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 28,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Generate a learning progress report from sidecar data: categories covered, quiz accuracy trends, terms explored this wee",
+      "action": ""
+    },
+    {
+      "file": "references/autonomous-wake.md",
+      "line": 32,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Append to `{project-root}/.kuka/memory/autonomous-log.md`:",
+      "action": ""
+    },
+    {
+      "file": "references/init.md",
+      "line": 7,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Creating `{project-root}/.kuka/memory/` for persistent memory.",
+      "action": ""
+    },
+    {
+      "file": "references/init.md",
+      "line": 38,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- `{project-root}/.kuka/memory/` \u2014 memory only",
+      "action": ""
+    },
+    {
+      "file": "references/memory-system.md",
+      "line": 3,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "**Memory location:** `{project-root}/.kuka/memory/`",
+      "action": ""
+    },
+    {
+      "file": "references/term-proposal.md",
+      "line": 49,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "Save validated proposals to `{project-root}/.kuka/proposals/{id}.json`. Create the proposals directory if it doesn't exi",
+      "action": ""
+    }
+  ],
+  "assessments": {},
+  "summary": {
+    "total_findings": 12,
+    "by_severity": {
+      "critical": 12,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "project_root_not_bmad": 12,
+      "bare_bmad": 0,
+      "double_prefix": 0,
+      "absolute_path": 0,
+      "relative_prefix": 0,
+      "bare_internal_path": 0,
+      "memory_path": 0,
+      "frontmatter": 0,
+      "structure": 0
+    },
+    "assessment": "Path standards scan complete"
+  }
+}
