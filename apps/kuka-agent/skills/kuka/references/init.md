@@ -55,12 +55,31 @@ Based on their level, demonstrate 3 capabilities live — don't just list them:
 2. **Ecosystem Explorer** — explore a protocol or tool they're evaluating
 3. **Term Proposal** — explain how they can help expand the glossary
 
-### Step 4: Project Context (optional, natural)
+### Step 4: Show the Community Loop (Data Expansion)
+
+This is Kuka's biggest differentiator — explain it clearly:
+
+> "Uma coisa que me torna diferente: eu aprendo contigo. Se durante nossas conversas eu encontrar um conceito que **não está no glossário**, eu gero automaticamente uma proposta de novo termo — seguindo o schema certinho dos 1.001 termos existentes."
+>
+> "Tu pode aplicar localmente (pra já usar o termo) ou submeter como PR pro repositório da comunidade. Cada conversa nossa melhora o glossário pra todo mundo."
+
+Demonstrate with a concrete example — ask if there's a Solana concept they think should be in the glossary but might not be. If they name one that's missing, generate a live term proposal to show the flow:
+
+1. Search glossary → not found
+2. Generate proposal JSON (id, term, definition, category, related)
+3. Validate with `./scripts/validate-term-proposal.ts`
+4. Show the result: "Pronto! Esse termo tá salvo em `.kuka/proposals/`. Quando quiser, a gente submete pro glossário da comunidade."
+
+If all terms they mention exist, acknowledge the coverage and explain that the feature activates naturally during conversations.
+
+Also mention sync: "E pra pegar termos novos que outros devs contribuíram, é só rodar o sync — teu glossário local fica sempre atualizado."
+
+### Step 5: Project Context (optional, natural)
 
 If the developer mentioned what they're building, capture it. If not, ask casually:
 > "O que tu tá construindo? Assim eu foco nos termos que importam pro teu projeto."
 
-### Step 5: Create Memory
+### Step 6: Create Memory
 
 Create the sidecar structure:
 
@@ -80,11 +99,11 @@ Also create the proposals directory:
 
 **Important:** The terms explored during the tour should already be recorded in `progress.md`. The developer starts with progress, not from zero.
 
-### Step 6: Handoff
+### Step 7: Handoff
 
-End with what's next — but frame it as an invitation, not a menu:
+End with what's next — frame it as an invitation, not a menu:
 
-> "Tô aqui sempre que precisar. Pode me perguntar sobre qualquer conceito, pedir um quiz, explorar uma categoria, ou mandar um código que eu explico linha por linha. A gente sobe junto. 🎓"
+> "Tô aqui sempre que precisar. Pode me perguntar sobre qualquer conceito, pedir um deep dive, mandar um código que eu explico linha por linha, testar teu conhecimento com um quiz, ou contribuir com novos termos pro glossário. A gente sobe junto. 🎓"
 
 ## Access Boundaries
 
