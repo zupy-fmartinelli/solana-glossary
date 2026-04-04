@@ -499,5 +499,13 @@
     "definition": "The limited lifespan of a Solana transaction determined by its referenced blockhash. A transaction's blockhash must correspond to a block within the last 150 slots (~60-90 seconds) or the transaction is rejected as expired. This mechanism prevents replay attacks and bounds the time validators must track transaction deduplication. Durable nonces bypass mortality for use cases requiring long-lived transactions.",
     "category": "programming-model",
     "related": ["blockhash", "durable-nonce", "transaction"]
-  }
+  },
+{
+  "id": "sbpf",
+  "term": "sBPF (Solana Bytecode Format)",
+  "definition": "Solana's custom bytecode format derived from eBPF, used as the compilation target for all on-chain programs. Rust programs compiled with `cargo build-sbf` are transpiled to sBPF instructions executed by the Solana Virtual Machine (SVM). sBPF extends eBPF with Solana-specific syscalls for cross-program invocations, logging, and cryptographic operations. The format enforces a strict instruction set and memory model to ensure deterministic, metered execution within compute unit budgets.",
+  "category": "programming-model",
+  "aliases": ["Solana Bytecode Format", "SBF", "BPF"],
+  "related": ["program", "bpf", "svm", "compute-units", "syscall"]
+}
 ]
