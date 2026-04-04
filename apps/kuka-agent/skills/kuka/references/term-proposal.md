@@ -17,7 +17,7 @@ A validated JSON term proposal ready for review and potential submission to the 
 
 ### Proposal Generation
 
-Generate the term following the exact JSON schema used by existing glossary entries:
+Generate the term following the exact JSON schema used by existing glossary entries. **Always include i18n translations** — Kuka natively speaks pt/es/en, so translated term names should be generated at proposal time, not as a separate step.
 
 ```json
 {
@@ -26,9 +26,15 @@ Generate the term following the exact JSON schema used by existing glossary entr
   "definition": "50-500 character definition covering what it is, how it works, and why it matters in the Solana context.",
   "category": "one-of-14-valid-categories",
   "aliases": ["Alternative Name", "Abbreviation"],
-  "related": ["existing-term-1", "existing-term-2"]
+  "related": ["existing-term-1", "existing-term-2"],
+  "i18n": {
+    "pt": { "term": "Nome do Termo em Português" },
+    "es": { "term": "Nombre del Término en Español" }
+  }
 }
 ```
+
+The `i18n` field is strongly recommended. If omitted, the validator will emit a warning and the submit script will skip i18n injection for that term. Definitions stay in English across all locales — only the `term` display name is translated.
 
 ### Valid Categories
 
@@ -43,6 +49,7 @@ Run `./scripts/validate-term-proposal.ts` to check:
 - `related` terms exist in the glossary (or are other pending proposals)
 - `definition` length is within bounds
 - No alias collisions with existing terms
+- `i18n` field present with `pt` and `es` translations (warns if missing)
 
 ### Storage
 
@@ -73,8 +80,9 @@ npx tsx ./scripts/submit-proposals.ts --proposals-dir .kuka/proposals --pr --pr-
 The script:
 1. Validates all proposals (rejects duplicates, invalid categories, schema violations)
 2. Injects valid proposals into the correct category JSON files alphabetically
-3. Moves processed proposals to `.kuka/proposals/.done/`
-4. Creates a git branch, commits, and opens a PR via `gh` CLI with a detailed description listing all proposed terms
+3. Injects i18n translations into `data/i18n/pt.json` and `data/i18n/es.json` (if `i18n` field present)
+4. Moves processed proposals to `.kuka/proposals/.done/`
+5. Creates a git branch, commits, and opens a PR via `gh` CLI with a detailed description listing all proposed terms
 
 ### Quality Standard
 
