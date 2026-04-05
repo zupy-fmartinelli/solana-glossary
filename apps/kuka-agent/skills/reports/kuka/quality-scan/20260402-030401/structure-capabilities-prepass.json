@@ -54,9 +54,7 @@
     ]
   },
   "prompt_details": [],
-  "memory_paths": [
-    "memory/index.md"
-  ],
+  "memory_paths": ["memory/index.md"],
   "issues": [
     {
       "file": "SKILL.md",

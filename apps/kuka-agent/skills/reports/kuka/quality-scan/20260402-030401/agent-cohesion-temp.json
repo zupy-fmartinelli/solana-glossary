@@ -5,20 +5,90 @@
   "overall_cohesion": "cohesive",
   "status": "pass",
   "findings": [
-    {"severity": "strength", "category": "alignment", "issue": "Persona-capability alignment is exceptionally tight — every capability reflects Pedro Marafiotti's community-builder identity", "fix": ""},
-    {"severity": "strength", "category": "alignment", "issue": "Glossary-first principle creates a clear epistemic contract with 4-level confidence system", "fix": ""},
-    {"severity": "strength", "category": "alignment", "issue": "Community feedback loop through Term Proposal — agent improves its own knowledge base through teaching", "fix": ""},
-    {"severity": "strength", "category": "alignment", "issue": "Memory system well-structured with 5 focused files, clear load-on-activation vs load-on-demand separation", "fix": ""},
-    {"severity": "strength", "category": "alignment", "issue": "Autonomous wake adds genuine utility — scanning git changes for Solana concepts and generating context briefings", "fix": ""},
-    {"severity": "medium", "category": "resilience", "issue": "No data integrity/recovery behavior when glossary data or sidecar memory is corrupt/missing/version-mismatched", "fix": "Add graceful degradation instructions to On Activation for missing/corrupt data scenarios"},
-    {"severity": "medium", "category": "gap", "issue": "Context Injection lacks output delivery mechanism — describes what output looks like but not how developer receives it", "fix": "Specify delivery: file output, clipboard, or inline in conversation"},
-    {"severity": "low", "category": "gap", "issue": "Knowledge Graph has no script for traversal — relies entirely on LLM runtime JSON walking", "fix": "Consider a graph-walk script for deterministic traversal"},
-    {"severity": "low", "category": "gap", "issue": "No proposal lifecycle management — create-only workflow, no browse/edit/delete/mark-submitted", "fix": "Add proposal management commands in term-proposal.md"},
-    {"severity": "low", "category": "redundancy", "issue": "Save Memory is a 12-line stub overlapping with memory-system.md automatic persistence", "fix": "Expand or merge with memory-system.md"},
-    {"severity": "low", "category": "gap", "issue": "i18n depth is uneven — claims native pt/es/en but Spanish gets no dedicated examples or catchphrases", "fix": "Add at least one Spanish catchphrase example"},
-    {"severity": "suggestion", "category": "enhancement", "issue": "Spaced repetition — per-term review scheduling would supercharge quiz effectiveness", "fix": "Phase 2: add spaced repetition to quiz-mode.md"},
-    {"severity": "suggestion", "category": "enhancement", "issue": "Collaborative learning mode — team knowledge coverage maps", "fix": "Phase 2: team glossary coverage dashboard"},
-    {"severity": "suggestion", "category": "enhancement", "issue": "Proactive code scanning — Code Walkthrough could scan developer's active project for Solana patterns", "fix": "Phase 2: integrate with headless mode"}
+    {
+      "severity": "strength",
+      "category": "alignment",
+      "issue": "Persona-capability alignment is exceptionally tight — every capability reflects Pedro Marafiotti's community-builder identity",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "alignment",
+      "issue": "Glossary-first principle creates a clear epistemic contract with 4-level confidence system",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "alignment",
+      "issue": "Community feedback loop through Term Proposal — agent improves its own knowledge base through teaching",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "alignment",
+      "issue": "Memory system well-structured with 5 focused files, clear load-on-activation vs load-on-demand separation",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "alignment",
+      "issue": "Autonomous wake adds genuine utility — scanning git changes for Solana concepts and generating context briefings",
+      "fix": ""
+    },
+    {
+      "severity": "medium",
+      "category": "resilience",
+      "issue": "No data integrity/recovery behavior when glossary data or sidecar memory is corrupt/missing/version-mismatched",
+      "fix": "Add graceful degradation instructions to On Activation for missing/corrupt data scenarios"
+    },
+    {
+      "severity": "medium",
+      "category": "gap",
+      "issue": "Context Injection lacks output delivery mechanism — describes what output looks like but not how developer receives it",
+      "fix": "Specify delivery: file output, clipboard, or inline in conversation"
+    },
+    {
+      "severity": "low",
+      "category": "gap",
+      "issue": "Knowledge Graph has no script for traversal — relies entirely on LLM runtime JSON walking",
+      "fix": "Consider a graph-walk script for deterministic traversal"
+    },
+    {
+      "severity": "low",
+      "category": "gap",
+      "issue": "No proposal lifecycle management — create-only workflow, no browse/edit/delete/mark-submitted",
+      "fix": "Add proposal management commands in term-proposal.md"
+    },
+    {
+      "severity": "low",
+      "category": "redundancy",
+      "issue": "Save Memory is a 12-line stub overlapping with memory-system.md automatic persistence",
+      "fix": "Expand or merge with memory-system.md"
+    },
+    {
+      "severity": "low",
+      "category": "gap",
+      "issue": "i18n depth is uneven — claims native pt/es/en but Spanish gets no dedicated examples or catchphrases",
+      "fix": "Add at least one Spanish catchphrase example"
+    },
+    {
+      "severity": "suggestion",
+      "category": "enhancement",
+      "issue": "Spaced repetition — per-term review scheduling would supercharge quiz effectiveness",
+      "fix": "Phase 2: add spaced repetition to quiz-mode.md"
+    },
+    {
+      "severity": "suggestion",
+      "category": "enhancement",
+      "issue": "Collaborative learning mode — team knowledge coverage maps",
+      "fix": "Phase 2: team glossary coverage dashboard"
+    },
+    {
+      "severity": "suggestion",
+      "category": "enhancement",
+      "issue": "Proactive code scanning — Code Walkthrough could scan developer's active project for Solana patterns",
+      "fix": "Phase 2: integrate with headless mode"
+    }
   ],
   "summary": {
     "total": 14,

@@ -126,9 +126,7 @@
   ],
   "assessments": {
     "lint_summary": {
-      "tools_used": [
-        "biome"
-      ],
+      "tools_used": ["biome"],
       "files_linted": 2,
       "lint_issues": 7
     },
@@ -141,15 +139,9 @@
         "other": 0
       },
       "scripts": {
-        "node": [
-          "glossary-coverage.ts",
-          "validate-term-proposal.ts"
-        ]
+        "node": ["glossary-coverage.ts", "validate-term-proposal.ts"]
       },
-      "missing_tests": [
-        "glossary-coverage.ts",
-        "validate-term-proposal.ts"
-      ]
+      "missing_tests": ["glossary-coverage.ts", "validate-term-proposal.ts"]
     }
   },
   "summary": {

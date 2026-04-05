@@ -3,27 +3,132 @@
   "skill_path": "/home/webmaster/Documents/solana-glossary/apps/kuka-agent/skills/kuka",
   "status": "pass",
   "findings": [
-    {"severity": "strength", "category": "progressive-disclosure", "issue": "Textbook progressive disclosure — 89-line SKILL.md routing to 12 focused reference files", "fix": ""},
-    {"severity": "strength", "category": "persona", "issue": "Persona context is load-bearing and efficient — ~30 lines establishing identity that directly shapes agent behavior", "fix": ""},
-    {"severity": "strength", "category": "intelligence-placement", "issue": "Clean intelligence placement — AI handles judgment, scripts handle deterministic validation", "fix": ""},
-    {"severity": "strength", "category": "outcome-driven", "issue": "Outcome-driven capability prompts across all 10 references", "fix": ""},
-    {"severity": "strength", "category": "memory", "issue": "Disciplined memory system with clear persistence strategies", "fix": ""},
-    {"severity": "strength", "category": "token-efficiency", "issue": "Reference files are concise — most under 50 lines, focused on outcomes not procedures", "fix": ""},
-    {"severity": "strength", "category": "persona", "issue": "Catchphrases serve as style anchors — not waste, but behavioral calibration for the LLM", "fix": ""},
-    {"severity": "strength", "category": "principles", "issue": "Principles are decision frameworks, not platitudes — each resolves real ambiguity", "fix": ""},
-    {"severity": "strength", "category": "i18n", "issue": "i18n is naturally woven into communication style, not bolted on", "fix": ""},
-    {"severity": "strength", "category": "activation", "issue": "Activation sequence is logically ordered with clear fallback chain", "fix": ""},
-    {"severity": "strength", "category": "scripts", "issue": "Scripts are well-scoped — glossary-coverage for data, validate-term-proposal for schema", "fix": ""},
-    {"severity": "strength", "category": "headless", "issue": "Headless mode has distinct named tasks with clear outputs", "fix": ""},
-    {"severity": "strength", "category": "overview", "issue": "Overview quality appropriate for companion-interactive skill type", "fix": ""},
-    {"severity": "medium", "category": "static-data", "issue": "Learning path templates (lines 24-62 in learning-paths.md) are static curriculum data that could be extracted if curriculum grows", "fix": "Monitor — extract to assets/ if templates exceed 100 lines"},
-    {"severity": "low", "category": "routing", "issue": "Capabilities table lacks routing criteria — brief descriptions would help disambiguation", "fix": "Add brief capability descriptions to help agent disambiguate user intent without loading all reference files"},
-    {"severity": "low", "category": "context-compaction", "issue": "Glossary data discovery logic lives only in SKILL.md On Activation — context compaction risk", "fix": "Consider extracting data-loading logic to a script if compaction becomes an issue"},
-    {"severity": "low", "category": "few-shot", "issue": "Quiz examples are large but load-bearing few-shot guidance", "fix": "Monitor if quiz-mode.md file grows — consider extracting examples to assets/"},
-    {"severity": "note", "category": "redundancy", "issue": "Mild overlap between frontmatter description and Overview — acceptable for companion agents", "fix": ""},
-    {"severity": "note", "category": "naming", "issue": "Name 'kuka' doesn't follow bmad-agent-{name} — expected for standalone community plugin", "fix": ""},
-    {"severity": "note", "category": "paths", "issue": "{project-root} used for .kuka/ sidecar — intentional for non-BMad plugin", "fix": ""},
-    {"severity": "note", "category": "scripts", "issue": "TS scripts use npx tsx without version pinning — acceptable for project-local execution", "fix": ""}
+    {
+      "severity": "strength",
+      "category": "progressive-disclosure",
+      "issue": "Textbook progressive disclosure — 89-line SKILL.md routing to 12 focused reference files",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "persona",
+      "issue": "Persona context is load-bearing and efficient — ~30 lines establishing identity that directly shapes agent behavior",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "intelligence-placement",
+      "issue": "Clean intelligence placement — AI handles judgment, scripts handle deterministic validation",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "outcome-driven",
+      "issue": "Outcome-driven capability prompts across all 10 references",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "memory",
+      "issue": "Disciplined memory system with clear persistence strategies",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "token-efficiency",
+      "issue": "Reference files are concise — most under 50 lines, focused on outcomes not procedures",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "persona",
+      "issue": "Catchphrases serve as style anchors — not waste, but behavioral calibration for the LLM",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "principles",
+      "issue": "Principles are decision frameworks, not platitudes — each resolves real ambiguity",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "i18n",
+      "issue": "i18n is naturally woven into communication style, not bolted on",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "activation",
+      "issue": "Activation sequence is logically ordered with clear fallback chain",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "scripts",
+      "issue": "Scripts are well-scoped — glossary-coverage for data, validate-term-proposal for schema",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "headless",
+      "issue": "Headless mode has distinct named tasks with clear outputs",
+      "fix": ""
+    },
+    {
+      "severity": "strength",
+      "category": "overview",
+      "issue": "Overview quality appropriate for companion-interactive skill type",
+      "fix": ""
+    },
+    {
+      "severity": "medium",
+      "category": "static-data",
+      "issue": "Learning path templates (lines 24-62 in learning-paths.md) are static curriculum data that could be extracted if curriculum grows",
+      "fix": "Monitor — extract to assets/ if templates exceed 100 lines"
+    },
+    {
+      "severity": "low",
+      "category": "routing",
+      "issue": "Capabilities table lacks routing criteria — brief descriptions would help disambiguation",
+      "fix": "Add brief capability descriptions to help agent disambiguate user intent without loading all reference files"
+    },
+    {
+      "severity": "low",
+      "category": "context-compaction",
+      "issue": "Glossary data discovery logic lives only in SKILL.md On Activation — context compaction risk",
+      "fix": "Consider extracting data-loading logic to a script if compaction becomes an issue"
+    },
+    {
+      "severity": "low",
+      "category": "few-shot",
+      "issue": "Quiz examples are large but load-bearing few-shot guidance",
+      "fix": "Monitor if quiz-mode.md file grows — consider extracting examples to assets/"
+    },
+    {
+      "severity": "note",
+      "category": "redundancy",
+      "issue": "Mild overlap between frontmatter description and Overview — acceptable for companion agents",
+      "fix": ""
+    },
+    {
+      "severity": "note",
+      "category": "naming",
+      "issue": "Name 'kuka' doesn't follow bmad-agent-{name} — expected for standalone community plugin",
+      "fix": ""
+    },
+    {
+      "severity": "note",
+      "category": "paths",
+      "issue": "{project-root} used for .kuka/ sidecar — intentional for non-BMad plugin",
+      "fix": ""
+    },
+    {
+      "severity": "note",
+      "category": "scripts",
+      "issue": "TS scripts use npx tsx without version pinning — acceptable for project-local execution",
+      "fix": ""
+    }
   ],
   "summary": {
     "total": 21,
