@@ -499,5 +499,21 @@
     "definition": "The limited lifespan of a Solana transaction determined by its referenced blockhash. A transaction's blockhash must correspond to a block within the last 150 slots (~60-90 seconds) or the transaction is rejected as expired. This mechanism prevents replay attacks and bounds the time validators must track transaction deduplication. Durable nonces bypass mortality for use cases requiring long-lived transactions.",
     "category": "programming-model",
     "related": ["blockhash", "durable-nonce", "transaction"]
+  },
+  {
+    "id": "on-chain-rate-limiting",
+    "term": "On-Chain Rate Limiting",
+    "definition": "A technique where a Solana program enforces transaction-frequency or cumulative-amount caps directly in instruction logic, storing counters and reset timestamps in a PDA account and validating each call against the Clock sysvar. Unlike off-chain rate limits, on-chain limits remain enforced even if the authorized signer key is compromised — an attacker still cannot exceed the hard-coded per-transaction or per-day ceilings. Daily reset uses clock.unix_timestamp / 86400 day comparison.",
+    "category": "programming-model",
+    "aliases": ["Rate Limit", "Throttling", "Mint Cap"],
+    "related": ["clock", "pda", "circuit-breaker"]
+  },
+  {
+    "id": "program-as-authority",
+    "term": "Program-as-Authority Pattern",
+    "definition": "An architectural pattern where a Program-Derived Address owned by the program is set as the authority over a resource (mint, vault, token account) instead of a user keypair, making the program itself the gatekeeper. Human signers only authorize calls into the program; the actual CPI that mutates the resource is signed by the PDA via invoke_signed. Program-level invariants (rate limits, pauses, access control) become cryptographically mandatory since no external key can bypass the program.",
+    "category": "programming-model",
+    "aliases": ["PDA Authority", "Program Gatekeeper", "PDA-as-Authority"],
+    "related": ["pda", "invoke-signed", "cpi"]
   }
 ]
