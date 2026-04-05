@@ -32,7 +32,11 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
-import { allTerms, getCategories, type GlossaryTerm } from "../../../../../src/index";
+import {
+  allTerms,
+  getCategories,
+  type GlossaryTerm,
+} from "../../../../../src/index";
 
 // ── Types ───────────────────────────────────────────────────────────────
 
@@ -136,9 +140,20 @@ function fetchUpstreamTerms(
   mkdirSync(upstreamDataDir, { recursive: true });
 
   const categories = [
-    "ai-ml", "blockchain-general", "core-protocol", "defi", "dev-tools",
-    "infrastructure", "network", "programming-fundamentals", "programming-model",
-    "security", "solana-ecosystem", "token-ecosystem", "web3", "zk-compression",
+    "ai-ml",
+    "blockchain-general",
+    "core-protocol",
+    "defi",
+    "dev-tools",
+    "infrastructure",
+    "network",
+    "programming-fundamentals",
+    "programming-model",
+    "security",
+    "solana-ecosystem",
+    "token-ecosystem",
+    "web3",
+    "zk-compression",
   ];
 
   for (const cat of categories) {
@@ -204,9 +219,7 @@ function loadPendingProposals(
   for (const file of readdirSync(proposalsDir)) {
     if (!file.endsWith(".json")) continue;
     try {
-      const data = JSON.parse(
-        readFileSync(join(proposalsDir, file), "utf-8"),
-      );
+      const data = JSON.parse(readFileSync(join(proposalsDir, file), "utf-8"));
       if (data.id) proposals.set(data.id, data);
     } catch {
       // skip
@@ -215,9 +228,7 @@ function loadPendingProposals(
   return proposals;
 }
 
-function loadDoneProposals(
-  proposalsDir: string,
-): Set<string> {
+function loadDoneProposals(proposalsDir: string): Set<string> {
   const done = new Set<string>();
   const doneDir = join(proposalsDir, ".done");
   if (!existsSync(doneDir)) return done;
@@ -225,9 +236,7 @@ function loadDoneProposals(
   for (const file of readdirSync(doneDir)) {
     if (!file.endsWith(".json")) continue;
     try {
-      const data = JSON.parse(
-        readFileSync(join(doneDir, file), "utf-8"),
-      );
+      const data = JSON.parse(readFileSync(join(doneDir, file), "utf-8"));
       if (data.id) done.add(data.id);
     } catch {
       // skip
@@ -341,7 +350,9 @@ function main() {
   mkdirSync(tmpDir, { recursive: true });
 
   if (args.verbose) {
-    console.error(`Fetching upstream glossary from ${args.upstream}/${args.branch}...`);
+    console.error(
+      `Fetching upstream glossary from ${args.upstream}/${args.branch}...`,
+    );
   }
 
   // Fetch upstream

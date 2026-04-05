@@ -40,7 +40,8 @@ function parseArgs(): Args {
   const args: Args = { maxResults: 30, verbose: false };
 
   if (argv.includes("--help") || argv.includes("-h")) {
-    console.log(`
+    console.log(
+      `
 Glossary Coverage Checker — match topics/code against the Solana Glossary.
 
 Options:
@@ -53,7 +54,8 @@ Options:
   --help, -h            Show this help
 
 Output: JSON to stdout with matched terms, explored/gap breakdown, and suggested path.
-    `.trim());
+    `.trim(),
+    );
     process.exit(0);
   }
 
@@ -81,7 +83,9 @@ Output: JSON to stdout with matched terms, explored/gap breakdown, and suggested
   }
 
   if (!args.topic && !args.codeFile && !args.terms) {
-    console.error("Error: at least one of --topic, --code-file, or --terms is required");
+    console.error(
+      "Error: at least one of --topic, --code-file, or --terms is required",
+    );
     process.exit(2);
   }
 
@@ -189,7 +193,10 @@ function matchTerms(
 
     // Partial match for compound terms
     for (const [indexKey, termIds] of searchIndex) {
-      if (keyword.length >= 4 && (keyword.includes(indexKey) || indexKey.includes(keyword))) {
+      if (
+        keyword.length >= 4 &&
+        (keyword.includes(indexKey) || indexKey.includes(keyword))
+      ) {
         for (const termId of termIds) {
           addScore(termId, 0.5);
         }
@@ -224,7 +231,9 @@ function suggestPath(
     }
   }
 
-  return [...gapSet].sort((a, b) => (refCount.get(b) ?? 0) - (refCount.get(a) ?? 0));
+  return [...gapSet].sort(
+    (a, b) => (refCount.get(b) ?? 0) - (refCount.get(a) ?? 0),
+  );
 }
 
 // ── Main ────────────────────────────────────────────────────────────────
@@ -259,7 +268,12 @@ function main() {
     console.error(`Extracted ${keywords.length} keywords`);
   }
 
-  const matchedIds = matchTerms(keywords, searchIndex, termLookup, args.maxResults);
+  const matchedIds = matchTerms(
+    keywords,
+    searchIndex,
+    termLookup,
+    args.maxResults,
+  );
   const exploredMatches = matchedIds.filter((t) => explored.has(t));
   const gapMatches = matchedIds.filter((t) => !explored.has(t));
   const suggested = suggestPath(gapMatches, termLookup);
