@@ -1,13 +1,24 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execSync } from "node:child_process";
-import { writeFileSync, readFileSync, mkdirSync, rmSync, existsSync, copyFileSync, readdirSync } from "node:fs";
+import {
+  writeFileSync,
+  readFileSync,
+  mkdirSync,
+  rmSync,
+  existsSync,
+  copyFileSync,
+  readdirSync,
+} from "node:fs";
 import { join } from "node:path";
 
 const SCRIPTS_DIR = "apps/kuka-agent/skills/kuka/scripts";
 const GLOSSARY_DIR = "data/terms";
 const TMP_DIR = join("tests", ".tmp-kuka");
 
-function runScript(script: string, args: string): { stdout: string; exitCode: number } {
+function runScript(
+  script: string,
+  args: string,
+): { stdout: string; exitCode: number } {
   try {
     const stdout = execSync(`npx tsx ${join(SCRIPTS_DIR, script)} ${args}`, {
       encoding: "utf-8",
@@ -66,7 +77,10 @@ describe("glossary-coverage.ts", () => {
   it("recognizes explored terms from progress file", () => {
     mkdirSync(TMP_DIR, { recursive: true });
     const progressPath = join(TMP_DIR, "progress.md");
-    writeFileSync(progressPath, "## Explored\n- zk-compression\n- light-protocol\n- compressed-token\n");
+    writeFileSync(
+      progressPath,
+      "## Explored\n- zk-compression\n- light-protocol\n- compressed-token\n",
+    );
 
     const { stdout } = runScript(
       "glossary-coverage.ts",
@@ -82,7 +96,10 @@ describe("glossary-coverage.ts", () => {
 
 describe("validate-term-proposal.ts", () => {
   it("shows help with --help", () => {
-    const { stdout, exitCode } = runScript("validate-term-proposal.ts", "--help");
+    const { stdout, exitCode } = runScript(
+      "validate-term-proposal.ts",
+      "--help",
+    );
     expect(exitCode).toBe(0);
     expect(stdout).toContain("Term Proposal Validator");
     expect(stdout).toContain("--proposal");
@@ -151,7 +168,9 @@ describe("validate-term-proposal.ts", () => {
     );
     const result = JSON.parse(stdout);
     expect(result.status).toBe("fail");
-    expect(result.findings.some((f: any) => f.issue.includes("already exists"))).toBe(true);
+    expect(
+      result.findings.some((f: any) => f.issue.includes("already exists")),
+    ).toBe(true);
 
     rmSync(TMP_DIR, { recursive: true, force: true });
   });
@@ -176,7 +195,9 @@ describe("validate-term-proposal.ts", () => {
     );
     const result = JSON.parse(stdout);
     expect(result.status).toBe("fail");
-    expect(result.findings.some((f: any) => f.issue.includes("Invalid category"))).toBe(true);
+    expect(
+      result.findings.some((f: any) => f.issue.includes("Invalid category")),
+    ).toBe(true);
 
     rmSync(TMP_DIR, { recursive: true, force: true });
   });
@@ -199,7 +220,9 @@ describe("validate-term-proposal.ts", () => {
       `--proposal ${proposalPath}`,
     );
     const result = JSON.parse(stdout);
-    expect(result.findings.some((f: any) => f.issue.includes("too short"))).toBe(true);
+    expect(
+      result.findings.some((f: any) => f.issue.includes("too short")),
+    ).toBe(true);
 
     rmSync(TMP_DIR, { recursive: true, force: true });
   });
@@ -256,7 +279,12 @@ describe("submit-proposals.ts", () => {
     // Copy all other category files so the SDK import works
     // (submit-proposals uses allTerms from the SDK for validation,
     //  but writes to the copy)
-    for (const file of ["ai-ml.json", "solana-ecosystem.json", "defi.json", "security.json"]) {
+    for (const file of [
+      "ai-ml.json",
+      "solana-ecosystem.json",
+      "defi.json",
+      "security.json",
+    ]) {
       if (existsSync(join(GLOSSARY_DIR, file))) {
         copyFileSync(join(GLOSSARY_DIR, file), join(GLOSSARY_COPY, file));
       }
@@ -314,12 +342,16 @@ describe("submit-proposals.ts", () => {
     expect(result.plan[0].validation).toBe("pass");
 
     // Verify glossary file NOT modified
-    const original = JSON.parse(readFileSync(join(GLOSSARY_DIR, "dev-tools.json"), "utf-8"));
-    const copy = JSON.parse(readFileSync(join(GLOSSARY_COPY, "dev-tools.json"), "utf-8"));
+    const original = JSON.parse(
+      readFileSync(join(GLOSSARY_DIR, "dev-tools.json"), "utf-8"),
+    );
+    const copy = JSON.parse(
+      readFileSync(join(GLOSSARY_COPY, "dev-tools.json"), "utf-8"),
+    );
     expect(copy.length).toBe(original.length);
   });
 
-  it("apply injects term into correct category file alphabetically", () => {
+  it("apply appends term at end of category file (preserves existing order)", () => {
     const proposal = makeProposal("aaa-first-term");
     setupFixture([proposal]);
 
@@ -327,6 +359,8 @@ describe("submit-proposals.ts", () => {
       readFileSync(join(GLOSSARY_COPY, "dev-tools.json"), "utf-8"),
     );
     const originalCount = originalTerms.length;
+    const originalFirstId = originalTerms[0].id;
+    const originalLastId = originalTerms[originalCount - 1].id;
 
     const { stdout } = runScript(
       "submit-proposals.ts",
@@ -342,10 +376,16 @@ describe("submit-proposals.ts", () => {
     );
     expect(updatedTerms.length).toBe(originalCount + 1);
 
-    // Should be first (alphabetically "aaa-first-term" < any existing)
-    expect(updatedTerms[0].id).toBe("aaa-first-term");
-    expect(updatedTerms[0].term).toBe("Test aaa-first-term");
-    expect(updatedTerms[0].category).toBe("dev-tools");
+    // Existing terms keep their original order (no re-sort)
+    expect(updatedTerms[0].id).toBe(originalFirstId);
+    expect(updatedTerms[originalCount - 1].id).toBe(originalLastId);
+
+    // New term is appended at the end (minimal diff vs upstream)
+    expect(updatedTerms[updatedTerms.length - 1].id).toBe("aaa-first-term");
+    expect(updatedTerms[updatedTerms.length - 1].term).toBe(
+      "Test aaa-first-term",
+    );
+    expect(updatedTerms[updatedTerms.length - 1].category).toBe("dev-tools");
   });
 
   it("apply moves injected proposals to .done/", () => {
@@ -360,14 +400,17 @@ describe("submit-proposals.ts", () => {
     // Original should be gone
     expect(existsSync(join(PROPOSALS_DIR, "test-done-move.json"))).toBe(false);
     // Should be in .done/
-    expect(existsSync(join(PROPOSALS_DIR, ".done", "test-done-move.json"))).toBe(true);
+    expect(
+      existsSync(join(PROPOSALS_DIR, ".done", "test-done-move.json")),
+    ).toBe(true);
   });
 
   it("rejects duplicate IDs without injecting", () => {
     // "anchor" already exists in the glossary
     const proposal = makeProposal("anchor", {
       term: "Duplicate Anchor",
-      definition: "This should fail because anchor already exists in the glossary as a real term identifier.",
+      definition:
+        "This should fail because anchor already exists in the glossary as a real term identifier.",
     });
     setupFixture([proposal]);
 
@@ -387,7 +430,8 @@ describe("submit-proposals.ts", () => {
     const validProposal = makeProposal("test-multi-valid");
     const invalidProposal = makeProposal("proof-of-history", {
       term: "Duplicate PoH",
-      definition: "This should be rejected because proof-of-history already exists as a term in the glossary.",
+      definition:
+        "This should be rejected because proof-of-history already exists as a term in the glossary.",
       category: "core-protocol",
     });
     setupFixture([validProposal, invalidProposal]);
@@ -431,11 +475,42 @@ describe("submit-proposals.ts", () => {
     );
     expect(updated.length).toBe(originalCount + 2);
 
-    // Verify alphabetical order maintained
+    // Both new terms go to the end in insertion order (proposals loaded
+    // alphabetically by filename, so alpha precedes beta)
     const ids = updated.map((t: any) => t.id);
     const alphaIdx = ids.indexOf("test-batch-alpha");
     const betaIdx = ids.indexOf("test-batch-beta");
     expect(alphaIdx).toBeLessThan(betaIdx);
+    expect(betaIdx).toBe(updated.length - 1);
+  });
+
+  it("preserves original file bytes (append-only diff)", () => {
+    const proposal = makeProposal("test-append-only");
+    setupFixture([proposal]);
+
+    const originalText = readFileSync(
+      join(GLOSSARY_COPY, "dev-tools.json"),
+      "utf-8",
+    );
+
+    runScript(
+      "submit-proposals.ts",
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+    );
+
+    const updatedText = readFileSync(
+      join(GLOSSARY_COPY, "dev-tools.json"),
+      "utf-8",
+    );
+
+    // The updated file must START with the original content minus the
+    // trailing ']' (so existing terms are byte-for-byte preserved).
+    const originalTrimmed = originalText.replace(/\s*\]\s*$/, "");
+    expect(updatedText.startsWith(originalTrimmed)).toBe(true);
+
+    // New term should keep compact array formatting (single-line "related")
+    expect(updatedText).toContain('"related": ["anchor"]');
+    expect(updatedText.trimEnd().endsWith("]")).toBe(true);
   });
 
   it("preserves existing glossary term structure after injection", () => {
@@ -453,11 +528,15 @@ describe("submit-proposals.ts", () => {
     const updated = JSON.parse(
       readFileSync(join(GLOSSARY_COPY, "dev-tools.json"), "utf-8"),
     );
-    const injected = updated.find((t: any) => t.id === "test-preserve-structure");
+    const injected = updated.find(
+      (t: any) => t.id === "test-preserve-structure",
+    );
     expect(injected).toBeDefined();
     expect(injected.id).toBe("test-preserve-structure");
     expect(injected.term).toBe("Test test-preserve-structure");
-    expect(injected.definition).toContain("test term for test-preserve-structure");
+    expect(injected.definition).toContain(
+      "test term for test-preserve-structure",
+    );
     expect(injected.category).toBe("dev-tools");
     expect(injected.aliases).toEqual(["TPS-Alias"]);
     expect(injected.related).toEqual(["anchor"]);
@@ -478,7 +557,9 @@ describe("submit-proposals.ts", () => {
     );
     const result = JSON.parse(stdout);
     expect(result.plan[0].validation).toBe("warning");
-    expect(result.plan[0].issues.some((i: string) => i.includes("not in glossary"))).toBe(true);
+    expect(
+      result.plan[0].issues.some((i: string) => i.includes("not in glossary")),
+    ).toBe(true);
     // Warning still counts as valid (not fail)
     expect(result.valid).toBe(1);
   });
@@ -511,37 +592,44 @@ describe("sync-glossary.ts", () => {
     expect(stdout).toContain("--apply");
   });
 
-  it("dry-run fetches upstream and reports diff without modifying files", { timeout: 30000 }, () => {
-    // Use real upstream — tests network connectivity
-    mkdirSync(SYNC_GLOSSARY, { recursive: true });
-    mkdirSync(SYNC_PROPOSALS, { recursive: true });
+  it(
+    "dry-run fetches upstream and reports diff without modifying files",
+    { timeout: 30000 },
+    () => {
+      // Use real upstream — tests network connectivity
+      mkdirSync(SYNC_GLOSSARY, { recursive: true });
+      mkdirSync(SYNC_PROPOSALS, { recursive: true });
 
-    // Create a minimal local glossary (just dev-tools with one term)
-    writeFileSync(
-      join(SYNC_GLOSSARY, "dev-tools.json"),
-      JSON.stringify([{
-        id: "anchor",
-        term: "Anchor",
-        definition: "A framework for Solana program development using Rust macros and IDL generation.",
-        category: "dev-tools",
-      }]),
-    );
+      // Create a minimal local glossary (just dev-tools with one term)
+      writeFileSync(
+        join(SYNC_GLOSSARY, "dev-tools.json"),
+        JSON.stringify([
+          {
+            id: "anchor",
+            term: "Anchor",
+            definition:
+              "A framework for Solana program development using Rust macros and IDL generation.",
+            category: "dev-tools",
+          },
+        ]),
+      );
 
-    const { stdout, exitCode } = runScript(
-      "sync-glossary.ts",
-      `--glossary-dir ${SYNC_GLOSSARY} --proposals-dir ${SYNC_PROPOSALS} --dry-run --verbose`,
-    );
+      const { stdout, exitCode } = runScript(
+        "sync-glossary.ts",
+        `--glossary-dir ${SYNC_GLOSSARY} --proposals-dir ${SYNC_PROPOSALS} --dry-run --verbose`,
+      );
 
-    const result = JSON.parse(stdout);
-    expect(result.script).toBe("sync-glossary");
-    expect(result.mode).toBe("dry-run");
-    expect(result.upstream_total_terms).toBeGreaterThan(900);
-    expect(result.local_total_terms).toBe(1);
-    expect(result.new_from_upstream.length).toBeGreaterThan(0);
-    // dry-run should NOT update categories
-    expect(result.updated_categories).toEqual([]);
-    expect(exitCode).toBe(0);
-  });
+      const result = JSON.parse(stdout);
+      expect(result.script).toBe("sync-glossary");
+      expect(result.mode).toBe("dry-run");
+      expect(result.upstream_total_terms).toBeGreaterThan(900);
+      expect(result.local_total_terms).toBe(1);
+      expect(result.new_from_upstream.length).toBeGreaterThan(0);
+      // dry-run should NOT update categories
+      expect(result.updated_categories).toEqual([]);
+      expect(exitCode).toBe(0);
+    },
+  );
 
   it("apply updates local glossary from upstream", { timeout: 30000 }, () => {
     mkdirSync(SYNC_GLOSSARY, { recursive: true });
@@ -560,7 +648,9 @@ describe("sync-glossary.ts", () => {
     expect(result.updated_categories.length).toBeGreaterThan(0);
 
     // Verify files were actually written
-    const devTools = JSON.parse(readFileSync(join(SYNC_GLOSSARY, "dev-tools.json"), "utf-8"));
+    const devTools = JSON.parse(
+      readFileSync(join(SYNC_GLOSSARY, "dev-tools.json"), "utf-8"),
+    );
     expect(devTools.length).toBeGreaterThan(0);
     expect(devTools[0].id).toBeDefined();
     expect(devTools[0].definition).toBeDefined();
@@ -594,7 +684,8 @@ describe("sync-glossary.ts", () => {
       JSON.stringify({
         id: "test-new-term-sync",
         term: "Test New Term",
-        definition: "A brand new term that does not exist upstream and should remain pending.",
+        definition:
+          "A brand new term that does not exist upstream and should remain pending.",
         category: "dev-tools",
       }),
     );
@@ -637,7 +728,9 @@ describe("sync-glossary.ts", () => {
 
     // Should be moved from proposals/ to proposals/.merged/
     expect(existsSync(join(SYNC_PROPOSALS, "phantom.json"))).toBe(false);
-    expect(existsSync(join(SYNC_PROPOSALS, ".merged", "phantom.json"))).toBe(true);
+    expect(existsSync(join(SYNC_PROPOSALS, ".merged", "phantom.json"))).toBe(
+      true,
+    );
   });
 
   it("handles empty proposals dir gracefully", { timeout: 30000 }, () => {

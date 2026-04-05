@@ -63,7 +63,7 @@ Proposals can be immediately injected into the developer's local glossary copy s
 npx tsx ./scripts/submit-proposals.ts --proposals-dir .kuka/proposals --apply
 ```
 
-This injects each valid proposal into its category JSON file alphabetically and moves processed proposals to `.kuka/proposals/.done/`.
+This appends each valid proposal to the end of its category JSON file (preserving existing term order and formatting for minimal diffs) and moves processed proposals to `.kuka/proposals/.done/`.
 
 ### Batch Submission (PR to upstream)
 
@@ -79,10 +79,10 @@ npx tsx ./scripts/submit-proposals.ts --proposals-dir .kuka/proposals --pr --pr-
 
 The script:
 1. Validates all proposals (rejects duplicates, invalid categories, schema violations)
-2. Injects valid proposals into the correct category JSON files alphabetically
-3. Injects i18n translations into `data/i18n/pt.json` and `data/i18n/es.json` (if `i18n` field present)
+2. Appends valid proposals at the end of the correct category JSON files (preserving existing order + compact array formatting — append-only diff)
+3. Appends i18n translations at the end of `data/i18n/pt.json` and `data/i18n/es.json` (if `i18n` field present)
 4. Moves processed proposals to `.kuka/proposals/.done/`
-5. Creates a git branch, commits, and opens a PR via `gh` CLI with a detailed description listing all proposed terms
+5. Fetches the target repo's default branch, creates the PR branch from that clean base (isolates from any unrelated commits on the current working branch), commits, and opens a PR via `gh` CLI
 
 ### Quality Standard
 
