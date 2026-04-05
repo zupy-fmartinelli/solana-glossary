@@ -41,6 +41,10 @@ import {
 
 // ── Types ───────────────────────────────────────────────────────────────
 
+interface I18nEntry {
+  term: string;
+}
+
 interface Proposal {
   id: string;
   term: string;
@@ -48,6 +52,7 @@ interface Proposal {
   category: Category;
   aliases?: string[];
   related?: string[];
+  i18n?: Record<string, I18nEntry>;
 }
 
 interface InjectionPlan {
@@ -202,7 +207,9 @@ function validateProposal(
   for (const alias of proposal.aliases ?? []) {
     const collision = existingAliases.get(alias.toLowerCase());
     if (collision) {
-      issues.push(`Alias '${alias}' collides with existing term '${collision}'`);
+      issues.push(
+        `Alias '${alias}' collides with existing term '${collision}'`,
+      );
     }
   }
 
@@ -247,20 +254,74 @@ const CATEGORY_FILE_MAP: Record<string, string> = {
 
 // ── Injection ───────────────────────────────────────────────────────────
 
-function findInsertPosition(
-  terms: GlossaryTerm[],
-  newId: string,
-): { index: number; afterId: string | null } {
-  // Insert alphabetically by ID
-  for (let i = 0; i < terms.length; i++) {
-    if (newId.localeCompare(terms[i].id) < 0) {
-      return { index: i, afterId: i > 0 ? terms[i - 1].id : null };
+/**
+ * Format a term as JSON with compact string arrays, matching the existing
+ * glossary file style (e.g. "related": ["a", "b", "c"] on a single line).
+ * Uses 2-space indent, nested under a list, so base indent is 2 for keys.
+ */
+function formatTermCompact(term: Record<string, unknown>): string {
+  const lines: string[] = ["  {"];
+  const keys = Object.keys(term);
+  keys.forEach((k, i) => {
+    const v = term[k];
+    const comma = i < keys.length - 1 ? "," : "";
+    if (Array.isArray(v) && v.every((x) => typeof x === "string")) {
+      // Compact single-line array of strings
+      const arr = "[" + v.map((x) => JSON.stringify(x)).join(", ") + "]";
+      lines.push(`    ${JSON.stringify(k)}: ${arr}${comma}`);
+    } else {
+      // Fall back to JSON.stringify for scalars / complex values
+      lines.push(`    ${JSON.stringify(k)}: ${JSON.stringify(v)}${comma}`);
     }
+  });
+  lines.push("  }");
+  return lines.join("\n");
+}
+
+/**
+ * Append a new term to a JSON array file by text manipulation, preserving
+ * the existing file's formatting (compact arrays, term order, etc).
+ * This avoids the parse→stringify round-trip that would reformat the entire
+ * file and produce a huge diff.
+ */
+function appendTermToFile(
+  filepath: string,
+  newTerm: Record<string, unknown>,
+): void {
+  const original = readFileSync(filepath, "utf-8");
+  // Strip trailing whitespace and the closing ']' to find the end of the array
+  const trimmed = original.replace(/\s*\]\s*$/, "");
+  if (trimmed === original) {
+    throw new Error(`${filepath}: missing trailing ']' — not a JSON array file`);
   }
-  return {
-    index: terms.length,
-    afterId: terms.length > 0 ? terms[terms.length - 1].id : null,
-  };
+  // Append the new term after a comma, newline, closing bracket
+  const formatted = formatTermCompact(newTerm);
+  const result = trimmed + ",\n" + formatted + "\n]\n";
+  writeFileSync(filepath, result, "utf-8");
+}
+
+/**
+ * Append a new i18n entry to a locale file by text manipulation, preserving
+ * existing key order and formatting.
+ */
+function appendI18nEntry(
+  i18nPath: string,
+  key: string,
+  entry: { term: string; definition: string },
+): void {
+  const original = readFileSync(i18nPath, "utf-8");
+  const trimmed = original.replace(/\s*\}\s*$/, "");
+  if (trimmed === original) {
+    throw new Error(`${i18nPath}: missing trailing '}' — not a JSON object file`);
+  }
+  const lines = [
+    `  ${JSON.stringify(key)}: {`,
+    `    "term": ${JSON.stringify(entry.term)},`,
+    `    "definition": ${JSON.stringify(entry.definition)}`,
+    `  }`,
+  ].join("\n");
+  const result = trimmed + ",\n" + lines + "\n}\n";
+  writeFileSync(i18nPath, result, "utf-8");
 }
 
 function injectTerm(
@@ -270,11 +331,10 @@ function injectTerm(
   const filename = CATEGORY_FILE_MAP[proposal.category];
   const filepath = join(glossaryDir, filename);
 
-  const terms: GlossaryTerm[] = JSON.parse(
-    readFileSync(filepath, "utf-8"),
-  );
-
-  const { index, afterId } = findInsertPosition(terms, proposal.id);
+  // Read existing terms to compute the insertAfter reference (last term id)
+  // and to verify the file is well-formed.
+  const terms: GlossaryTerm[] = JSON.parse(readFileSync(filepath, "utf-8"));
+  const afterId = terms.length > 0 ? terms[terms.length - 1].id : null;
 
   // Build clean term object (only include optional fields if present)
   const newTerm: Record<string, unknown> = {
@@ -290,9 +350,22 @@ function injectTerm(
     newTerm.related = proposal.related;
   }
 
-  terms.splice(index, 0, newTerm as GlossaryTerm);
+  // Append via text manipulation to preserve existing formatting.
+  appendTermToFile(filepath, newTerm);
 
-  writeFileSync(filepath, JSON.stringify(terms, null, 2) + "\n", "utf-8");
+  // Inject i18n translations if provided — also by text append, no re-sort.
+  if (proposal.i18n) {
+    const i18nDir = join(glossaryDir, "..", "i18n");
+    for (const [locale, entry] of Object.entries(proposal.i18n)) {
+      if (!entry?.term) continue;
+      const i18nPath = join(i18nDir, `${locale}.json`);
+      if (!existsSync(i18nPath)) continue;
+      appendI18nEntry(i18nPath, proposal.id, {
+        term: entry.term,
+        definition: proposal.definition,
+      });
+    }
+  }
 
   return { file: filename, insertAfter: afterId };
 }
@@ -305,19 +378,51 @@ function createPR(
   filesModified: string[],
 ): string | null {
   const branchName = `proposal/kuka-batch-${new Date().toISOString().slice(0, 10)}`;
-  const termList = proposals.map((p) => `- \`${p.id}\` (${p.category}): ${p.term}`).join("\n");
+  const termList = proposals
+    .map((p) => `- \`${p.id}\` (${p.category}): ${p.term}`)
+    .join("\n");
 
   try {
     // Check if gh is available
     execSync("gh --version", { stdio: "pipe" });
   } catch {
-    console.error("Warning: gh CLI not available, skipping PR creation", );
+    console.error("Warning: gh CLI not available, skipping PR creation");
     return null;
   }
 
   try {
-    // Create branch, add, commit
-    execSync(`git checkout -b ${branchName}`, { stdio: "pipe" });
+    // Cache the modified file contents, then branch from a clean upstream
+    // base so unrelated commits on the current branch don't leak into the PR.
+    const cached: Record<string, string> = {};
+    for (const f of filesModified) {
+      cached[f] = readFileSync(f, "utf-8");
+    }
+
+    // Fetch the target repo's default branch into a detached ref
+    const defaultBranch = execSync(
+      `gh repo view ${repo} --json defaultBranchRef --jq .defaultBranchRef.name`,
+      { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
+    ).trim();
+    execSync(
+      `git fetch https://github.com/${repo}.git ${defaultBranch}:refs/remotes/_kuka_pr_base`,
+      { stdio: "pipe" },
+    );
+
+    // Stash any unrelated working-tree changes so checkout can proceed cleanly
+    execSync("git stash push --include-untracked -m kuka-pr-stash", {
+      stdio: "pipe",
+    });
+
+    // Create the PR branch from the clean upstream base
+    execSync(`git checkout -b ${branchName} refs/remotes/_kuka_pr_base`, {
+      stdio: "pipe",
+    });
+
+    // Reapply the cached file contents onto the clean base
+    for (const [f, content] of Object.entries(cached)) {
+      writeFileSync(f, content, "utf-8");
+    }
+
     execSync(`git add ${filesModified.join(" ")}`, { stdio: "pipe" });
 
     const commitMsg = `feat(glossary): add ${proposals.length} community-proposed term${proposals.length > 1 ? "s" : ""}\n\nTerms proposed by Kuka agent during teaching conversations:\n${termList}`;
@@ -355,7 +460,7 @@ Generated by Kuka 🎓 — Solana Glossary Teaching Companion`;
 
     return result.trim();
   } catch (err: any) {
-    console.error(`Warning: PR creation failed: ${err.message}`, );
+    console.error(`Warning: PR creation failed: ${err.message}`);
     return null;
   }
 }
@@ -377,7 +482,9 @@ function main() {
   // Load proposals
   const proposals = loadProposals(args.proposalsDir);
   if (args.verbose) {
-    console.error(`Found ${proposals.length} proposals in ${args.proposalsDir}`);
+    console.error(
+      `Found ${proposals.length} proposals in ${args.proposalsDir}`,
+    );
   }
 
   // Validate and build plan
@@ -406,6 +513,16 @@ function main() {
     if (status !== "fail") {
       validProposals.push(proposal);
       filesModified.add(join(args.glossaryDir, filename));
+      // Track i18n files that will be modified
+      if (proposal.i18n) {
+        const i18nDir = join(args.glossaryDir, "..", "i18n");
+        for (const locale of Object.keys(proposal.i18n)) {
+          const i18nPath = join(i18nDir, `${locale}.json`);
+          if (existsSync(i18nPath)) {
+            filesModified.add(i18nPath);
+          }
+        }
+      }
     }
   }
 
