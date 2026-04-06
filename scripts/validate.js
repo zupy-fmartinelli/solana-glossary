@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const termsDir = path.join(__dirname, "..", "data", "terms");
 const files = fs.readdirSync(termsDir).filter((f) => f.endsWith(".json"));
