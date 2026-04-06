@@ -58,19 +58,19 @@ Output: JSON to stdout with matched terms, explored/gap breakdown, and suggested
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
       case "--topic":
-        args.topic = argv[++i];
+        args.topic = argv[i += 1];
         break;
       case "--code-file":
-        args.codeFile = argv[++i];
+        args.codeFile = argv[i += 1];
         break;
       case "--terms":
-        args.terms = argv[++i];
+        args.terms = argv[i += 1];
         break;
       case "--progress":
-        args.progress = argv[++i];
+        args.progress = argv[i += 1];
         break;
       case "--max-results":
-        args.maxResults = Number.parseInt(argv[++i], 10);
+        args.maxResults = Number.parseInt(argv[i += 1], 10);
         break;
       case "--verbose":
         args.verbose = true;

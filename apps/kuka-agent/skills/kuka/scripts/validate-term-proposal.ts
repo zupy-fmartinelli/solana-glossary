@@ -86,10 +86,10 @@ Output: JSON to stdout with pass/fail status and detailed findings.
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
       case "--proposal":
-        args.proposal = argv[++i];
+        args.proposal = argv[i += 1];
         break;
       case "--proposals-dir":
-        args.proposalsDir = argv[++i];
+        args.proposalsDir = argv[i += 1];
         break;
       case "--verbose":
         args.verbose = true;

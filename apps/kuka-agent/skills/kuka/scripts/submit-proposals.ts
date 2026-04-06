@@ -121,10 +121,10 @@ Output: JSON to stdout with injection plan, validation, and PR URL.
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
       case "--proposals-dir":
-        args.proposalsDir = argv[++i];
+        args.proposalsDir = argv[i += 1];
         break;
       case "--glossary-dir":
-        args.glossaryDir = argv[++i];
+        args.glossaryDir = argv[i += 1];
         break;
       case "--apply":
         args.dryRun = false;
@@ -137,7 +137,7 @@ Output: JSON to stdout with injection plan, validation, and PR URL.
         args.dryRun = false;
         break;
       case "--pr-repo":
-        args.prRepo = argv[++i];
+        args.prRepo = argv[i += 1];
         break;
       case "--verbose":
         args.verbose = true;

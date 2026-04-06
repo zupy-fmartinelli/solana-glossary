@@ -97,16 +97,16 @@ Output: JSON to stdout with sync plan, new terms, and reconciled proposals.
   for (let i = 0; i < argv.length; i++) {
     switch (argv[i]) {
       case "--glossary-dir":
-        args.glossaryDir = argv[++i];
+        args.glossaryDir = argv[i += 1];
         break;
       case "--proposals-dir":
-        args.proposalsDir = argv[++i];
+        args.proposalsDir = argv[i += 1];
         break;
       case "--upstream":
-        args.upstream = argv[++i];
+        args.upstream = argv[i += 1];
         break;
       case "--branch":
-        args.branch = argv[++i];
+        args.branch = argv[i += 1];
         break;
       case "--apply":
         args.dryRun = false;
