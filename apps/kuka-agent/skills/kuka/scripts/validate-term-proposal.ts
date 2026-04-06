@@ -83,20 +83,22 @@ Output: JSON to stdout with pass/fail status and detailed findings.
     process.exit(0);
   }
 
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  while (i < argv.length) {
     switch (argv[i]) {
       case "--proposal":
-i++;
-                args.proposal = argv[i];
+        i++;
+        args.proposal = argv[i];
         break;
       case "--proposals-dir":
-i++;
-                args.proposalsDir = argv[i];
+        i++;
+        args.proposalsDir = argv[i];
         break;
       case "--verbose":
         args.verbose = true;
         break;
     }
+    i++;
   }
 
   if (!args.proposal) {

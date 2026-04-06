@@ -118,15 +118,16 @@ Output: JSON to stdout with injection plan, validation, and PR URL.
     process.exit(0);
   }
 
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  while (i < argv.length) {
     switch (argv[i]) {
       case "--proposals-dir":
-i++;
-                args.proposalsDir = argv[i];
+        i++;
+        args.proposalsDir = argv[i];
         break;
       case "--glossary-dir":
-i++;
-                args.glossaryDir = argv[i];
+        i++;
+        args.glossaryDir = argv[i];
         break;
       case "--apply":
         args.dryRun = false;
@@ -139,13 +140,14 @@ i++;
         args.dryRun = false;
         break;
       case "--pr-repo":
-i++;
-                args.prRepo = argv[i];
+        i++;
+        args.prRepo = argv[i];
         break;
       case "--verbose":
         args.verbose = true;
         break;
     }
+    i++;
   }
 
   return args;

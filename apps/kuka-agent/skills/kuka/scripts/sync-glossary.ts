@@ -94,23 +94,24 @@ Output: JSON to stdout with sync plan, new terms, and reconciled proposals.
     process.exit(0);
   }
 
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  while (i < argv.length) {
     switch (argv[i]) {
       case "--glossary-dir":
-i++;
-                args.glossaryDir = argv[i];
+        i++;
+        args.glossaryDir = argv[i];
         break;
       case "--proposals-dir":
-i++;
-                args.proposalsDir = argv[i];
+        i++;
+        args.proposalsDir = argv[i];
         break;
       case "--upstream":
-i++;
-                args.upstream = argv[i];
+        i++;
+        args.upstream = argv[i];
         break;
       case "--branch":
-i++;
-                args.branch = argv[i];
+        i++;
+        args.branch = argv[i];
         break;
       case "--apply":
         args.dryRun = false;
@@ -122,6 +123,7 @@ i++;
         args.verbose = true;
         break;
     }
+    i++;
   }
 
   return args;

@@ -55,32 +55,34 @@ Output: JSON to stdout with matched terms, explored/gap breakdown, and suggested
     process.exit(0);
   }
 
-  for (let i = 0; i < argv.length; i++) {
+  let i = 0;
+  while (i < argv.length) {
     switch (argv[i]) {
       case "--topic":
-i++;
-                args.topic = argv[i];
+        i++;
+        args.topic = argv[i];
         break;
       case "--code-file":
-i++;
-                args.codeFile = argv[i];
+        i++;
+        args.codeFile = argv[i];
         break;
       case "--terms":
-i++;
-                args.terms = argv[i];
+        i++;
+        args.terms = argv[i];
         break;
       case "--progress":
-i++;
-                args.progress = argv[i];
+        i++;
+        args.progress = argv[i];
         break;
       case "--max-results":
-i++;
-                args.maxResults = Number.parseInt(argv[i], 10);
+        i++;
+        args.maxResults = Number.parseInt(argv[i], 10);
         break;
       case "--verbose":
         args.verbose = true;
         break;
     }
+    i++;
   }
 
   if (!args.topic && !args.codeFile && !args.terms) {
