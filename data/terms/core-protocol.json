@@ -639,5 +639,40 @@
     "category": "core-protocol",
     "aliases": ["Edwards Curve"],
     "related": ["ed25519", "ed25519-precompile", "on-curve-off-curve"]
+  },
+  {
+    "id": "quic-protocol",
+    "term": "QUIC (Transaction Ingress)",
+    "definition": "The transport protocol used by Solana's Transaction Processing Unit (TPU) since validator v1.13, replacing the original UDP-based ingestion. QUIC provides encrypted, authenticated, and flow-controlled connections between clients and leaders. It enables stake-weighted Quality of Service (QoS), where validators allocate connection bandwidth proportional to the sender's stake, mitigating spam and improving transaction landing rates during congestion.",
+    "category": "core-protocol",
+    "aliases": ["QUIC"],
+    "related": ["tpu", "stake-weighted-qos", "leader-schedule"]
+  },
+  {
+    "id": "vote-credits",
+    "term": "Vote Credits",
+    "definition": "The unit of reward earned by validators for successfully voting on blocks. Each correct vote on a slot that reaches consensus awards one vote credit. At epoch boundaries, accumulated vote credits are converted to SOL rewards proportional to the validator's stake. Vote credits directly determine a validator's APY—higher credits mean the validator voted correctly more often and earned more for its delegators.",
+    "category": "core-protocol",
+    "related": ["vote-account", "epoch", "staking-rewards"]
+  },
+  {
+    "id": "block-reward",
+    "term": "Block Reward",
+    "definition": "The SOL inflation reward distributed to validators for producing and voting on blocks. Solana's inflation started at 8% annually and decreases 15% per year toward a long-term rate of 1.5%. Block rewards are split between the leader (who produces the block) and all validators who voted for it. Half of each transaction's base fee and priority fee is burned, and the other half goes to the leader, complementing inflation rewards.",
+    "category": "core-protocol",
+    "related": [
+      "inflation",
+      "vote-credits",
+      "staking-rewards",
+      "transaction-fee"
+    ]
+  },
+  {
+    "id": "message-v0",
+    "term": "Message v0 (Versioned Message)",
+    "definition": "The versioned transaction message format introduced to support Address Lookup Tables (ALTs). Legacy messages inline all account addresses (32 bytes each), limiting transactions to ~35 accounts. Message v0 references ALT accounts by index, compressing the address list and allowing up to 256 accounts per transaction. Clients use VersionedTransaction with MessageV0 to build transactions that reference ALTs.",
+    "category": "core-protocol",
+    "aliases": ["MessageV0", "Versioned Message"],
+    "related": ["versioned-transaction", "address-lookup-table", "transaction"]
   }
 ]
