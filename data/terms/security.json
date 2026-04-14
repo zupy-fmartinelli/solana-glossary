@@ -378,6 +378,8 @@
     "category": "security",
     "aliases": ["Layered Security", "Defense in Depth"],
     "related": ["audit", "authority-separation", "circuit-breaker"]
+  },
+  {
     "id": "security-txt",
     "term": "Security.txt (On-Chain)",
     "definition": "An on-chain metadata standard for Solana programs that embeds security contact information directly in the deployed binary. Uses the solana-security-txt crate to store fields like project URL, security email, preferred languages, auditor information, and policy links. Explorers and security researchers can read this data from any deployed program without external lookups. The standard follows the spirit of RFC 9116 (web security.txt) adapted for on-chain programs.",

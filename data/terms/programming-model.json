@@ -515,6 +515,8 @@
     "category": "programming-model",
     "aliases": ["PDA Authority", "Program Gatekeeper", "PDA-as-Authority"],
     "related": ["pda", "invoke-signed", "cpi"]
+  },
+  {
     "id": "cpi-passthrough",
     "term": "CPI Passthrough",
     "definition": "A design pattern where a Solana program receives pre-built instruction data from the client, validates security constraints (authority, PDA, discriminator prefix), and forwards the raw bytes to another program via invoke_signed. Unlike standard CPI where the caller constructs the instruction, passthrough delegates serialization to the client while the on-chain program acts as a validated relay. Used when the target program's format is complex or version-dependent.",

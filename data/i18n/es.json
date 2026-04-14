@@ -4030,6 +4030,7 @@
   "program-as-authority": {
     "term": "Patrón Program-as-Authority",
     "definition": "An architectural pattern where a Program-Derived Address owned by the program is set as the authority over a resource (mint, vault, token account) instead of a user keypair, making the program itself the gatekeeper. Human signers only authorize calls into the program; the actual CPI that mutates the resource is signed by the PDA via invoke_signed. Program-level invariants (rate limits, pauses, access control) become cryptographically mandatory since no external key can bypass the program."
+  },
   "compressed-burn": {
     "term": "Quema Comprimida (Compressed Burn)",
     "definition": "Permanently destroying tokens held in a compressed account (Merkle tree leaf) via Light Protocol's cToken program. Unlike standard SPL burn which reduces an ATA balance, compressed burn nullifies the leaf and decrements the on-chain mint supply atomically. Requires a validity proof demonstrating the account exists in the state tree. Uses discriminator byte 8 on cToken V2."
