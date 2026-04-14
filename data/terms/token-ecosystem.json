@@ -171,7 +171,7 @@
     "category": "token-ecosystem",
     "depth": 3,
     "related": ["token-2022", "metaplex-metadata", "metadata-pointer"],
-    "tags": ["token-2022"]
+    "tags": ["metaplex", "token-2022"]
   },
   {
     "id": "group-pointer",
@@ -180,7 +180,7 @@
     "category": "token-ecosystem",
     "depth": 3,
     "related": ["token-2022"],
-    "tags": ["token-2022"]
+    "tags": ["metaplex", "token-2022"]
   },
   {
     "id": "cpi-guard",
@@ -352,7 +352,8 @@
     "definition": "A Token-2022 extension that natively represents collections of tokens without requiring Metaplex. A mint with the Token Group extension acts as a collection, storing max_size and current_size. Mints with Token Group Member point to their group mint. This provides lightweight, protocol-level NFT collections directly in the token program.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022", "group-pointer"]
+    "related": ["token-2022", "group-pointer"],
+    "tags": ["token-2022"]
   },
   {
     "id": "candy-machine",
@@ -431,7 +432,7 @@
     "category": "token-ecosystem",
     "depth": 3,
     "related": ["nft", "collection"],
-    "tags": ["nft"]
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "floor-price",
@@ -469,7 +470,7 @@
     "depth": 3,
     "aliases": ["Semi-Fungible Token"],
     "related": ["nft", "mint", "metaplex-metadata"],
-    "tags": ["nft"]
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "minting",
@@ -554,7 +555,8 @@
     "definition": "The account authorized to modify an NFT's or token's on-chain metadata, including name, symbol, URI, and attributes. In Metaplex's token metadata standard, this authority can update mutable metadata fields. Revoking or transferring update authority is a trust signal — immutable metadata means the creator cannot alter the NFT's properties post-mint.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["metaplex-metadata", "mint-authority", "nft"]
+    "related": ["metaplex-metadata", "mint-authority", "nft"],
+    "tags": ["metaplex"]
   },
   {
     "id": "token-2022-extensions-list",
@@ -629,7 +631,7 @@
     "category": "token-ecosystem",
     "depth": 4,
     "related": ["token-2022", "metadata-extension", "group-pointer"],
-    "tags": ["token-2022"]
+    "tags": ["metaplex", "token-2022"]
   },
   {
     "id": "transfer-fee-config",
