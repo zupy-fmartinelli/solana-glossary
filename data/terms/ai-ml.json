@@ -175,7 +175,8 @@
     "category": "ai-ml",
     "depth": 2,
     "aliases": ["DePIN"],
-    "related": ["gpu-compute", "blockchain"]
+    "related": ["gpu-compute", "blockchain"],
+    "tags": ["depin"]
   },
   {
     "id": "gpu-compute",
@@ -440,7 +441,8 @@
     "definition": "A decentralized GPU compute marketplace built on Solana that connects GPU providers with users needing compute for AI inference workloads. Node operators supply idle GPU capacity and earn NOS tokens for completed jobs. Nosana focuses on cost-effective AI inference rather than training, using Solana for job coordination, payment settlement, and reputation tracking. It supports containerized workloads across consumer and enterprise GPUs.",
     "category": "ai-ml",
     "depth": 2,
-    "related": ["gpu-compute", "decentralized-inference", "depin"]
+    "related": ["gpu-compute", "decentralized-inference", "depin"],
+    "tags": ["depin"]
   },
   {
     "id": "solana-agent-kit",
@@ -457,7 +459,8 @@
     "category": "ai-ml",
     "depth": 2,
     "aliases": ["IO"],
-    "related": ["gpu-compute", "depin", "decentralized-inference"]
+    "related": ["gpu-compute", "depin", "decentralized-inference"],
+    "tags": ["depin"]
   },
   {
     "id": "grass-depin",
@@ -465,7 +468,8 @@
     "definition": "A DePIN protocol on Solana where users share unused internet bandwidth through a browser extension, contributing to a decentralized data pipeline for AI training datasets. Participants earn GRASS tokens for bandwidth contributions, which are used to scrape and structure publicly available web data. Grass addresses the growing demand for high-quality training data by creating an incentivized, distributed web crawling network.",
     "category": "ai-ml",
     "depth": 2,
-    "related": ["depin", "training", "sol"]
+    "related": ["depin", "training", "sol"],
+    "tags": ["depin"]
   },
   {
     "id": "autonomous-on-chain-agent",

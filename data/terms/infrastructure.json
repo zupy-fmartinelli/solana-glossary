@@ -220,8 +220,9 @@
     "definition": "A hardware and software initiative by Solana Labs producing Android smartphones (Saga, Chapter 2) with a secure element-backed seed vault for private key storage, a curated dApp store for Solana applications, and the Mobile Wallet Adapter protocol for standardized wallet-dApp communication on mobile. The Solana Mobile Stack (SMS) enables native mobile dApps to interact with on-device wallets without browser extensions or QR code scanning, targeting the mobile-first crypto user base.",
     "category": "infrastructure",
     "depth": 2,
-    "aliases": ["SMS", "Saga"],
-    "related": ["mobile-wallet-adapter"]
+    "aliases": ["Saga"],
+    "related": ["mobile-wallet-adapter"],
+    "tags": ["mobile"]
   },
   {
     "id": "mobile-wallet-adapter",
@@ -230,7 +231,8 @@
     "category": "infrastructure",
     "depth": 3,
     "aliases": ["MWA"],
-    "related": ["solana-mobile", "wallet-adapter"]
+    "related": ["solana-mobile", "wallet-adapter"],
+    "tags": ["mobile"]
   },
   {
     "id": "wallet-adapter",

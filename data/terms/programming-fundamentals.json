@@ -155,7 +155,6 @@
     "definition": "Two models for tracking blockchain state. Account model (Solana, Ethereum): each account has a balance and state that is updated in place. UTXO model (Bitcoin, Cardano): transactions consume unspent transaction outputs and create new ones. Account models are more intuitive for smart contracts; UTXO models offer better privacy and parallelism for simple transfers.",
     "category": "programming-fundamentals",
     "depth": 2,
-    "aliases": ["UTXO"],
     "related": ["account", "nullifier"]
   },
   {

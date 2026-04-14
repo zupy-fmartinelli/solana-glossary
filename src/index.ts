@@ -77,6 +77,22 @@ export function getTermsByMaxDepth(maxDepth: Depth): GlossaryTerm[] {
   return allTerms.filter((t) => t.depth <= maxDepth);
 }
 
+/** Get all terms with a specific tag */
+export function getTermsByTag(tag: string): GlossaryTerm[] {
+  return allTerms.filter((t) => t.tags?.includes(tag));
+}
+
+/** Get all unique tags used across all terms */
+export function getAllTags(): string[] {
+  const tagSet = new Set<string>();
+  for (const t of allTerms) {
+    for (const tag of t.tags ?? []) {
+      tagSet.add(tag);
+    }
+  }
+  return [...tagSet].sort();
+}
+
 /** Get all available categories */
 export function getCategories(): Category[] {
   return [

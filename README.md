@@ -2,10 +2,10 @@
 
 [![npm version](https://img.shields.io/npm/v/@stbr/solana-glossary)](https://www.npmjs.com/package/@stbr/solana-glossary)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Terms](https://img.shields.io/badge/terms-1001-brightgreen)
+![Terms](https://img.shields.io/badge/terms-1059-brightgreen)
 ![Categories](https://img.shields.io/badge/categories-14-blue)
 
-**The most comprehensive Solana glossary ever built — 1001 terms, 14 categories, full cross-references, and i18n support. Packaged as an SDK.**
+**The most comprehensive Solana glossary ever built — 1059 terms, 14 categories, full cross-references, and i18n support. Packaged as an SDK.**
 
 ---
 
@@ -15,9 +15,9 @@ The original Solana Glossary was one of the most loved resources in the ecosyste
 
 Over time, it got absorbed into generic "Terminology" docs and lost its identity.
 
-**Superteam Brazil is bringing it back** — expanded from ~200 terms to 1001, structured as a proper npm package, and designed to actually ship value:
+**Superteam Brazil is bringing it back** — expanded from ~200 terms to 1059, structured as a proper npm package, and designed to actually ship value:
 
-- **Onboarding** — New devs get instant context on 1001 Solana concepts
+- **Onboarding** — New devs get instant context on 1059 Solana concepts
 - **Go deeper** — Seasoned devs explore cross-referenced technical relationships between terms
 - **Vibe coders** — AI-assisted builders can understand what's behind the abstractions
 - **Save tokens** — Feed glossary context to LLMs instead of burning tokens re-explaining Solana concepts every prompt
@@ -59,7 +59,7 @@ const results = searchTerms("account");
 const defiTerms = getTermsByCategory("defi");
 
 // Access everything
-console.log(`${allTerms.length} terms loaded`); // 1001
+console.log(`${allTerms.length} terms loaded`); // 1059
 ```
 
 ---
@@ -99,8 +99,8 @@ getTermsByCategory("core-protocol");  // 86 terms
 Get all terms at a specific depth level.
 
 ```typescript
-getTermsByDepth(1); // 97 surface-level terms
-getTermsByDepth(5); // 52 bottom-level terms
+getTermsByDepth(1); // 110 surface-level terms
+getTermsByDepth(5); // 56 bottom-level terms
 ```
 
 ### `getTermsByMaxDepth(maxDepth: Depth): GlossaryTerm[]`
@@ -108,9 +108,23 @@ getTermsByDepth(5); // 52 bottom-level terms
 Get all terms at or below a given depth level. Useful for progressive disclosure.
 
 ```typescript
-getTermsByMaxDepth(2); // 367 terms (surface + shallow)
-getTermsByMaxDepth(5); // all 1001 terms
+getTermsByMaxDepth(2); // 382 terms (surface + shallow)
+getTermsByMaxDepth(5); // all 1059 terms
 ```
+
+### `getTermsByTag(tag: string): GlossaryTerm[]`
+
+Get all terms with a specific tag. Tags are cross-cutting concerns that span categories.
+
+```typescript
+getTermsByTag("token-2022");   // all Token-2022 extension terms
+getTermsByTag("vulnerability"); // all known attack vectors
+getTermsByTag("jito");          // Jito ecosystem terms
+```
+
+### `getAllTags(): string[]`
+
+Returns all unique tags used across terms, sorted alphabetically.
 
 ### `getCategories(): Category[]`
 
@@ -118,7 +132,7 @@ Returns all 14 category identifiers.
 
 ### `allTerms: GlossaryTerm[]`
 
-The complete array of all 1001 terms. Useful for building custom indexes or feeding to LLMs.
+The complete array of all 1059 terms. Useful for building custom indexes or feeding to LLMs.
 
 ---
 
@@ -126,20 +140,20 @@ The complete array of all 1001 terms. Useful for building custom indexes or feed
 
 | Category | Terms | Description |
 |----------|-------|-------------|
-| `core-protocol` | 86 | Consensus, PoH, validators, slots, epochs |
-| `programming-model` | 69 | Accounts, instructions, programs, PDAs |
-| `token-ecosystem` | 59 | SPL tokens, Token-2022, metadata, NFTs |
-| `defi` | 135 | AMMs, liquidity pools, lending protocols |
-| `zk-compression` | 34 | ZK proofs, compressed accounts, Light Protocol |
-| `infrastructure` | 44 | RPC, validators, staking, snapshots |
-| `security` | 48 | Attack vectors, audit practices, reentrancy |
+| `core-protocol` | 96 | Consensus, PoH, validators, slots, epochs |
+| `programming-model` | 82 | Accounts, instructions, programs, PDAs |
+| `token-ecosystem` | 70 | SPL tokens, Token-2022, metadata, NFTs |
+| `defi` | 144 | AMMs, liquidity pools, lending protocols |
+| `zk-compression` | 37 | ZK proofs, compressed accounts, Light Protocol |
+| `infrastructure` | 47 | RPC, validators, staking, snapshots |
+| `security` | 56 | Attack vectors, audit practices, reentrancy |
 | `dev-tools` | 64 | Anchor, Solana CLI, explorers, testing |
 | `network` | 58 | Mainnet, devnet, testnet, cluster config |
 | `blockchain-general` | 84 | Shared blockchain concepts |
 | `web3` | 80 | Wallets, dApps, signing, key management |
 | `programming-fundamentals` | 47 | Data structures, serialization, Borsh |
 | `ai-ml` | 55 | AI agents, inference on-chain, model integration |
-| `solana-ecosystem` | 138 | Projects, protocols, and tooling |
+| `solana-ecosystem` | 139 | Projects, protocols, and tooling |
 
 ---
 
@@ -186,6 +200,7 @@ interface GlossaryTerm {
   depth: Depth;        // Knowledge depth: 1 (surface) to 5 (bottom)
   related?: string[];  // Cross-reference IDs
   aliases?: string[];  // Abbreviations and alternate names
+  tags?: string[];     // Cross-cutting concerns (e.g. "token-2022", "jito", "deprecated")
 }
 ```
 

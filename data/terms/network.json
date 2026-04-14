@@ -106,7 +106,8 @@
     "category": "network",
     "depth": 3,
     "aliases": ["MEV"],
-    "related": ["jito", "front-running", "sandwich-attack"]
+    "related": ["jito", "front-running", "sandwich-attack"],
+    "tags": ["jito"]
   },
   {
     "id": "jito",
@@ -115,7 +116,8 @@
     "category": "network",
     "depth": 3,
     "aliases": ["Jito Labs"],
-    "related": ["mev", "bundle", "tip"]
+    "related": ["mev", "bundle", "tip"],
+    "tags": ["jito"]
   },
   {
     "id": "bundle",
@@ -123,7 +125,8 @@
     "definition": "An atomic group of up to five transactions submitted together through Jito's Block Engine, where either all transactions land in sequence or none do, enabling MEV strategies that depend on guaranteed transaction ordering without risk of partial execution. Bundles are submitted with a tip to incentivize the leader to include them; the Block Engine simulates bundles, selects the most profitable ones, and forwards them to the Jito-enabled leader. Bundles land at the top of a block before standard transactions, giving searchers execution priority.",
     "category": "network",
     "depth": 3,
-    "related": ["jito", "mev", "tip"]
+    "related": ["jito", "mev", "tip"],
+    "tags": ["jito"]
   },
   {
     "id": "tip",
@@ -131,7 +134,8 @@
     "definition": "A SOL payment made by a searcher to a Jito tip account as part of a bundle submission, used to compensate the leader validator for including the bundle at a preferred position in the block. Tips flow to Jito's on-chain tip distribution program, which redistributes a portion to staked validators (including delegators) proportional to their stake weight, aligning validator incentives with MEV facilitation. Tips are separate from and in addition to standard transaction priority fees.",
     "category": "network",
     "depth": 3,
-    "related": ["jito", "bundle", "mev"]
+    "related": ["jito", "bundle", "mev"],
+    "tags": ["jito"]
   },
   {
     "id": "block-engine",
@@ -139,7 +143,8 @@
     "definition": "Jito's off-chain infrastructure component that receives bundles from MEV searchers, simulates them against the current chain state to verify profitability and validity, and forwards the highest-value bundles to the current Jito-enabled leader just before block production. The Block Engine operates as a low-latency relay that continuously tracks the leader schedule and streams winning bundles in real time, acting as a private transaction ordering marketplace sitting between searchers and validators.",
     "category": "network",
     "depth": 4,
-    "related": ["jito", "mev", "bundle"]
+    "related": ["jito", "mev", "bundle"],
+    "tags": ["jito"]
   },
   {
     "id": "scheduler",
@@ -227,7 +232,8 @@
     "definition": "Solana's protocol-level mechanism for issuing new SOL to reward validators and stakers, starting at an initial annual inflation rate of 8% at genesis (Q1 2021) and decreasing by 15% of the current rate each year until reaching a long-term fixed rate of 1.5% per year. New SOL is minted each epoch proportionally to each validator's active stake and distributed as staking rewards; 50% of transaction base fees are burned, creating partial deflationary pressure. The net effective inflation rate depends on the proportion of SOL actively staked.",
     "category": "network",
     "depth": 2,
-    "related": ["staking-rewards", "validator"]
+    "related": ["staking-rewards", "validator"],
+    "tags": ["validator"]
   },
   {
     "id": "staking-rewards",
@@ -235,7 +241,8 @@
     "definition": "SOL earned by validators and their delegators each epoch as compensation for participating in consensus and securing the network, funded by protocol inflation rather than solely transaction fees. Rewards are proportional to a validator's active stake and are credited at the end of each epoch to stake accounts automatically; the effective APY depends on the current inflation rate, the percentage of total SOL staked, and the validator's commission rate. Validators set a commission (0–100%) representing the fraction of rewards they keep before passing the remainder to delegators.",
     "category": "network",
     "depth": 2,
-    "related": ["inflation", "stake", "epoch"]
+    "related": ["inflation", "stake", "epoch"],
+    "tags": ["validator"]
   },
   {
     "id": "slashing",
@@ -259,7 +266,8 @@
     "definition": "A special-purpose transaction submitted by each validator every slot to record its vote on the current fork of the blockchain, serving as the on-chain mechanism for Solana's Tower BFT consensus. Vote transactions are exempt from compute unit limits and priority fee requirements, are processed by a dedicated vote transaction path separate from user transactions, and account for the majority of raw TPS on the network (typically 70–80% of all transactions). Validators pay vote transaction fees from their vote account, which is one reason validator economics require sufficient stake to cover ongoing operating costs.",
     "category": "network",
     "depth": 4,
-    "related": ["vote-account", "validator", "transaction-fee", "vote-cost"]
+    "related": ["vote-account", "validator", "transaction-fee", "vote-cost"],
+    "tags": ["validator"]
   },
   {
     "id": "skip-rate",
@@ -267,7 +275,8 @@
     "definition": "The percentage of assigned leader slots in which a validator fails to produce a block, either due to being offline, misconfigured, behind on the fork, or unable to process transactions fast enough. A high skip rate indicates validator unreliability; it reduces staking rewards for both the validator and its delegators because skipped slots produce no block rewards. Solana publishes per-validator skip rates via the `getVoteAccounts` RPC method, and delegators use skip rate as a key signal when selecting validators.",
     "category": "network",
     "depth": 3,
-    "related": ["validator", "leader-schedule", "slot"]
+    "related": ["validator", "leader-schedule", "slot"],
+    "tags": ["validator"]
   },
   {
     "id": "solana-runtime-v2",
@@ -405,7 +414,8 @@
     "definition": "The percentage of staking rewards that a validator retains before distributing the remainder to its delegators, configurable from 0% to 100%. A validator with 5% commission keeps 5% of all inflation rewards earned by its stake and passes 95% to delegators. Commission rates are set by the validator operator and can be changed at any time, though significant increases may cause delegators to redelegate. Delegators should monitor commission changes as part of validator selection.",
     "category": "network",
     "depth": 2,
-    "related": ["staking-rewards", "validator", "delegator"]
+    "related": ["staking-rewards", "validator", "delegator"],
+    "tags": ["validator"]
   },
   {
     "id": "inflation-rate",
@@ -445,7 +455,8 @@
     "definition": "An MEV actor that monitors on-chain state and pending transactions to identify profitable opportunities such as arbitrage, liquidations, or backruns, and submits transaction bundles through Jito's Block Engine to capture that value. Searchers compete on speed and strategy, paying tips to validators for bundle inclusion priority. Searcher operations range from beneficial (keeping markets efficient through arbitrage) to extractive (sandwich attacks that harm regular users).",
     "category": "network",
     "depth": 4,
-    "related": ["mev", "bundle", "jito"]
+    "related": ["mev", "bundle", "jito"],
+    "tags": ["jito"]
   },
   {
     "id": "backrunning",

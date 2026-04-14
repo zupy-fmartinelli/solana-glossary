@@ -339,7 +339,8 @@
     "category": "dev-tools",
     "depth": 3,
     "aliases": ["SMS", "Solana Mobile"],
-    "related": ["seeker", "gaming", "wallet-adapter"]
+    "related": ["seeker", "gaming", "wallet-adapter"],
+    "tags": ["mobile"]
   },
   {
     "id": "seeker",
@@ -348,7 +349,8 @@
     "category": "dev-tools",
     "depth": 3,
     "aliases": ["Chapter 2", "Solana Seeker"],
-    "related": ["solana-mobile-stack", "wallet-general"]
+    "related": ["solana-mobile-stack", "wallet-general"],
+    "tags": ["mobile"]
   },
   {
     "id": "formal-verification",

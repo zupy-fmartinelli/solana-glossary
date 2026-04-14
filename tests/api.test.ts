@@ -4,6 +4,8 @@ import {
   getTermsByCategory,
   getTermsByDepth,
   getTermsByMaxDepth,
+  getTermsByTag,
+  getAllTags,
   searchTerms,
   getCategories,
   allTerms,
@@ -91,8 +93,31 @@ describe("getTermsByMaxDepth", () => {
   });
 });
 
+describe("getTermsByTag", () => {
+  it("returns terms with the given tag", () => {
+    const terms = getTermsByTag("token-2022");
+    expect(terms.length).toBeGreaterThan(0);
+    for (const t of terms) {
+      expect(t.tags).toContain("token-2022");
+    }
+  });
+
+  it("returns empty array for nonexistent tag", () => {
+    expect(getTermsByTag("nonexistent-tag-xyz")).toHaveLength(0);
+  });
+});
+
+describe("getAllTags", () => {
+  it("returns a non-empty sorted array of unique tags", () => {
+    const tags = getAllTags();
+    expect(tags.length).toBeGreaterThan(0);
+    const sorted = [...tags].sort();
+    expect(tags).toEqual(sorted);
+  });
+});
+
 describe("allTerms", () => {
-  it("contains exactly 1001 terms", () => {
-    expect(allTerms).toHaveLength(1001);
+  it("contains exactly 1059 terms", () => {
+    expect(allTerms).toHaveLength(1059);
   });
 });

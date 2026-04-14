@@ -32,7 +32,8 @@
       "confidential-mint-burn",
       "immutable-owner",
       "mint-close-authority"
-    ]
+    ],
+    "tags": ["token-2022"]
   },
   {
     "id": "mint",
@@ -90,7 +91,8 @@
     "definition": "A Token-2022 extension that invokes a custom program on every token transfer. The hook program receives the transfer details and can enforce additional logic (royalties, compliance checks, transfer restrictions). The hook program address is set on the mint. Hooks execute via CPI and must conform to the Transfer Hook Interface.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "cpi"]
+    "related": ["token-2022", "cpi"],
+    "tags": ["token-2022"]
   },
   {
     "id": "confidential-transfers",
@@ -99,7 +101,8 @@
     "category": "token-ecosystem",
     "depth": 4,
     "aliases": ["CT"],
-    "related": ["token-2022", "zk-proofs", "confidential-mint-burn"]
+    "related": ["token-2022", "zk-proofs", "confidential-mint-burn"],
+    "tags": ["token-2022"]
   },
   {
     "id": "transfer-fee",
@@ -112,7 +115,8 @@
       "mint",
       "transfer-fee-config",
       "withdraw-withheld-authority"
-    ]
+    ],
+    "tags": ["token-2022"]
   },
   {
     "id": "permanent-delegate",
@@ -120,7 +124,8 @@
     "definition": "A Token-2022 extension that designates an authority who can transfer or burn tokens from any token account of that mint, regardless of the account owner. Use cases include regulated stablecoins (clawback), gaming items (reclaiming), and legal compliance. Set at mint initialization and cannot be changed.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "authority"]
+    "related": ["token-2022", "authority"],
+    "tags": ["token-2022"]
   },
   {
     "id": "non-transferable",
@@ -129,7 +134,8 @@
     "category": "token-ecosystem",
     "depth": 2,
     "aliases": ["Soulbound"],
-    "related": ["token-2022"]
+    "related": ["token-2022"],
+    "tags": ["token-2022"]
   },
   {
     "id": "interest-bearing",
@@ -137,7 +143,8 @@
     "definition": "A Token-2022 extension that applies a continuously compounding interest rate to the display amount of a token without changing the actual on-chain balance. The UI amount is calculated as: amount × e^(rate × elapsed_time). Useful for rebasing tokens and lending receipt tokens.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022"]
+    "related": ["token-2022"],
+    "tags": ["token-2022"]
   },
   {
     "id": "default-account-state",
@@ -145,7 +152,8 @@
     "definition": "A Token-2022 extension that sets the initial state of all new token accounts for a mint to either Initialized or Frozen. When set to Frozen, new token accounts are frozen by default and must be explicitly thawed by the freeze authority before they can receive or send tokens. Enables KYC/AML gating.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022", "freeze-authority"]
+    "related": ["token-2022", "freeze-authority"],
+    "tags": ["token-2022"]
   },
   {
     "id": "memo-required",
@@ -153,7 +161,8 @@
     "definition": "A Token-2022 extension that requires all incoming transfers to include a memo instruction (via the Memo Program) in the same transaction. If no memo is present, the transfer fails. Used for compliance-driven tokens where transaction metadata must be recorded on-chain.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022", "memo-program"]
+    "related": ["token-2022", "memo-program"],
+    "tags": ["token-2022"]
   },
   {
     "id": "metadata-extension",
@@ -161,7 +170,8 @@
     "definition": "A Token-2022 extension that stores token metadata (name, symbol, URI, and custom key-value pairs) directly on the mint account instead of requiring a separate Metaplex metadata account. Reduces account creation costs and simplifies token setup. The update authority can modify metadata fields after creation.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022", "metaplex-metadata", "metadata-pointer"]
+    "related": ["token-2022", "metaplex-metadata", "metadata-pointer"],
+    "tags": ["token-2022"]
   },
   {
     "id": "group-pointer",
@@ -169,7 +179,8 @@
     "definition": "A Token-2022 extension that enables token grouping by pointing a mint to a group account or member account. The Group Pointer marks a mint as a group, and Member Pointer marks a mint as belonging to a group. Useful for NFT collections and hierarchical token relationships without requiring Metaplex.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-2022"]
+    "related": ["token-2022"],
+    "tags": ["token-2022"]
   },
   {
     "id": "cpi-guard",
@@ -177,7 +188,8 @@
     "definition": "A Token-2022 extension that protects token accounts from certain actions during CPI. When enabled, it blocks approve, close, and transfer operations via CPI while still allowing them in top-level instructions. This prevents malicious programs from draining or closing token accounts during composable calls.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "cpi", "instruction-introspection"]
+    "related": ["token-2022", "cpi", "instruction-introspection"],
+    "tags": ["token-2022"]
   },
   {
     "id": "metaplex-metadata",
@@ -186,7 +198,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["mpl-token-metadata"],
-    "related": ["nft", "mint"]
+    "related": ["nft", "mint"],
+    "tags": ["metaplex"]
   },
   {
     "id": "nft",
@@ -201,7 +214,8 @@
       "master-edition",
       "core-nft",
       "compressed-nft"
-    ]
+    ],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "master-edition",
@@ -209,7 +223,8 @@
     "definition": "A Metaplex account attached to an NFT that certifies it as a one-of-one or the master for prints. Master Edition marks mint authority and freeze authority as controlled by the Metaplex program, preventing further minting. It also enables limited or unlimited edition prints—copies of the original NFT with sequential edition numbers.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["nft", "metaplex-metadata"]
+    "related": ["nft", "metaplex-metadata"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "collection",
@@ -217,7 +232,8 @@
     "definition": "A Metaplex standard for grouping NFTs under a parent NFT that represents the collection. Each NFT's metadata includes a collection field with the collection mint address and a 'verified' flag (set by the collection authority via the Verify instruction). Collections enable marketplace grouping, royalty enforcement, and verification.",
     "category": "token-ecosystem",
     "depth": 2,
-    "related": ["nft", "metaplex-metadata", "core-collection"]
+    "related": ["nft", "metaplex-metadata", "core-collection"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "compressed-nft",
@@ -226,7 +242,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["cNFT"],
-    "related": ["nft", "state-compression", "bubblegum"]
+    "related": ["nft", "state-compression", "bubblegum"],
+    "tags": ["metaplex", "nft", "zk"]
   },
   {
     "id": "bubblegum",
@@ -234,7 +251,8 @@
     "definition": "The Metaplex program for creating and managing compressed NFTs. Bubblegum wraps the SPL Account Compression program, providing NFT-specific instructions: mint_to_collection, transfer, burn, delegate, redeem, and decompress (convert to standard NFT). It stores creator arrays and collection info in the Merkle tree leaf schema.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["compressed-nft", "concurrent-merkle-tree"]
+    "related": ["compressed-nft", "concurrent-merkle-tree"],
+    "tags": ["metaplex"]
   },
   {
     "id": "core-nft",
@@ -243,7 +261,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["Core Asset", "mpl-core"],
-    "related": ["nft", "metaplex-metadata", "metaplex-core-plugin"]
+    "related": ["nft", "metaplex-metadata", "metaplex-core-plugin"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "token-metadata-standard",
@@ -251,7 +270,8 @@
     "definition": "The convention for structuring NFT metadata established by Metaplex. On-chain: name (32 chars), symbol (10 chars), URI, creators, seller_fee_basis_points, collection. Off-chain JSON (at the URI): name, description, image, animation_url, external_url, attributes array [{trait_type, value}], and properties (files, category).",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["metaplex-metadata", "nft", "off-chain-metadata"]
+    "related": ["metaplex-metadata", "nft", "off-chain-metadata"],
+    "tags": ["metaplex"]
   },
   {
     "id": "off-chain-metadata",
@@ -259,7 +279,8 @@
     "definition": "The JSON file referenced by an NFT's metadata URI that contains the full description, image URL, attributes, and properties. Typically stored on Arweave (permanent, ~$0.01), IPFS/Filecoin, or Shadow Drive. The JSON schema follows the Metaplex standard: name, description, image, animation_url, attributes[], properties{files[], category}.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["token-metadata-standard", "arweave", "ipfs"]
+    "related": ["token-metadata-standard", "arweave", "ipfs"],
+    "tags": ["metaplex"]
   },
   {
     "id": "wrapped-sol",
@@ -292,7 +313,7 @@
     "definition": "The Solana Name Service (SNS) by Bonfida that maps human-readable .sol domain names to Solana addresses. Domains are NFTs that resolve to wallet addresses, enabling users to send tokens to 'alice.sol' instead of a pubkey. The registry supports subdomains, and domain records can store additional data (IPFS links, social handles).",
     "category": "token-ecosystem",
     "depth": 2,
-    "aliases": ["SNS", ".sol domains", "Bonfida Name Service"],
+    "aliases": ["Bonfida Name Service"],
     "related": ["spl"]
   },
   {
@@ -308,7 +329,8 @@
       "authorization-rules",
       "token-record",
       "rule-set"
-    ]
+    ],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "authorization-rules",
@@ -321,7 +343,8 @@
       "metaplex-metadata",
       "token-record",
       "rule-set"
-    ]
+    ],
+    "tags": ["metaplex"]
   },
   {
     "id": "token-group",
@@ -338,7 +361,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["CM", "Candy Machine v3"],
-    "related": ["candy-guard", "nft", "metaplex-metadata"]
+    "related": ["candy-guard", "nft", "metaplex-metadata"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "candy-guard",
@@ -346,7 +370,8 @@
     "definition": "A Metaplex program that wraps Candy Machine with configurable access control guards for NFT minting. Guards include allowlist (Merkle proof), mint limit (per wallet), start/end date, sol payment, token payment, NFT gate, freeze (lock minted NFTs), and more. Multiple guards can be combined and organized into groups, allowing different mint phases (e.g., allowlist phase, then public mint) within a single launch.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["candy-machine", "nft"]
+    "related": ["candy-machine", "nft"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "umi-framework",
@@ -355,7 +380,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["Metaplex Umi"],
-    "related": ["metaplex-metadata", "candy-machine", "bubblegum"]
+    "related": ["metaplex-metadata", "candy-machine", "bubblegum"],
+    "tags": ["metaplex"]
   },
   {
     "id": "stake-pool-spl",
@@ -364,7 +390,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["Stake Pool Program"],
-    "related": ["spl", "liquid-staking", "stake-account"]
+    "related": ["spl", "liquid-staking", "stake-account"],
+    "tags": ["lst"]
   },
   {
     "id": "verified-creator",
@@ -372,7 +399,8 @@
     "definition": "A flag in Metaplex NFT metadata indicating that a listed creator has cryptographically signed the metadata, confirming their association with the NFT. Each creator entry includes an address, share (royalty split percentage), and verified boolean. Unverified creators can be listed by anyone, but only the creator themselves can set verified to true via the Verify instruction. Marketplaces use verification to prevent impersonation.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["metaplex-metadata", "nft", "collection"]
+    "related": ["metaplex-metadata", "nft", "collection"],
+    "tags": ["metaplex"]
   },
   {
     "id": "seller-fee-basis-points",
@@ -380,7 +408,8 @@
     "definition": "A field in Metaplex NFT metadata that specifies the creator royalty percentage on secondary sales, denominated in basis points (100 = 1%). For example, 500 means a 5% royalty split among the creators array according to their share percentages. Enforcement varies by marketplace—some honor royalties voluntarily, while programmable NFTs (pNFTs) enforce them at the protocol level.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["metaplex-metadata", "royalty-enforcement", "programmable-nft"]
+    "related": ["metaplex-metadata", "royalty-enforcement", "programmable-nft"],
+    "tags": ["metaplex"]
   },
   {
     "id": "royalty-enforcement",
@@ -392,7 +421,8 @@
       "seller-fee-basis-points",
       "programmable-nft",
       "authorization-rules"
-    ]
+    ],
+    "tags": ["metaplex"]
   },
   {
     "id": "nft-staking",
@@ -400,7 +430,8 @@
     "definition": "The process of locking NFTs in a program to earn rewards, typically in the form of a project's token. Staking programs verify NFT ownership and collection membership, track staking duration, and distribute rewards proportionally. On Solana, NFT staking is commonly implemented using Metaplex's freeze delegate or by transferring the NFT to a program-controlled escrow account. Rewards incentivize holding over flipping.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["nft", "collection"]
+    "related": ["nft", "collection"],
+    "tags": ["nft"]
   },
   {
     "id": "floor-price",
@@ -408,7 +439,8 @@
     "definition": "The lowest listed sale price for any NFT within a collection on marketplaces. Floor price serves as the baseline valuation for a collection and is the most commonly tracked metric for NFT market health. It fluctuates based on demand, new listings, and broader market conditions. Rarer traits within a collection typically trade at multiples above the floor. Tensor and Magic Eden display real-time floor prices for Solana collections.",
     "category": "token-ecosystem",
     "depth": 2,
-    "related": ["nft", "collection", "tensor"]
+    "related": ["nft", "collection", "tensor"],
+    "tags": ["nft"]
   },
   {
     "id": "collection-bid",
@@ -416,7 +448,8 @@
     "definition": "An open offer to purchase any NFT from a specific collection at a stated price, regardless of which specific token is sold. Collection bids provide instant liquidity to NFT holders who want to sell immediately without waiting for a buyer. Marketplaces like Tensor match collection bids with sellers. Bids can be funded with SOL or other tokens and are typically set at or near the floor price.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["nft", "collection", "floor-price", "tensor"]
+    "related": ["nft", "collection", "floor-price", "tensor"],
+    "tags": ["nft"]
   },
   {
     "id": "dynamic-nft",
@@ -425,7 +458,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["dNFT"],
-    "related": ["nft", "core-nft", "metadata-extension"]
+    "related": ["nft", "core-nft", "metadata-extension"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "sft",
@@ -434,7 +468,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["Semi-Fungible Token"],
-    "related": ["nft", "mint", "metaplex-metadata"]
+    "related": ["nft", "mint", "metaplex-metadata"],
+    "tags": ["nft"]
   },
   {
     "id": "minting",
@@ -450,7 +485,8 @@
     "definition": "Data inscribed directly into on-chain Solana account data, inspired by Bitcoin Ordinals. Solana inscriptions store images, text, or other content as raw bytes in account data rather than pointing to off-chain storage. While more expensive than off-chain metadata (requiring rent for storage), inscriptions are fully on-chain and immutable once the account's update authority is revoked. They emerged as an experimental standard in late 2023.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["nft", "account-data", "rent-exemption"]
+    "related": ["nft", "account-data", "rent-exemption"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "token-gating",
@@ -500,7 +536,8 @@
     "definition": "An NFT that provides functional benefits beyond collectible value, such as access passes, membership tokens, in-game items, or governance rights. On Solana, utility NFTs are used for event tickets (Underdog), gaming assets (Star Atlas ships), DAO membership (MonkeDAO), and DeFi position receipts (Meteora LP positions).",
     "category": "token-ecosystem",
     "depth": 2,
-    "related": ["nft", "programmable-nft", "token-gating"]
+    "related": ["nft", "programmable-nft", "token-gating"],
+    "tags": ["nft"]
   },
   {
     "id": "nft-rarity",
@@ -508,7 +545,8 @@
     "definition": "The relative scarcity of specific traits within an NFT collection, calculated by analyzing how frequently each attribute appears. Rarity scores aggregate trait frequencies to rank NFTs. On Solana, platforms like HowRare.is and Magic Eden display rarity rankings. Rarity significantly impacts secondary market pricing and collector behavior.",
     "category": "token-ecosystem",
     "depth": 2,
-    "related": ["nft", "magic-eden", "floor-price"]
+    "related": ["nft", "magic-eden", "floor-price"],
+    "tags": ["nft"]
   },
   {
     "id": "metadata-update-authority",
@@ -530,7 +568,8 @@
       "transfer-hook",
       "confidential-transfers",
       "transfer-fee"
-    ]
+    ],
+    "tags": ["token-2022"]
   },
   {
     "id": "soul-bound-token",
@@ -539,7 +578,8 @@
     "category": "token-ecosystem",
     "depth": 3,
     "aliases": ["SBT", "Soulbound NFT"],
-    "related": ["non-transferable", "token-2022", "nft"]
+    "related": ["non-transferable", "token-2022", "nft"],
+    "tags": ["nft"]
   },
   {
     "id": "immutable-owner",
@@ -547,7 +587,8 @@
     "definition": "A Token-2022 extension that permanently locks the owner of a token account, preventing it from being reassigned via the SetAuthority instruction. All Associated Token Accounts (ATAs) created under Token-2022 have this extension enabled by default. It eliminates a class of phishing attacks where a malicious program could reassign ownership of a user's token account.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "associated-token-account", "token-account"]
+    "related": ["token-2022", "associated-token-account", "token-account"],
+    "tags": ["token-2022"]
   },
   {
     "id": "mint-close-authority",
@@ -555,7 +596,8 @@
     "definition": "A Token-2022 extension that allows a designated authority to close a mint account and reclaim its rent-exempt lamports. In the original SPL Token program, mint accounts can never be closed once created. This extension is useful for ephemeral tokens, one-time-use NFTs, or cleaning up mints with zero supply. The close authority must be set at mint initialization.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "mint", "mint-authority"]
+    "related": ["token-2022", "mint", "mint-authority"],
+    "tags": ["token-2022"]
   },
   {
     "id": "core-collection",
@@ -568,7 +610,8 @@
       "collection",
       "metaplex-metadata",
       "metaplex-core-plugin"
-    ]
+    ],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "fixed-supply",
@@ -585,7 +628,8 @@
     "definition": "A Token-2022 extension that stores a pointer to the account holding metadata for a given mint, enabling flexible metadata storage rather than requiring a fixed account layout. When the metadata pointer points to the mint itself, the Token Metadata Extension on that mint is used. When it points to an external account, any compliant metadata program can store the data. This separation of where to find metadata from how metadata is stored allows Token-2022 mints to work with both the built-in metadata extension and third-party standards like Metaplex.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["token-2022", "metadata-extension", "group-pointer"]
+    "related": ["token-2022", "metadata-extension", "group-pointer"],
+    "tags": ["token-2022"]
   },
   {
     "id": "transfer-fee-config",
@@ -593,7 +637,8 @@
     "definition": "The on-mint configuration state for the Token-2022 transfer fee extension, storing two fee schedules: the current epoch's fee and a pending fee that activates at a future epoch. Each schedule specifies a fee in basis points (max 10,000) and a maximum fee cap in token base units. The two-schedule design allows the transfer fee authority to enqueue a fee change without disrupting current operations. Fee parameters are set at mint initialization and modifiable only by the transfer fee authority.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["transfer-fee", "token-2022", "epoch"]
+    "related": ["transfer-fee", "token-2022", "epoch"],
+    "tags": ["token-2022"]
   },
   {
     "id": "withdraw-withheld-authority",
@@ -601,7 +646,8 @@
     "definition": "The designated authority on a Token-2022 mint with the transfer fee extension that can harvest accumulated withheld fees from recipient token accounts. When transfer fees are collected, they remain frozen within each recipient's token account until the withdraw withheld authority invokes either WithdrawWithheldTokensFromAccounts (harvest from specific accounts) or HarvestWithheldTokensToMint (move fees to the mint, then withdraw). This two-step design allows fees to be efficiently batch-collected and supports permissionless harvesting to the mint by any party.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["transfer-fee", "transfer-fee-config", "token-2022"]
+    "related": ["transfer-fee", "transfer-fee-config", "token-2022"],
+    "tags": ["token-2022"]
   },
   {
     "id": "confidential-mint-burn",
@@ -609,7 +655,8 @@
     "definition": "A Token-2022 extension that applies zero-knowledge proofs to minting and burning operations, concealing the amounts being created or destroyed while maintaining a verifiable supply invariant. Like confidential transfers, it uses Twisted ElGamal encryption so that an auditor holding a decrypt key configured on the mint can verify supply consistency without revealing individual mint/burn amounts to the public. This extension complements confidential transfers to provide end-to-end amount privacy across the entire token lifecycle.",
     "category": "token-ecosystem",
     "depth": 5,
-    "related": ["confidential-transfers", "token-2022", "elgamal-encryption"]
+    "related": ["confidential-transfers", "token-2022", "elgamal-encryption"],
+    "tags": ["token-2022"]
   },
   {
     "id": "token-record",
@@ -622,7 +669,8 @@
       "authorization-rules",
       "metaplex-metadata",
       "pda"
-    ]
+    ],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "rule-set",
@@ -630,7 +678,8 @@
     "definition": "A versioned on-chain account in the Metaplex Authorization Rules program that defines a tree of composable rules governing pNFT operations (transfer, delegate, burn). Rules include Allow, Deny, ProgramOwnedList (whitelist by program ID), PubkeyMatch, and AdditionalSigner, composed with All (AND), Any (OR), and Not operators. A rule set is referenced by a pNFT's metadata account and evaluated on every operation; if the rule tree evaluates to Deny, the transaction fails. Creators use rule sets to restrict transfers to approved marketplaces or enforce royalty payment.",
     "category": "token-ecosystem",
     "depth": 4,
-    "related": ["authorization-rules", "programmable-nft", "token-record"]
+    "related": ["authorization-rules", "programmable-nft", "token-record"],
+    "tags": ["metaplex", "nft"]
   },
   {
     "id": "metaplex-core-plugin",
@@ -638,6 +687,7 @@
     "definition": "An extensibility mechanism in the Metaplex Core NFT standard that attaches optional behaviors to assets or collections without requiring additional accounts. Plugins include Royalties (enforce creator fees), FreezeDelegate (lock transfers), BurnDelegate (authorize burn), TransferDelegate (authorize transfer), Attributes (key-value metadata), and AppData (program-writable data blobs). Plugins can be added at either the asset or collection level, and collection-level plugins apply as defaults to all members. Each plugin specifies its own authority and lifecycle rules, enabling modular composition of NFT functionality.",
     "category": "token-ecosystem",
     "depth": 3,
-    "related": ["core-nft", "core-collection", "programmable-nft"]
+    "related": ["core-nft", "core-collection", "programmable-nft"],
+    "tags": ["metaplex", "nft"]
   }
 ]

@@ -60,7 +60,8 @@
     "definition": "A node that participates in the Solana network by validating transactions, voting on blocks, and (when selected as leader) producing new blocks. Validators run the Agave, Firedancer, or Jito client software, require significant hardware (128+ GB RAM, high-core CPU, NVMe SSD), and earn rewards from inflation and transaction fees.",
     "category": "core-protocol",
     "depth": 2,
-    "related": ["vote-account", "stake", "leader-schedule"]
+    "related": ["vote-account", "stake", "leader-schedule"],
+    "tags": ["validator"]
   },
   {
     "id": "vote-account",
@@ -69,7 +70,8 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["Vote"],
-    "related": ["validator", "tower-bft", "vote-cost"]
+    "related": ["validator", "tower-bft", "vote-cost"],
+    "tags": ["validator"]
   },
   {
     "id": "stake",
@@ -77,7 +79,8 @@
     "definition": "SOL tokens that are delegated to a validator to increase its voting weight and earn staking rewards. Staking is non-custodial—stakers retain ownership of their SOL. Stake activates/deactivates at epoch boundaries with a warmup/cooldown period. Validators with more stake are assigned more leader slots and have proportionally more influence in consensus.",
     "category": "core-protocol",
     "depth": 2,
-    "related": ["validator", "delegator", "stake-account"]
+    "related": ["validator", "delegator", "stake-account"],
+    "tags": ["validator"]
   },
   {
     "id": "stake-account",
@@ -85,7 +88,8 @@
     "definition": "A dedicated on-chain account that holds delegated SOL for staking. Each stake account has a staker authority (can redelegate) and a withdrawer authority (can withdraw). A stake account can only delegate to one validator at a time, so users create multiple stake accounts to split across validators.",
     "category": "core-protocol",
     "depth": 2,
-    "related": ["stake", "delegator", "validator"]
+    "related": ["stake", "delegator", "validator"],
+    "tags": ["validator"]
   },
   {
     "id": "delegator",
@@ -93,7 +97,8 @@
     "definition": "A SOL holder who delegates tokens to a validator's stake without running a node themselves. Delegators earn a share of inflation rewards proportional to their stake, minus the validator's commission (typically 0-10%). Delegation is non-custodial—the delegator retains the ability to redelegate or withdraw at any time.",
     "category": "core-protocol",
     "depth": 2,
-    "related": ["stake", "validator", "stake-account"]
+    "related": ["stake", "validator", "stake-account"],
+    "tags": ["validator"]
   },
   {
     "id": "fork",
@@ -302,7 +307,6 @@
     "definition": "Solana Bytecode Format—Solana's customized evolution of BPF. SBF adds Solana-specific syscalls, modifies calling conventions, disables certain eBPF instructions, and adds features like position-independent code. Programs are compiled with `cargo build-sbf` and deployed as SBF ELF binaries. SBF replaced BPF as the canonical bytecode format.",
     "category": "core-protocol",
     "depth": 4,
-    "aliases": ["SBF"],
     "related": ["bpf", "svm"]
   },
   {
@@ -402,7 +406,8 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["FD"],
-    "related": ["validator", "frankendancer"]
+    "related": ["validator", "frankendancer"],
+    "tags": ["validator"]
   },
   {
     "id": "frankendancer",
@@ -410,7 +415,8 @@
     "definition": "A hybrid Solana validator client that combines Firedancer's high-performance networking and block production components (written in C by Jump Crypto) with Agave's execution and replay engine. Frankendancer serves as a stepping stone toward full Firedancer, allowing validators to benefit from networking improvements while maintaining execution compatibility.",
     "category": "core-protocol",
     "depth": 4,
-    "related": ["firedancer", "validator"]
+    "related": ["firedancer", "validator"],
+    "tags": ["validator"]
   },
   {
     "id": "agave",
@@ -419,7 +425,8 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["Anza Agave"],
-    "related": ["validator", "firedancer"]
+    "related": ["validator", "firedancer"],
+    "tags": ["validator"]
   },
   {
     "id": "jito-validator",
@@ -428,7 +435,8 @@
     "category": "core-protocol",
     "depth": 4,
     "aliases": ["Jito-Solana"],
-    "related": ["agave", "validator", "mev"]
+    "related": ["agave", "validator", "mev"],
+    "tags": ["jito", "validator"]
   },
   {
     "id": "simd",
@@ -442,7 +450,8 @@
       "consensus",
       "epoch",
       "feature-activation-pipeline"
-    ]
+    ],
+    "tags": ["simd"]
   },
   {
     "id": "alpenglow",
@@ -460,7 +469,8 @@
     "category": "core-protocol",
     "depth": 4,
     "aliases": ["Block Revenue Sharing"],
-    "related": ["validator", "delegator", "priority-fee", "mev"]
+    "related": ["validator", "delegator", "priority-fee", "mev"],
+    "tags": ["simd"]
   },
   {
     "id": "anza",
@@ -486,7 +496,7 @@
     "definition": "The first chain extension (appchain) on Solana, purpose-built for gaming applications using the HyperGrid framework. Sonic enables sovereign game economies that process millions of requests per second while settling back to Solana L1, reducing transaction costs by up to 100x compared to regular Solana transactions while maintaining native composability.",
     "category": "core-protocol",
     "depth": 4,
-    "aliases": ["Sonic", "SONIC"],
+    "aliases": ["SONIC"],
     "related": ["svm", "gaming", "network-extension"]
   },
   {
@@ -632,7 +642,8 @@
     "definition": "The mechanism for activating protocol changes on Solana's mainnet cluster. Each feature is identified by a unique pubkey and activated when validators representing a supermajority of stake signal support by creating a feature account. Feature gates control runtime behavior changes, new syscalls, parameter adjustments, and program upgrades. This system allows gradual, stake-weighted rollout of protocol changes without hard forks.",
     "category": "core-protocol",
     "depth": 4,
-    "related": ["validator", "simd", "runtime", "feature-activation-pipeline"]
+    "related": ["validator", "simd", "runtime", "feature-activation-pipeline"],
+    "tags": ["simd"]
   },
   {
     "id": "secp256k1-precompile",
@@ -742,7 +753,6 @@
     "definition": "The transport protocol used by Solana's Transaction Processing Unit (TPU) since validator v1.13, replacing the original UDP-based ingestion. QUIC provides encrypted, authenticated, and flow-controlled connections between clients and leaders. It enables stake-weighted Quality of Service (QoS), where validators allocate connection bandwidth proportional to the sender's stake, mitigating spam and improving transaction landing rates during congestion.",
     "category": "core-protocol",
     "depth": 4,
-    "aliases": ["QUIC"],
     "related": ["tpu", "stake-weighted-qos", "leader-schedule"]
   },
   {
@@ -751,7 +761,8 @@
     "definition": "The unit of reward earned by validators for successfully voting on blocks. Each correct vote on a slot that reaches consensus awards one vote credit. At epoch boundaries, accumulated vote credits are converted to SOL rewards proportional to the validator's stake. Vote credits directly determine a validator's APY—higher credits mean the validator voted correctly more often and earned more for its delegators.",
     "category": "core-protocol",
     "depth": 3,
-    "related": ["vote-account", "epoch", "staking-rewards"]
+    "related": ["vote-account", "epoch", "staking-rewards"],
+    "tags": ["validator"]
   },
   {
     "id": "block-reward",
@@ -764,7 +775,8 @@
       "vote-credits",
       "staking-rewards",
       "transaction-fee"
-    ]
+    ],
+    "tags": ["validator"]
   },
   {
     "id": "message-v0",
@@ -790,7 +802,8 @@
     "definition": "The multi-step process by which a protocol change transitions from SIMD proposal to live mainnet behavior. A feature is assigned a unique keypair; once merged into the client, it remains inactive until a validator with sufficient stake creates the feature account via `solana feature activate`. Activation takes effect at the start of the next epoch after the feature account is created. The pipeline allows coordinated rollout: features first activate on testnet/devnet, then mainnet, and validators running older clients that lack the feature code will halt at the activation slot boundary rather than diverge.",
     "category": "core-protocol",
     "depth": 4,
-    "related": ["feature-gate", "simd", "epoch", "validator"]
+    "related": ["feature-gate", "simd", "epoch", "validator"],
+    "tags": ["simd"]
   },
   {
     "id": "block-packing",
@@ -839,6 +852,7 @@
       "validator",
       "block-reward",
       "transaction-fee"
-    ]
+    ],
+    "tags": ["validator"]
   }
 ]

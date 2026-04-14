@@ -100,7 +100,7 @@
     "definition": "The number of transactions a blockchain can process per second. Theoretical TPS is often much higher than sustained real-world performance. Bitcoin: ~7 TPS, Ethereum: ~15-30 TPS, Solana: ~2,000-5,000 non-vote TPS sustained (65,000 theoretical). Throughput depends on block size, block time, transaction size, and execution parallelism.",
     "category": "blockchain-general",
     "depth": 2,
-    "aliases": ["TPS", "Transactions Per Second"],
+    "aliases": ["Transactions Per Second"],
     "related": ["block-time", "scalability"]
   },
   {
@@ -497,7 +497,7 @@
     "definition": "The process by which miners expend computational resources to find a nonce producing a block header hash below the current difficulty target, earning the right to append a new block and collect the block reward plus fees. Bitcoin mining uses SHA-256d (double SHA-256) and adjusts difficulty every 2,016 blocks (~2 weeks) to maintain ~10-minute block times. Mining has evolved from CPUs to GPUs to ASICs, with industrial-scale operations dominating the network's hash rate.",
     "category": "blockchain-general",
     "depth": 1,
-    "aliases": ["Mining", "Bitcoin Mining", "PoW Mining"],
+    "aliases": ["Bitcoin Mining", "PoW Mining"],
     "related": ["proof-of-work", "bitcoin", "bitcoin-halving", "mempool"]
   },
   {

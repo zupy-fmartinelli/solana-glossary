@@ -37,7 +37,8 @@
     "definition": "A decentralized wireless infrastructure network that migrated from its own L1 blockchain to Solana in April 2023 for improved scalability and composability. Helium incentivizes individuals to deploy hotspots providing LoRaWAN (IoT) and 5G cellular coverage, earning HNT, MOBILE, and IOT tokens. With over 900,000 hotspots deployed globally, Helium is one of the largest DePIN projects on Solana.",
     "category": "solana-ecosystem",
     "depth": 1,
-    "related": ["depin", "sol", "compressed-nft"]
+    "related": ["depin", "sol", "compressed-nft"],
+    "tags": ["depin"]
   },
   {
     "id": "render-network",
@@ -45,7 +46,8 @@
     "definition": "A decentralized GPU rendering network that migrated to Solana in November 2023 from Ethereum for lower fees and higher throughput. Render connects artists and studios needing GPU power for 3D rendering, motion graphics, and AI workloads with node operators who supply idle GPUs. Contributors earn RENDER tokens for completed jobs. The migration leveraged Solana's state compression for efficient job tracking.",
     "category": "solana-ecosystem",
     "depth": 1,
-    "related": ["depin", "gpu-compute", "sol"]
+    "related": ["depin", "gpu-compute", "sol"],
+    "tags": ["depin"]
   },
   {
     "id": "hivemapper",
@@ -53,7 +55,8 @@
     "definition": "A decentralized mapping network on Solana where contributors install dashcams to collect street-level imagery while driving, building an up-to-date global map. Contributors earn HONEY tokens for mapping coverage, with rewards weighted by map freshness and geographic demand. Hivemapper has mapped millions of kilometers of roads and sells map data to enterprises as an alternative to Google Maps.",
     "category": "solana-ecosystem",
     "depth": 2,
-    "related": ["depin", "sol", "helium"]
+    "related": ["depin", "sol", "helium"],
+    "tags": ["depin"]
   },
   {
     "id": "bonk",
@@ -181,7 +184,8 @@
     "definition": "A decentralized indexing and data availability network by Metaplex designed to index compressed digital assets (cNFTs, tokens) on Solana. Aura replaces centralized RPC providers for reading compressed asset data by distributing the indexing workload across a network of operators. This improves reliability and decentralization of the compressed NFT infrastructure that underpins millions of on-chain assets.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "related": ["compressed-nft", "zk-compression", "helius"]
+    "related": ["compressed-nft", "zk-compression", "helius"],
+    "tags": ["metaplex"]
   },
   {
     "id": "step-finance",
@@ -360,7 +364,8 @@
     "category": "solana-ecosystem",
     "depth": 2,
     "aliases": ["Mango"],
-    "related": ["dex", "oracle", "defi-general"]
+    "related": ["dex", "oracle", "defi-general"],
+    "tags": ["deprecated"]
   },
   {
     "id": "hubble-protocol",
@@ -378,7 +383,8 @@
     "category": "solana-ecosystem",
     "depth": 3,
     "aliases": ["Tulip"],
-    "related": ["yield-farming", "raydium", "orca"]
+    "related": ["yield-farming", "raydium", "orca"],
+    "tags": ["deprecated"]
   },
   {
     "id": "port-finance",
@@ -386,7 +392,8 @@
     "definition": "An early Solana lending protocol supporting variable and fixed rate lending markets. Port Finance operated from 2021 to 2023, offering users the ability to supply assets for yield or borrow against collateral with algorithmic interest rates. It was among the first wave of lending protocols on Solana before the ecosystem consolidated around larger platforms like marginfi and Kamino.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "related": ["lending", "borrowing", "marginfi"]
+    "related": ["lending", "borrowing", "marginfi"],
+    "tags": ["deprecated"]
   },
   {
     "id": "friktion",
@@ -395,7 +402,8 @@
     "category": "solana-ecosystem",
     "depth": 3,
     "aliases": ["Friktion Labs"],
-    "related": ["defi-general", "yield-farming", "sol"]
+    "related": ["defi-general", "yield-farming", "sol"],
+    "tags": ["deprecated"]
   },
   {
     "id": "hxro-network",
@@ -403,7 +411,7 @@
     "definition": "A derivatives infrastructure layer on Solana providing a shared on-chain risk engine and order book for parimutuel and perpetual futures markets. Hxro enables other protocols to build derivatives products on top of its infrastructure rather than creating their own matching and risk systems. The network supports prediction markets, perpetuals, and structured products through composable smart contracts.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "aliases": ["Hxro", "HXRO"],
+    "aliases": ["HXRO"],
     "related": ["perpetuals", "dex", "defi-general"]
   },
   {
@@ -413,7 +421,8 @@
     "category": "solana-ecosystem",
     "depth": 3,
     "aliases": ["bSOL"],
-    "related": ["liquid-staking", "validator", "sanctum"]
+    "related": ["liquid-staking", "validator", "sanctum"],
+    "tags": ["lst"]
   },
   {
     "id": "solblaze",
@@ -447,7 +456,8 @@
     "category": "solana-ecosystem",
     "depth": 3,
     "aliases": ["SBR"],
-    "related": ["amm", "stablecoin", "liquidity-pool"]
+    "related": ["amm", "stablecoin", "liquidity-pool"],
+    "tags": ["deprecated"]
   },
   {
     "id": "jupiter-lfg",
@@ -456,7 +466,8 @@
     "category": "solana-ecosystem",
     "depth": 2,
     "aliases": ["LFG Launchpad"],
-    "related": ["jupiter", "bonding-curve", "dex"]
+    "related": ["jupiter", "bonding-curve", "dex"],
+    "tags": ["jupiter"]
   },
   {
     "id": "hawksight",
@@ -649,7 +660,7 @@
     "definition": "The team behind Solana Name Service (SNS), enabling human-readable .sol domain names that map to wallet addresses on Solana. Bonfida also built early Serum DEX GUIs and trading bots during Solana's initial DeFi wave. The .sol domain system supports subdomains, records for social profiles and websites, and has registered hundreds of thousands of domains since launch.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "aliases": ["SNS", "Solana Name Service"],
+    "aliases": ["Solana Name Service"],
     "related": ["dapp", "sol", "web3"]
   },
   {
@@ -716,7 +727,8 @@
     "category": "solana-ecosystem",
     "depth": 2,
     "aliases": ["JUP DAO"],
-    "related": ["jupiter", "dao", "governance-token"]
+    "related": ["jupiter", "dao", "governance-token"],
+    "tags": ["jupiter"]
   },
   {
     "id": "metaplex-foundation",
@@ -725,7 +737,8 @@
     "category": "solana-ecosystem",
     "depth": 2,
     "aliases": ["Metaplex"],
-    "related": ["nft", "compressed-nft", "metaplex-aura"]
+    "related": ["nft", "compressed-nft", "metaplex-aura"],
+    "tags": ["metaplex"]
   },
   {
     "id": "birdeye",
@@ -905,8 +918,8 @@
     "definition": "Jupiter's perpetual futures trading platform using a pool-based model (JLP) where liquidity providers deposit assets to earn trading fees while traders access up to 100x leverage on SOL, ETH, and BTC. JLP holders earn real yield from trading fees and liquidations, making it one of the highest-yield opportunities on Solana. The platform integrates directly with Jupiter's swap infrastructure.",
     "category": "solana-ecosystem",
     "depth": 2,
-    "aliases": ["JLP"],
-    "related": ["jupiter", "perpetuals", "defi-general", "jlp-pool"]
+    "related": ["jupiter", "perpetuals", "defi-general", "jlp-pool"],
+    "tags": ["jupiter"]
   },
   {
     "id": "sanctum-infinity",
@@ -915,7 +928,13 @@
     "category": "solana-ecosystem",
     "depth": 3,
     "aliases": ["INF"],
-    "related": ["sanctum", "liquid-staking", "liquidity-pool", "sanctum-router"]
+    "related": [
+      "sanctum",
+      "liquid-staking",
+      "liquidity-pool",
+      "sanctum-router"
+    ],
+    "tags": ["lst"]
   },
   {
     "id": "famous-fox-federation",
@@ -949,7 +968,8 @@
     "category": "solana-ecosystem",
     "depth": 1,
     "aliases": ["Jito", "JTO"],
-    "related": ["jito-sol", "liquid-staking", "validator"]
+    "related": ["jito-sol", "liquid-staking", "validator"],
+    "tags": ["jito"]
   },
   {
     "id": "chorusone",
@@ -973,7 +993,8 @@
     "definition": "A Swiss-based entity governing the Pyth oracle network, managing the PYTH governance token, publisher onboarding, and protocol governance decisions. The association coordinates between data publishers (financial institutions, exchanges, trading firms) and consuming protocols to ensure oracle data quality, uptime, and accuracy across the Pyth network's multi-chain oracle infrastructure originating from Solana.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "related": ["pyth", "oracle", "governance-token"]
+    "related": ["pyth", "oracle", "governance-token"],
+    "tags": ["oracle"]
   },
   {
     "id": "squads-labs",
@@ -1069,7 +1090,8 @@
     "definition": "Jito's restaking infrastructure on Solana enabling staked SOL and JitoSOL to secure additional networks and services beyond Solana consensus. Jito Restaking creates a shared security marketplace where node consensus networks (NCNs) can leverage Solana's existing validator set and staked capital for their own security needs, paying rewards to restakers.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "related": ["jito-foundation", "jito-sol", "restaking"]
+    "related": ["jito-foundation", "jito-sol", "restaking"],
+    "tags": ["jito"]
   },
   {
     "id": "phoenix-wallet",
@@ -1085,7 +1107,8 @@
     "definition": "Switchboard's pull-based oracle model on Solana where data feeds are updated on-demand when requested by consuming protocols rather than pushed on a fixed schedule. This reduces costs for infrequently-used feeds while ensuring fresh data at the moment of consumption, complementing Switchboard's traditional push-based oracle feeds.",
     "category": "solana-ecosystem",
     "depth": 3,
-    "related": ["switchboard", "oracle", "pyth"]
+    "related": ["switchboard", "oracle", "pyth"],
+    "tags": ["oracle"]
   },
   {
     "id": "marinade-native-staking",
@@ -1125,7 +1148,8 @@
     "definition": "Phantom's mobile wallet application for iOS and Android providing full Solana wallet functionality including token swaps via Jupiter, NFT management, staking, and a built-in dApp browser. Phantom Mobile uses biometric authentication and integrates with Mobile Wallet Adapter for seamless interaction with Solana mobile dApps.",
     "category": "solana-ecosystem",
     "depth": 2,
-    "related": ["phantom", "mobile-wallet-adapter", "wallet-general"]
+    "related": ["phantom", "mobile-wallet-adapter", "wallet-general"],
+    "tags": ["mobile"]
   },
   {
     "id": "helium-mobile",
@@ -1133,7 +1157,8 @@
     "definition": "A mobile carrier service built on the Helium network on Solana, offering cellular coverage through a combination of decentralized 5G hotspots and traditional carrier partnerships (T-Mobile). Subscribers earn MOBILE tokens for contributing to network coverage. Helium Mobile demonstrates a real consumer product powered by DePIN infrastructure on Solana.",
     "category": "solana-ecosystem",
     "depth": 2,
-    "related": ["helium", "depin", "sol"]
+    "related": ["helium", "depin", "sol"],
+    "tags": ["depin"]
   },
   {
     "id": "vanity-address",

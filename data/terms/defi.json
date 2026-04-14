@@ -114,7 +114,8 @@
       "limit-order",
       "jlp-pool",
       "jupiter-limit-order"
-    ]
+    ],
+    "tags": ["jupiter"]
   },
   {
     "id": "dex-aggregator",
@@ -171,7 +172,8 @@
     "definition": "A service that provides external data (prices, randomness) to on-chain programs. DeFi protocols rely on oracles for accurate price feeds to calculate collateral ratios, liquidation thresholds, and swap rates. Solana's primary oracles are Pyth (high-frequency price feeds) and Switchboard (general-purpose data feeds and VRF).",
     "category": "defi",
     "depth": 3,
-    "related": ["pyth", "switchboard", "price-feed"]
+    "related": ["pyth", "switchboard", "price-feed"],
+    "tags": ["oracle"]
   },
   {
     "id": "pyth",
@@ -179,7 +181,8 @@
     "definition": "A high-frequency oracle network publishing price feeds for crypto, equities, commodities, and FX. Pyth aggregates data from 90+ first-party publishers (market makers, exchanges) and updates prices every 400ms on Solana. Each price feed includes a price, confidence interval, and exponential moving average. Pyth uses a pull model with Hermes for cross-chain delivery.",
     "category": "defi",
     "depth": 3,
-    "related": ["oracle", "price-feed"]
+    "related": ["oracle", "price-feed"],
+    "tags": ["oracle"]
   },
   {
     "id": "switchboard",
@@ -187,7 +190,8 @@
     "definition": "A decentralized oracle network on Solana providing custom data feeds, verifiable random functions (VRF), and serverless compute (Functions). Unlike Pyth's publisher model, Switchboard uses a permissionless oracle queue where operators run jobs defined by feed creators. Supports any data source via its off-chain oracle job framework.",
     "category": "defi",
     "depth": 3,
-    "related": ["oracle", "vrf"]
+    "related": ["oracle", "vrf"],
+    "tags": ["oracle"]
   },
   {
     "id": "price-feed",
@@ -195,7 +199,8 @@
     "definition": "An on-chain account maintained by an oracle (Pyth or Switchboard) containing the current price, confidence interval, and timestamp for an asset pair (e.g., SOL/USD). DeFi programs read price feeds to calculate collateral values, trigger liquidations, and determine swap rates. Feed staleness must be checked to prevent using outdated prices.",
     "category": "defi",
     "depth": 3,
-    "related": ["oracle", "pyth", "switchboard"]
+    "related": ["oracle", "pyth", "switchboard"],
+    "tags": ["oracle"]
   },
   {
     "id": "vrf",
@@ -204,7 +209,8 @@
     "category": "defi",
     "depth": 4,
     "aliases": ["VRF"],
-    "related": ["switchboard", "oracle"]
+    "related": ["switchboard", "oracle"],
+    "tags": ["oracle"]
   },
   {
     "id": "lending",
@@ -270,7 +276,8 @@
     "category": "defi",
     "depth": 2,
     "aliases": ["LST"],
-    "related": ["stake", "marinade", "jito-sol", "sanctum-router"]
+    "related": ["stake", "marinade", "jito-sol", "sanctum-router"],
+    "tags": ["lst"]
   },
   {
     "id": "marinade",
@@ -279,7 +286,8 @@
     "category": "defi",
     "depth": 2,
     "aliases": ["mSOL"],
-    "related": ["liquid-staking"]
+    "related": ["liquid-staking"],
+    "tags": ["lst"]
   },
   {
     "id": "jito-sol",
@@ -287,7 +295,8 @@
     "definition": "The liquid staking token issued by Jito, representing staked SOL that earns both standard staking rewards and MEV tips. JitoSOL often offers higher APY (~7-8%) than other LSTs because Jito validators share MEV revenue with stakers. The underlying SOL is delegated to validators running the Jito client.",
     "category": "defi",
     "depth": 2,
-    "related": ["liquid-staking", "jito", "mev"]
+    "related": ["liquid-staking", "jito", "mev"],
+    "tags": ["jito", "lst"]
   },
   {
     "id": "limit-order",
@@ -370,7 +379,7 @@
     "definition": "A token pegged to a stable asset, typically the US dollar. Major stablecoins on Solana include USDC (Circle, natively minted), USDT (Tether), and UXD (algorithmic). Stablecoins are critical DeFi primitives used as trading pairs, lending collateral, and yield farming. USDC on Solana uses the SPL Token program with freeze authority retained by Circle.",
     "category": "defi",
     "depth": 1,
-    "aliases": ["USDC", "USDT"],
+    "aliases": ["USDT"],
     "related": ["defi-general", "token-swap"]
   },
   {
@@ -415,7 +424,8 @@
     "category": "defi",
     "depth": 3,
     "aliases": ["Sanctum LST"],
-    "related": ["liquid-staking", "marinade", "jito-sol", "sanctum-router"]
+    "related": ["liquid-staking", "marinade", "jito-sol", "sanctum-router"],
+    "tags": ["lst"]
   },
   {
     "id": "tensor",
@@ -850,7 +860,8 @@
     "definition": "Pyth Network's off-chain price delivery web service that provides real-time price updates for the pull oracle model. Hermes aggregates publisher price submissions and serves them via REST and WebSocket APIs. When a Solana transaction needs a price, it fetches the latest update from Hermes and includes it as an instruction in the transaction, where the Pyth on-chain program verifies its authenticity.",
     "category": "defi",
     "depth": 4,
-    "related": ["pyth", "pull-oracle-model", "oracle"]
+    "related": ["pyth", "pull-oracle-model", "oracle"],
+    "tags": ["oracle"]
   },
   {
     "id": "confidence-interval",
@@ -858,7 +869,8 @@
     "definition": "A measure of uncertainty published alongside each Pyth price feed, representing the range within which the true price likely falls. If SOL/USD is $150 with a confidence interval of $0.10, the price is between $149.90 and $150.10 with high probability. DeFi protocols should use confidence intervals to widen spreads or pause operations during periods of high uncertainty to avoid acting on imprecise prices.",
     "category": "defi",
     "depth": 4,
-    "related": ["pyth", "price-feed", "oracle"]
+    "related": ["pyth", "price-feed", "oracle"],
+    "tags": ["oracle"]
   },
   {
     "id": "ema-price",
@@ -867,7 +879,8 @@
     "category": "defi",
     "depth": 4,
     "aliases": ["Exponential Moving Average Price"],
-    "related": ["pyth", "price-feed", "twap"]
+    "related": ["pyth", "price-feed", "twap"],
+    "tags": ["oracle"]
   },
   {
     "id": "switchboard-functions",
@@ -875,7 +888,8 @@
     "definition": "A serverless compute feature of the Switchboard oracle network that allows developers to run custom off-chain code (written in Rust or TypeScript) inside secure enclaves (SGX/TDX) and post verified results on-chain. Functions enable arbitrary data feeds beyond standard price oracles—sports scores, weather data, complex computations—while providing cryptographic attestation that the code executed correctly in a trusted environment.",
     "category": "defi",
     "depth": 4,
-    "related": ["switchboard", "oracle"]
+    "related": ["switchboard", "oracle"],
+    "tags": ["oracle"]
   },
   {
     "id": "oracle-staleness",
@@ -1180,7 +1194,6 @@
     "definition": "Derivative contracts that let traders speculate on asset prices with leverage and no expiration date. Unlike traditional futures, perpetuals use a funding rate mechanism—periodic payments between longs and shorts—to keep the contract price anchored to the spot price. On Solana, protocols like Drift, Flash Trade, and Zeta Markets offer perpetual futures with up to 20x leverage, settling in USDC.",
     "category": "defi",
     "depth": 2,
-    "aliases": ["Perps", "Perpetuals"],
     "related": ["leverage", "funding-rate", "drift", "dex"]
   },
   {
@@ -1215,7 +1228,8 @@
     "category": "defi",
     "depth": 2,
     "aliases": ["JLP"],
-    "related": ["jupiter-perpetuals", "liquidity-pool", "perpetuals"]
+    "related": ["jupiter-perpetuals", "liquidity-pool", "perpetuals"],
+    "tags": ["jupiter"]
   },
   {
     "id": "kamino-vault",
@@ -1247,7 +1261,8 @@
       "liquid-staking",
       "marinade",
       "blazestake"
-    ]
+    ],
+    "tags": ["lst"]
   },
   {
     "id": "jupiter-limit-order",
@@ -1255,6 +1270,7 @@
     "definition": "Jupiter's on-chain limit order system that allows users to place orders at a specified price and have them executed by a keeper network when the market price crosses the trigger. Unlike AMM swaps that execute immediately at the current price, limit orders sit in an on-chain order account until a keeper bot detects the price condition is met and fills the order by routing through Jupiter's aggregator for best execution. Orders can be partially filled, have optional expiry timestamps, and charge no fees beyond the standard swap fees at execution time.",
     "category": "defi",
     "depth": 2,
-    "related": ["jupiter", "limit-order", "dex-aggregator"]
+    "related": ["jupiter", "limit-order", "dex-aggregator"],
+    "tags": ["jupiter"]
   }
 ]

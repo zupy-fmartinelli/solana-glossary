@@ -531,7 +531,8 @@
     "definition": "A technique for accessing on-chain account data directly from the underlying byte buffer without copying it into a new Rust struct, avoiding heap allocation and reducing compute unit usage. In Anchor, zero-copy is enabled via #[account(zero_copy)] on the account struct, which uses repr(C) layout and the AccountLoader type. Ideal for large accounts (>1KB) where Borsh deserialization would be expensive.",
     "category": "programming-model",
     "depth": 4,
-    "related": ["account-data", "borsh", "account-loader"]
+    "related": ["account-data", "borsh", "account-loader"],
+    "tags": ["dev"]
   },
   {
     "id": "account-loader",
@@ -592,7 +593,7 @@
     "definition": "Solana's custom bytecode format derived from eBPF, used as the compilation target for all on-chain programs. Rust programs compiled with `cargo build-sbf` are transpiled to sBPF instructions executed by the Solana Virtual Machine (SVM). sBPF extends eBPF with Solana-specific syscalls for cross-program invocations, logging, and cryptographic operations. The format enforces a strict instruction set and memory model to ensure deterministic, metered execution within compute unit budgets.",
     "category": "programming-model",
     "depth": 4,
-    "aliases": ["Solana Bytecode Format", "SBF", "BPF"],
+    "aliases": ["Solana Bytecode Format", "SBF"],
     "related": ["program", "bpf", "svm", "compute-units", "syscall"]
   },
   {
@@ -602,7 +603,8 @@
     "category": "programming-model",
     "depth": 4,
     "aliases": ["Rate Limit", "Throttling", "Mint Cap"],
-    "related": ["clock", "pda", "circuit-breaker"]
+    "related": ["clock", "pda", "circuit-breaker"],
+    "tags": ["security"]
   },
   {
     "id": "program-as-authority",
@@ -611,7 +613,8 @@
     "category": "programming-model",
     "depth": 4,
     "aliases": ["PDA Authority", "Program Gatekeeper", "PDA-as-Authority"],
-    "related": ["pda", "invoke-signed", "cpi"]
+    "related": ["pda", "invoke-signed", "cpi"],
+    "tags": ["security"]
   },
   {
     "id": "cpi-passthrough",
@@ -620,7 +623,8 @@
     "category": "programming-model",
     "depth": 4,
     "aliases": ["CPI Relay", "CPI Forward"],
-    "related": ["cpi", "invoke-signed", "discriminator"]
+    "related": ["cpi", "invoke-signed", "discriminator"],
+    "tags": ["dev"]
   },
   {
     "id": "instruction-fallback",
@@ -652,7 +656,8 @@
       "compute-budget",
       "compute-units",
       "priority-fee"
-    ]
+    ],
+    "tags": ["dev"]
   },
   {
     "id": "send-and-confirm-pattern",
@@ -665,7 +670,8 @@
       "transaction-retry",
       "blockhash",
       "commitment-levels"
-    ]
+    ],
+    "tags": ["dev"]
   },
   {
     "id": "retry-strategy",
@@ -678,7 +684,8 @@
       "transaction-landing",
       "transaction-deduplication",
       "send-and-confirm-pattern"
-    ]
+    ],
+    "tags": ["dev"]
   },
   {
     "id": "blockhash-management",
@@ -691,7 +698,8 @@
       "transaction-mortality",
       "send-and-confirm-pattern",
       "durable-nonce"
-    ]
+    ],
+    "tags": ["dev"]
   },
   {
     "id": "instruction-introspection",
@@ -699,7 +707,8 @@
     "definition": "A technique where a Solana program reads the Instructions sysvar (Sysvar1nstructions1111111111111111111111111) to inspect other instructions within the same transaction, enabling cross-instruction validation without CPI. The primary use cases are verifying that an Ed25519 or Secp256k1 precompile instruction exists earlier in the transaction (proving a signature was verified), enforcing that specific instructions co-occur (e.g., requiring a memo), and detecting whether the current instruction was invoked via CPI. Programs call load_instruction_at or get_instruction_relative to read sibling instructions.",
     "category": "programming-model",
     "depth": 4,
-    "related": ["sysvar-instructions", "ed25519", "cpi-guard"]
+    "related": ["sysvar-instructions", "ed25519", "cpi-guard"],
+    "tags": ["dev"]
   },
   {
     "id": "account-validation-pattern",
@@ -713,7 +722,8 @@
       "pda-substitution",
       "discriminator",
       "account-discriminator-check"
-    ]
+    ],
+    "tags": ["dev", "security"]
   },
   {
     "id": "sysvar-instructions",

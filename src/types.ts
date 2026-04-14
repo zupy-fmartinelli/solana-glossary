@@ -31,4 +31,6 @@ export interface GlossaryTerm {
   related?: string[];
   /** Aliases or abbreviations, e.g. ["PoH"] */
   aliases?: string[];
+  /** Optional tags for cross-cutting concerns, e.g. ["token-2022", "deprecated"] */
+  tags?: string[];
 }

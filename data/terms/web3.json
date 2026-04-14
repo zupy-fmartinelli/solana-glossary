@@ -100,7 +100,6 @@
     "definition": "The profit validators/block producers can extract by reordering, inserting, or censoring transactions within a block. MEV includes frontrunning (trading before a large order), sandwich attacks (surrounding a swap with buy/sell), and arbitrage. On Solana, Jito's block engine provides an MEV auction system where searchers submit bundles with tips.",
     "category": "web3",
     "depth": 2,
-    "aliases": ["MEV"],
     "related": ["mev", "sandwich-attack", "arbitrage"]
   },
   {
