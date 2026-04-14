@@ -1032,5 +1032,28 @@
     "category": "defi",
     "aliases": ["T+1", "T+2", "T+0"],
     "related": ["atomic-settlement", "clearing-settlement", "finality-general"]
+  },
+  {
+    "id": "perpetual-futures",
+    "term": "Perpetual Futures",
+    "definition": "Derivative contracts that let traders speculate on asset prices with leverage and no expiration date. Unlike traditional futures, perpetuals use a funding rate mechanism—periodic payments between longs and shorts—to keep the contract price anchored to the spot price. On Solana, protocols like Drift, Flash Trade, and Zeta Markets offer perpetual futures with up to 20x leverage, settling in USDC.",
+    "category": "defi",
+    "aliases": ["Perps", "Perpetuals"],
+    "related": ["leverage", "funding-rate", "drift", "dex"]
+  },
+  {
+    "id": "liquidation-engine",
+    "term": "Liquidation Engine",
+    "definition": "The mechanism in lending and perpetual futures protocols that closes undercollateralized positions to protect the system from bad debt. When a borrower's collateral ratio falls below the maintenance margin, liquidator bots repay part of the debt and receive a discount on the seized collateral as incentive. On Solana, protocols like Drift, MarginFi, and Kamino use cranked or keeper-based liquidation engines that execute within the same slot for near-instant settlement.",
+    "category": "defi",
+    "related": ["margin", "lending", "drift", "marginfi"]
+  },
+  {
+    "id": "dynamic-amm",
+    "term": "Dynamic AMM",
+    "definition": "An automated market maker that adjusts its pricing curve parameters dynamically based on real-time market conditions such as volatility, volume, and asset correlation. Unlike static constant-product AMMs (x*y=k), dynamic AMMs optimize capital efficiency and reduce impermanent loss by adapting fees and liquidity concentration. Meteora's Dynamic AMM on Solana uses a virtual price curve with dynamic fees that increase during volatile periods.",
+    "category": "defi",
+    "aliases": ["DAMM"],
+    "related": ["amm", "clmm", "impermanent-loss", "meteora"]
   }
 ]

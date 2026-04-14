@@ -318,5 +318,20 @@
     "definition": "An RPC connection routed through a validator or RPC node that holds delegated stake, granting the connection higher priority under Solana's Stake-Weighted Quality of Service (SWQoS) system. Transactions submitted via staked connections receive preferential bandwidth allocation to the leader's TPU, significantly improving landing rates during periods of network congestion. RPC providers like Helius and Triton offer staked connections as a premium feature for production applications.",
     "category": "infrastructure",
     "related": ["stake-weighted-qos", "rpc-node", "transaction-landing"]
+  },
+  {
+    "id": "priority-fee-estimator",
+    "term": "Priority Fee Estimator",
+    "definition": "A service or API that calculates optimal priority fees for transactions based on recent network conditions. RPC providers like Helius and Triton offer getRecentPrioritizationFees and getPriorityFeeEstimate endpoints that analyze recent slots to recommend fee levels (min, low, medium, high, max) per compute unit. Using an estimator prevents overpaying during low congestion or underpaying during high demand.",
+    "category": "infrastructure",
+    "related": ["priority-fee-api", "compute-budget", "helius", "triton"]
+  },
+  {
+    "id": "grpc-geyser",
+    "term": "Geyser gRPC",
+    "definition": "A high-performance streaming interface that combines Solana's Geyser plugin framework with gRPC protocol for real-time blockchain data. Unlike WebSocket-based RPC subscriptions, Geyser gRPC streams account updates, transactions, slot notifications, and block metadata directly from the validator with lower latency and higher throughput. Yellowstone is the reference implementation. Used by indexers, bots, and analytics platforms that need sub-second data feeds.",
+    "category": "infrastructure",
+    "aliases": ["Yellowstone gRPC"],
+    "related": ["geyser", "yellowstone", "grpc", "websocket"]
   }
 ]
