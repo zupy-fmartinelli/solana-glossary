@@ -147,7 +147,7 @@
     "definition": "The component within Solana's TPU pipeline responsible for ordering transactions from the banking stage's queues, acquiring account read/write locks, and dispatching transactions to worker threads for execution. The scheduler enforces account conflict serialization (ensuring write-locked accounts are processed by only one thread at a time) while maximizing parallelism across non-conflicting transactions. Solana has iterated on scheduler designs (including the central scheduler introduced in 2024) to improve throughput and reduce lock contention under load.",
     "category": "network",
     "depth": 4,
-    "related": ["tpu", "parallel-execution"]
+    "related": ["tpu", "parallel-execution", "block-packing"]
   },
   {
     "id": "banking-stage",
@@ -155,7 +155,7 @@
     "definition": "The critical TPU pipeline stage in which Solana validators execute transactions, update account state, and produce entries that will be packed into a block. Banking stage receives forwarded transactions from the fetch and sigverify stages, acquires account locks via the scheduler, runs transactions through the SVM, and writes results to the accounts database. It is the computational heart of block production and is where compute unit limits, priority fee ordering, and parallel execution all converge.",
     "category": "network",
     "depth": 5,
-    "related": ["tpu", "scheduler", "transaction"]
+    "related": ["tpu", "scheduler", "transaction", "block-packing"]
   },
   {
     "id": "transaction-landing",
@@ -163,7 +163,13 @@
     "definition": "The outcome of a transaction being successfully included and confirmed in a Solana block, as opposed to being dropped, expiring, or failing simulation. Landing probability is influenced by priority fee competitiveness, blockhash freshness (must be within ~150 slots of creation), submission routing (direct to leader vs. RPC rebroadcast), and network congestion on the accounts involved. Developers optimize landing rates by using current-leader TPU endpoints, setting appropriate priority fees, and preflight-checking transactions before submission.",
     "category": "network",
     "depth": 2,
-    "related": ["transaction", "priority-fee", "stake-weighted-qos"]
+    "related": [
+      "transaction",
+      "priority-fee",
+      "stake-weighted-qos",
+      "send-and-confirm-pattern",
+      "retry-strategy"
+    ]
   },
   {
     "id": "transaction-retry",
@@ -171,7 +177,12 @@
     "definition": "The practice of resubmitting a transaction multiple times until it lands or its blockhash expires, necessary because Solana does not guarantee delivery of any single submission and drops can occur at any pipeline stage. By default, Solana RPC nodes rebroadcast submitted transactions periodically, but this is unreliable; production applications implement client-side retry loops that resubmit the same signed transaction (with unchanged signature) at short intervals until confirmation is received or the blockhash expires (roughly 60–90 seconds after creation).",
     "category": "network",
     "depth": 2,
-    "related": ["transaction-landing", "rpc"]
+    "related": [
+      "transaction-landing",
+      "rpc",
+      "send-and-confirm-pattern",
+      "retry-strategy"
+    ]
   },
   {
     "id": "blockhash",
@@ -179,7 +190,12 @@
     "definition": "A 32-byte hash derived from the bank's state at a given slot, included in every Solana transaction to prove the transaction was created recently and to prevent replay attacks. A blockhash remains valid for approximately 150 slots (~60–90 seconds at normal slot times); transactions submitted with an expired blockhash are rejected outright. Clients must fetch a fresh blockhash before signing and ideally reuse it for as short a window as possible to maximize landing probability.",
     "category": "network",
     "depth": 2,
-    "related": ["transaction", "durable-nonce"]
+    "related": [
+      "transaction",
+      "durable-nonce",
+      "transaction-deduplication",
+      "blockhash-management"
+    ]
   },
   {
     "id": "durable-nonce",
@@ -243,7 +259,7 @@
     "definition": "A special-purpose transaction submitted by each validator every slot to record its vote on the current fork of the blockchain, serving as the on-chain mechanism for Solana's Tower BFT consensus. Vote transactions are exempt from compute unit limits and priority fee requirements, are processed by a dedicated vote transaction path separate from user transactions, and account for the majority of raw TPS on the network (typically 70–80% of all transactions). Validators pay vote transaction fees from their vote account, which is one reason validator economics require sufficient stake to cover ongoing operating costs.",
     "category": "network",
     "depth": 4,
-    "related": ["vote-account", "validator", "transaction-fee"]
+    "related": ["vote-account", "validator", "transaction-fee", "vote-cost"]
   },
   {
     "id": "skip-rate",

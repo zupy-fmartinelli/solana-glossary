@@ -39,7 +39,12 @@
     "definition": "A period of 432,000 slots (approximately 2-3 days) that defines a staking cycle. At each epoch boundary, the leader schedule is recalculated based on stake weights, stake activations/deactivations take effect, and inflation rewards are distributed to validators and delegators.",
     "category": "core-protocol",
     "depth": 2,
-    "related": ["slot", "leader-schedule", "stake-weighted-qos"]
+    "related": [
+      "slot",
+      "leader-schedule",
+      "stake-weighted-qos",
+      "epoch-boundary"
+    ]
   },
   {
     "id": "leader-schedule",
@@ -64,7 +69,7 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["Vote"],
-    "related": ["validator", "tower-bft"]
+    "related": ["validator", "tower-bft", "vote-cost"]
   },
   {
     "id": "stake",
@@ -188,7 +193,7 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["TPU"],
-    "related": ["tvu", "transaction", "leader-schedule"]
+    "related": ["tvu", "transaction", "leader-schedule", "sigverify-stage"]
   },
   {
     "id": "tvu",
@@ -280,7 +285,7 @@
     "category": "core-protocol",
     "depth": 3,
     "aliases": ["SVM"],
-    "related": ["sealevel", "bpf", "sbf"]
+    "related": ["sealevel", "bpf", "sbf", "sbpf"]
   },
   {
     "id": "bpf",
@@ -289,7 +294,7 @@
     "category": "core-protocol",
     "depth": 4,
     "aliases": ["BPF", "eBPF"],
-    "related": ["sbf", "svm"]
+    "related": ["sbf", "svm", "sbpf"]
   },
   {
     "id": "sbf",
@@ -432,7 +437,12 @@
     "category": "core-protocol",
     "depth": 4,
     "aliases": ["Solana Improvement Document"],
-    "related": ["validator", "consensus", "epoch"]
+    "related": [
+      "validator",
+      "consensus",
+      "epoch",
+      "feature-activation-pipeline"
+    ]
   },
   {
     "id": "alpenglow",
@@ -622,7 +632,7 @@
     "definition": "The mechanism for activating protocol changes on Solana's mainnet cluster. Each feature is identified by a unique pubkey and activated when validators representing a supermajority of stake signal support by creating a feature account. Feature gates control runtime behavior changes, new syscalls, parameter adjustments, and program upgrades. This system allows gradual, stake-weighted rollout of protocol changes without hard forks.",
     "category": "core-protocol",
     "depth": 4,
-    "related": ["validator", "simd", "runtime"]
+    "related": ["validator", "simd", "runtime", "feature-activation-pipeline"]
   },
   {
     "id": "secp256k1-precompile",
@@ -725,5 +735,110 @@
     "depth": 5,
     "aliases": ["Edwards Curve"],
     "related": ["ed25519", "ed25519-precompile", "on-curve-off-curve"]
+  },
+  {
+    "id": "quic-protocol",
+    "term": "QUIC (Transaction Ingress)",
+    "definition": "The transport protocol used by Solana's Transaction Processing Unit (TPU) since validator v1.13, replacing the original UDP-based ingestion. QUIC provides encrypted, authenticated, and flow-controlled connections between clients and leaders. It enables stake-weighted Quality of Service (QoS), where validators allocate connection bandwidth proportional to the sender's stake, mitigating spam and improving transaction landing rates during congestion.",
+    "category": "core-protocol",
+    "depth": 4,
+    "aliases": ["QUIC"],
+    "related": ["tpu", "stake-weighted-qos", "leader-schedule"]
+  },
+  {
+    "id": "vote-credits",
+    "term": "Vote Credits",
+    "definition": "The unit of reward earned by validators for successfully voting on blocks. Each correct vote on a slot that reaches consensus awards one vote credit. At epoch boundaries, accumulated vote credits are converted to SOL rewards proportional to the validator's stake. Vote credits directly determine a validator's APY—higher credits mean the validator voted correctly more often and earned more for its delegators.",
+    "category": "core-protocol",
+    "depth": 3,
+    "related": ["vote-account", "epoch", "staking-rewards"]
+  },
+  {
+    "id": "block-reward",
+    "term": "Block Reward",
+    "definition": "The SOL inflation reward distributed to validators for producing and voting on blocks. Solana's inflation started at 8% annually and decreases 15% per year toward a long-term rate of 1.5%. Block rewards are split between the leader (who produces the block) and all validators who voted for it. Half of each transaction's base fee and priority fee is burned, and the other half goes to the leader, complementing inflation rewards.",
+    "category": "core-protocol",
+    "depth": 3,
+    "related": [
+      "inflation",
+      "vote-credits",
+      "staking-rewards",
+      "transaction-fee"
+    ]
+  },
+  {
+    "id": "message-v0",
+    "term": "Message v0 (Versioned Message)",
+    "definition": "The versioned transaction message format introduced to support Address Lookup Tables (ALTs). Legacy messages inline all account addresses (32 bytes each), limiting transactions to ~35 accounts. Message v0 references ALT accounts by index, compressing the address list and allowing up to 256 accounts per transaction. Clients use VersionedTransaction with MessageV0 to build transactions that reference ALTs.",
+    "category": "core-protocol",
+    "depth": 3,
+    "aliases": ["MessageV0", "Versioned Message"],
+    "related": ["versioned-transaction", "address-lookup-table", "transaction"]
+  },
+  {
+    "id": "sigverify-stage",
+    "term": "SigVerify Stage",
+    "definition": "The second stage in Solana's TPU pipeline, positioned between fetch and banking, responsible for verifying all Ed25519 signatures on incoming transaction packets. SigVerify uses GPU-accelerated batch verification to validate thousands of signatures per second, discarding packets with invalid signatures before they consume execution resources. Each transaction's first signature doubles as its unique ID, so deduplication also occurs at this stage by checking the signature against a recent cache.",
+    "category": "core-protocol",
+    "depth": 5,
+    "aliases": ["Signature Verification Stage"],
+    "related": ["tpu", "signature", "ed25519", "banking-stage"]
+  },
+  {
+    "id": "feature-activation-pipeline",
+    "term": "Feature Activation Pipeline",
+    "definition": "The multi-step process by which a protocol change transitions from SIMD proposal to live mainnet behavior. A feature is assigned a unique keypair; once merged into the client, it remains inactive until a validator with sufficient stake creates the feature account via `solana feature activate`. Activation takes effect at the start of the next epoch after the feature account is created. The pipeline allows coordinated rollout: features first activate on testnet/devnet, then mainnet, and validators running older clients that lack the feature code will halt at the activation slot boundary rather than diverge.",
+    "category": "core-protocol",
+    "depth": 4,
+    "related": ["feature-gate", "simd", "epoch", "validator"]
+  },
+  {
+    "id": "block-packing",
+    "term": "Block Packing",
+    "definition": "The process by which the leader validator assembles transactions into a block during its leader slots, subject to the 48M compute unit cap per block, the 12,500 non-vote transaction limit, and account-level write-lock constraints. The scheduler prioritizes transactions by fee-per-CU, attempts to maximize parallelism across non-conflicting account sets, and packs entries until the compute budget or slot time is exhausted. Block packing efficiency directly determines a leader's fee revenue and the network's effective throughput.",
+    "category": "core-protocol",
+    "depth": 4,
+    "related": ["banking-stage", "scheduler", "compute-units", "block"]
+  },
+  {
+    "id": "transaction-deduplication",
+    "term": "Transaction Deduplication",
+    "definition": "Solana's mechanism for preventing the same transaction from being processed twice within a slot or across consecutive slots. Each transaction is uniquely identified by its first signature; the runtime maintains a status cache of recently processed signatures spanning roughly 150 slots (~60-90 seconds). If a transaction with an already-seen signature arrives, it is silently dropped. This cache is why retry logic can safely resubmit the same signed transaction without risk of double-execution, and why transactions with expired blockhashes are rejected even if the signature is novel.",
+    "category": "core-protocol",
+    "depth": 4,
+    "related": [
+      "blockhash",
+      "signature",
+      "transaction-retry",
+      "transaction-mortality"
+    ]
+  },
+  {
+    "id": "epoch-boundary",
+    "term": "Epoch Boundary",
+    "definition": "The transition point between two consecutive epochs at every 432,000th slot, during which the runtime performs critical state transitions: the leader schedule for the next epoch is computed from current stake weights, pending stake activations and deactivations take effect, inflation rewards are credited to validators and delegators, and the vote-credit-based reward distribution is finalized. Epoch boundaries are computationally expensive and can cause brief increases in slot times as the leader processes these one-time operations.",
+    "category": "core-protocol",
+    "depth": 3,
+    "related": [
+      "epoch",
+      "epoch-schedule",
+      "leader-schedule",
+      "stake",
+      "block-reward"
+    ]
+  },
+  {
+    "id": "vote-cost",
+    "term": "Vote Cost (Validator Economics)",
+    "definition": "The ongoing SOL expense validators incur from submitting vote transactions every slot, constituting the largest operational cost alongside hardware. Each vote transaction costs approximately 5,000 lamports in base fees, and validators submit roughly 432,000 votes per epoch, totaling 2-3 SOL per epoch in vote fees alone. Vote costs are paid from the validator's vote account balance. This constant drain means validators with insufficient stake delegation may operate at a loss, as their share of inflation rewards must exceed vote costs plus hardware expenses to be profitable.",
+    "category": "core-protocol",
+    "depth": 3,
+    "related": [
+      "vote-transaction",
+      "vote-account",
+      "validator",
+      "block-reward",
+      "transaction-fee"
+    ]
   }
 ]

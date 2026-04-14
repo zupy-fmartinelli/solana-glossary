@@ -14,7 +14,7 @@
     "definition": "A Solana full node that stores ledger state and serves JSON-RPC and WebSocket requests from clients without participating in consensus or voting. RPC nodes must replay every transaction to maintain an accurate account state database, and high-throughput deployments typically run dedicated RPC nodes with large SSDs, high RAM (256 GB+), and high-bandwidth network connections to handle concurrent client load without impacting validator performance.",
     "category": "infrastructure",
     "depth": 2,
-    "related": ["rpc", "validator"]
+    "related": ["rpc", "validator", "archive-node"]
   },
   {
     "id": "rpc-methods",
@@ -362,5 +362,30 @@
     "category": "infrastructure",
     "depth": 3,
     "related": ["stake-weighted-qos", "rpc-node", "transaction-landing"]
+  },
+  {
+    "id": "priority-fee-estimator",
+    "term": "Priority Fee Estimator",
+    "definition": "A service or API that calculates optimal priority fees for transactions based on recent network conditions. RPC providers like Helius and Triton offer getRecentPrioritizationFees and getPriorityFeeEstimate endpoints that analyze recent slots to recommend fee levels (min, low, medium, high, max) per compute unit. Using an estimator prevents overpaying during low congestion or underpaying during high demand.",
+    "category": "infrastructure",
+    "depth": 3,
+    "related": ["priority-fee-api", "compute-budget", "helius", "triton"]
+  },
+  {
+    "id": "grpc-geyser",
+    "term": "Geyser gRPC",
+    "definition": "A high-performance streaming interface that combines Solana's Geyser plugin framework with gRPC protocol for real-time blockchain data. Unlike WebSocket-based RPC subscriptions, Geyser gRPC streams account updates, transactions, slot notifications, and block metadata directly from the validator with lower latency and higher throughput. Yellowstone is the reference implementation. Used by indexers, bots, and analytics platforms that need sub-second data feeds.",
+    "category": "infrastructure",
+    "depth": 4,
+    "aliases": ["Yellowstone gRPC"],
+    "related": ["geyser", "yellowstone", "grpc", "websocket"]
+  },
+  {
+    "id": "archive-node",
+    "term": "Archive Node",
+    "definition": "A Solana node that retains the complete historical ledger from genesis, including all transaction data and historical account states, rather than pruning old data after a retention window. Standard RPC nodes typically store only 2-3 days of transaction history and the current account state snapshot. Archive nodes served by providers like Triton, Helius, and Google BigQuery enable historical queries such as getTransaction for months-old signatures and full getBlock retrieval for past epochs. Running an archive node requires multi-terabyte storage (50+ TB and growing) due to Solana's high throughput.",
+    "category": "infrastructure",
+    "depth": 3,
+    "related": ["rpc-node", "validator", "get-transaction"]
   }
 ]

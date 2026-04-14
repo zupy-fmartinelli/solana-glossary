@@ -247,7 +247,7 @@
     "definition": "An account controlled by multiple parties requiring M-of-N signatures to authorize actions. On Solana, multisig is implemented by programs like Squads rather than at the protocol level. Use cases: program upgrade authority (require 3-of-5 team members), treasury management, and DAO governance execution.",
     "category": "dev-tools",
     "depth": 2,
-    "related": ["squads", "authority"]
+    "related": ["squads", "authority", "circuit-breaker"]
   },
   {
     "id": "magicblock",

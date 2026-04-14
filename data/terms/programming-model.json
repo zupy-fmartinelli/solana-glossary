@@ -91,7 +91,7 @@
     "category": "programming-model",
     "depth": 3,
     "aliases": ["PDA"],
-    "related": ["seeds", "bump", "find-program-address"]
+    "related": ["seeds", "bump", "find-program-address", "program-as-authority"]
   },
   {
     "id": "seeds",
@@ -125,7 +125,14 @@
     "category": "programming-model",
     "depth": 3,
     "aliases": ["CPI"],
-    "related": ["program", "instruction", "invoke", "invoke-signed"]
+    "related": [
+      "program",
+      "instruction",
+      "invoke",
+      "invoke-signed",
+      "cpi-depth-attack",
+      "cpi-passthrough"
+    ]
   },
   {
     "id": "invoke",
@@ -133,7 +140,7 @@
     "definition": "The Solana SDK function used to execute a CPI without PDA signing: `invoke(instruction, account_infos)`. All required signers must have already signed the outer transaction. Use invoke when calling programs that only need signatures from user wallets, not from PDAs.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["cpi", "invoke-signed"]
+    "related": ["cpi", "invoke-signed", "cpi-depth-attack"]
   },
   {
     "id": "invoke-signed",
@@ -141,7 +148,7 @@
     "definition": "The Solana SDK function for CPIs where a PDA must sign: `invoke_signed(instruction, account_infos, signer_seeds)`. The runtime verifies that the seeds + bump produce the expected PDA pubkey and grants signer privileges for that account. This is how programs authorize actions on behalf of PDAs they own.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["cpi", "invoke", "pda"]
+    "related": ["cpi", "invoke", "pda", "program-as-authority"]
   },
   {
     "id": "system-program",
@@ -278,7 +285,12 @@
     "definition": "Special read-only accounts maintained by the runtime that expose cluster state to programs. Key sysvars include Clock (slot, timestamp), Rent (lamports-per-byte), EpochSchedule (epoch parameters), RecentBlockhashes, StakeHistory, and Fees. Programs access sysvars by including the sysvar account in the instruction or via the sol_get_sysvar syscall.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["clock", "rent-exemption", "epoch-schedule"]
+    "related": [
+      "clock",
+      "rent-exemption",
+      "epoch-schedule",
+      "sysvar-instructions"
+    ]
   },
   {
     "id": "clock",
@@ -286,7 +298,7 @@
     "definition": "A sysvar (address: SysvarC1ock11111111111111111111111111111111) that provides the current slot, epoch, unix_timestamp, and leader_schedule_epoch. Programs use Clock to implement time-based logic like lockups or vesting schedules. In Anchor, accessed via `Clock::get()` or as a sysvar account in the accounts struct.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["sysvar", "slot", "epoch"]
+    "related": ["sysvar", "slot", "epoch", "on-chain-rate-limiting"]
   },
   {
     "id": "account-data",
@@ -338,7 +350,7 @@
     "category": "programming-model",
     "depth": 3,
     "aliases": ["CU Budget"],
-    "related": ["compute-units", "priority-fee"]
+    "related": ["compute-units", "priority-fee", "cu-estimation"]
   },
   {
     "id": "compute-units",
@@ -559,7 +571,7 @@
     "definition": "The simulateTransaction RPC method that dry-runs a transaction against a specified bank state without submitting it to the network or consuming fees. Simulation returns the execution result including logs, compute units consumed, return data, and any error. Developers use simulation to estimate CU usage, debug program errors, and verify transaction correctness before sending. Simulation does not require valid signatures.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["preflight-check", "rpc", "compute-units"]
+    "related": ["preflight-check", "rpc", "compute-units", "cu-estimation"]
   },
   {
     "id": "transaction-mortality",
@@ -567,6 +579,148 @@
     "definition": "The limited lifespan of a Solana transaction determined by its referenced blockhash. A transaction's blockhash must correspond to a block within the last 150 slots (~60-90 seconds) or the transaction is rejected as expired. This mechanism prevents replay attacks and bounds the time validators must track transaction deduplication. Durable nonces bypass mortality for use cases requiring long-lived transactions.",
     "category": "programming-model",
     "depth": 3,
-    "related": ["blockhash", "durable-nonce", "transaction"]
+    "related": [
+      "blockhash",
+      "durable-nonce",
+      "transaction",
+      "blockhash-management"
+    ]
+  },
+  {
+    "id": "sbpf",
+    "term": "sBPF (Solana Bytecode Format)",
+    "definition": "Solana's custom bytecode format derived from eBPF, used as the compilation target for all on-chain programs. Rust programs compiled with `cargo build-sbf` are transpiled to sBPF instructions executed by the Solana Virtual Machine (SVM). sBPF extends eBPF with Solana-specific syscalls for cross-program invocations, logging, and cryptographic operations. The format enforces a strict instruction set and memory model to ensure deterministic, metered execution within compute unit budgets.",
+    "category": "programming-model",
+    "depth": 4,
+    "aliases": ["Solana Bytecode Format", "SBF", "BPF"],
+    "related": ["program", "bpf", "svm", "compute-units", "syscall"]
+  },
+  {
+    "id": "on-chain-rate-limiting",
+    "term": "On-Chain Rate Limiting",
+    "definition": "A technique where a Solana program enforces transaction-frequency or cumulative-amount caps directly in instruction logic, storing counters and reset timestamps in a PDA account and validating each call against the Clock sysvar. Unlike off-chain rate limits, on-chain limits remain enforced even if the authorized signer key is compromised — an attacker still cannot exceed the hard-coded per-transaction or per-day ceilings. Daily reset uses clock.unix_timestamp / 86400 day comparison.",
+    "category": "programming-model",
+    "depth": 4,
+    "aliases": ["Rate Limit", "Throttling", "Mint Cap"],
+    "related": ["clock", "pda", "circuit-breaker"]
+  },
+  {
+    "id": "program-as-authority",
+    "term": "Program-as-Authority Pattern",
+    "definition": "An architectural pattern where a Program-Derived Address owned by the program is set as the authority over a resource (mint, vault, token account) instead of a user keypair, making the program itself the gatekeeper. Human signers only authorize calls into the program; the actual CPI that mutates the resource is signed by the PDA via invoke_signed. Program-level invariants (rate limits, pauses, access control) become cryptographically mandatory since no external key can bypass the program.",
+    "category": "programming-model",
+    "depth": 4,
+    "aliases": ["PDA Authority", "Program Gatekeeper", "PDA-as-Authority"],
+    "related": ["pda", "invoke-signed", "cpi"]
+  },
+  {
+    "id": "cpi-passthrough",
+    "term": "CPI Passthrough",
+    "definition": "A design pattern where a Solana program receives pre-built instruction data from the client, validates security constraints (authority, PDA, discriminator prefix), and forwards the raw bytes to another program via invoke_signed. Unlike standard CPI where the caller constructs the instruction, passthrough delegates serialization to the client while the on-chain program acts as a validated relay. Used when the target program's format is complex or version-dependent.",
+    "category": "programming-model",
+    "depth": 4,
+    "aliases": ["CPI Relay", "CPI Forward"],
+    "related": ["cpi", "invoke-signed", "discriminator"]
+  },
+  {
+    "id": "instruction-fallback",
+    "term": "Instruction Fallback (Anchor)",
+    "definition": "Anchor's default error handler that triggers when incoming instruction data doesn't match any registered 8-byte discriminator. Returns error code 0x65 (101) with message 'InstructionFallbackNotFound'. Most commonly seen when a client sends a discriminator format the program doesn't understand — e.g., a V2 single-byte disc to an Anchor V1 program expecting 8-byte SHA256 discriminators. Native Solana programs handle unknown discriminators with their own match logic.",
+    "category": "programming-model",
+    "depth": 4,
+    "aliases": ["InstructionFallbackNotFound", "Anchor Error 0x65"],
+    "related": ["discriminator", "anchor"]
+  },
+  {
+    "id": "program-upgrade",
+    "term": "Program Upgrade",
+    "definition": "Deploying new bytecode to an existing Solana program address via the Upgradeable BPF Loader. The program's public key and all derived PDAs remain unchanged — only the executable binary is replaced. Requires the upgrade authority (a designated signer) to approve. This enables shipping fixes without breaking integrations, but a compromised authority can silently replace program logic. Programs can be made immutable by setting the upgrade authority to None.",
+    "category": "programming-model",
+    "depth": 3,
+    "aliases": ["Upgradeable Program", "Program Redeploy"],
+    "related": ["upgradeable-loader", "bpf-loader", "upgrade-authority"]
+  },
+  {
+    "id": "cu-estimation",
+    "term": "CU Estimation via Simulation",
+    "definition": "The practice of calling simulateTransaction to measure exact compute unit consumption before submitting a transaction, then setting SetComputeUnitLimit to the simulated value plus a small margin (typically 10-20%). This pattern avoids both over-requesting CU (which inflates priority fee costs since fee = CU_price * CU_limit) and under-requesting (which causes the transaction to fail with a ComputeBudget exceeded error). The simulation returns unitsConsumed in its response, which developers use to right-size the compute budget instruction.",
+    "category": "programming-model",
+    "depth": 3,
+    "aliases": ["Compute Unit Estimation"],
+    "related": [
+      "simulate-transaction",
+      "compute-budget",
+      "compute-units",
+      "priority-fee"
+    ]
+  },
+  {
+    "id": "send-and-confirm-pattern",
+    "term": "Send-and-Confirm Pattern",
+    "definition": "A client-side transaction lifecycle pattern that combines sendTransaction (with skipPreflight: true for freshest state) with polling via getSignatureStatuses or a WebSocket signatureSubscribe until the desired commitment level is reached or the blockhash expires. The canonical implementation: fetch a recent blockhash with its lastValidBlockHeight, sign and send the transaction, then poll in a loop checking both the signature status and whether the current blockHeight exceeds lastValidBlockHeight. If the blockhash expires without confirmation, the transaction is guaranteed to never land and can be safely retried with a fresh blockhash.",
+    "category": "programming-model",
+    "depth": 3,
+    "related": [
+      "transaction-landing",
+      "transaction-retry",
+      "blockhash",
+      "commitment-levels"
+    ]
+  },
+  {
+    "id": "retry-strategy",
+    "term": "Retry Strategy (Transaction)",
+    "definition": "A client-side pattern for reliably landing Solana transactions despite the network's fire-and-forget submission model. Production strategies include: aggressive resubmission of the same signed transaction every 1-2 seconds until confirmation or blockhash expiry, sending to multiple RPC endpoints or directly to leader TPU addresses via QUIC for redundancy, exponential backoff for transient RPC errors, and fresh-blockhash retry where a new transaction is signed after the previous blockhash expires. The key invariant is that resubmitting an identical signed transaction is idempotent due to transaction deduplication.",
+    "category": "programming-model",
+    "depth": 3,
+    "related": [
+      "transaction-retry",
+      "transaction-landing",
+      "transaction-deduplication",
+      "send-and-confirm-pattern"
+    ]
+  },
+  {
+    "id": "blockhash-management",
+    "term": "Blockhash Management",
+    "definition": "The set of client-side practices for maintaining a valid recent blockhash to maximize transaction landing probability. Key techniques include polling getLatestBlockhash at intervals shorter than the ~60-90 second validity window, caching both the blockhash and its lastValidBlockHeight for expiry detection, using the confirmed commitment level for blockhash fetches to balance freshness and stability, and replacing stale blockhashes in retry logic before re-signing. Poor blockhash management is one of the most common causes of transaction failures in production Solana applications.",
+    "category": "programming-model",
+    "depth": 3,
+    "related": [
+      "blockhash",
+      "transaction-mortality",
+      "send-and-confirm-pattern",
+      "durable-nonce"
+    ]
+  },
+  {
+    "id": "instruction-introspection",
+    "term": "Instruction Introspection",
+    "definition": "A technique where a Solana program reads the Instructions sysvar (Sysvar1nstructions1111111111111111111111111) to inspect other instructions within the same transaction, enabling cross-instruction validation without CPI. The primary use cases are verifying that an Ed25519 or Secp256k1 precompile instruction exists earlier in the transaction (proving a signature was verified), enforcing that specific instructions co-occur (e.g., requiring a memo), and detecting whether the current instruction was invoked via CPI. Programs call load_instruction_at or get_instruction_relative to read sibling instructions.",
+    "category": "programming-model",
+    "depth": 4,
+    "related": ["sysvar-instructions", "ed25519", "cpi-guard"]
+  },
+  {
+    "id": "account-validation-pattern",
+    "term": "Account Validation Pattern",
+    "definition": "The systematic set of checks every Solana program must perform on each account before processing an instruction: ownership check (verify account.owner matches the expected program), signer check (assert is_signer for privileged accounts), writable check (confirm is_writable for accounts being modified), PDA re-derivation (recompute the PDA from seeds and compare to the passed address), discriminator check (validate the first 8 bytes match the expected type), and key equality (confirm specific accounts match known addresses like the token program ID). Anchor automates these via its Account trait derive macro and constraint attributes.",
+    "category": "programming-model",
+    "depth": 3,
+    "related": [
+      "missing-signer-check",
+      "missing-owner-check",
+      "pda-substitution",
+      "discriminator",
+      "account-discriminator-check"
+    ]
+  },
+  {
+    "id": "sysvar-instructions",
+    "term": "Instructions Sysvar",
+    "definition": "A special sysvar account (address: Sysvar1nstructions1111111111111111111111111) that provides on-chain programs read access to all instructions in the current transaction. Unlike other sysvars, it cannot be read via sol_get_sysvar and must be explicitly included as an account in the instruction. Programs use it for instruction introspection: verifying co-occurrence of precompile signature verifications (Ed25519/Secp256k1), detecting CPI context (distinguishing top-level calls from nested CPI), and enforcing instruction ordering constraints.",
+    "category": "programming-model",
+    "depth": 4,
+    "related": ["sysvar", "instruction-introspection", "ed25519", "cpi"]
   }
 ]

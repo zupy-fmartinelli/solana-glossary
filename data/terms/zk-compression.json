@@ -14,7 +14,12 @@
     "category": "zk-compression",
     "depth": 3,
     "aliases": ["Light Protocol"],
-    "related": ["state-compression", "compressed-account"]
+    "related": [
+      "state-compression",
+      "compressed-account",
+      "state-tree",
+      "nullifier-queue"
+    ]
   },
   {
     "id": "compressed-account",
@@ -47,7 +52,12 @@
     "definition": "A Merkle tree is a binary hash tree in which every leaf node contains a cryptographic hash of a data block, and every non-leaf (internal) node contains the hash of its two children, such that the single root hash cryptographically commits to the entire dataset and any modification to any leaf produces a detectably different root. In Solana, Merkle trees underpin state compression: the SPL Account Compression program maintains Concurrent Merkle Trees on-chain with only the root hash persisted in account storage, while all leaf data is derivable from transaction logs. The Poseidon hash function is preferred over SHA-256 for ZK-friendly Merkle trees because it is algebraically efficient inside arithmetic circuits used for zero-knowledge proof generation.",
     "category": "zk-compression",
     "depth": 3,
-    "related": ["merkle-proof", "state-compression"]
+    "related": [
+      "merkle-proof",
+      "state-compression",
+      "state-tree",
+      "nullifier-queue"
+    ]
   },
   {
     "id": "canopy",
@@ -154,7 +164,12 @@
     "definition": "A compressed token is an SPL-compatible fungible or semi-fungible token whose per-account token balances are stored as leaves in a Concurrent Merkle Tree via Light Protocol's Compressed Token Program rather than as individual Token or Token-2022 accounts, reducing the account creation cost from ~0.002 SOL per token account to a negligible fraction of a lamport per leaf. Compressed tokens implement the same mint, transfer, burn, and delegation semantics as standard SPL tokens, but every operation requires a Merkle proof of the source leaf's existence and a validity proof of the state transition; the Compressed Token Program wraps the Light System Program to handle this ZK machinery transparently. This design is particularly valuable for airdrops, gaming economies, and reward systems where millions of user token accounts would otherwise impose prohibitive rent costs on the issuer or recipient.",
     "category": "zk-compression",
     "depth": 4,
-    "related": ["zk-compression", "compressed-account", "spl-token"]
+    "related": [
+      "zk-compression",
+      "compressed-account",
+      "spl-token",
+      "compressed-burn"
+    ]
   },
   {
     "id": "nullifier",
@@ -162,7 +177,7 @@
     "definition": "A nullifier is a cryptographic value derived deterministically from a compressed account's leaf hash (and optionally a secret) that is published and recorded on-chain when that compressed account is consumed (spent) in a state transition, permanently marking the account as used and preventing it from being spent a second time in a double-spend attack. In Light Protocol, nullifiers are inserted into an on-chain nullifier queue account and periodically batch-processed by Forester nodes into a nullifier set stored in a separate Merkle tree, allowing the validity proof to assert both that the input account exists (inclusion proof) and that its nullifier has not yet been recorded (non-membership proof). The nullifier scheme allows compressed accounts to be treated as UTXOs — each account is consumed once and replaced by one or more output accounts — while maintaining the privacy and succinctness properties of the ZK proof system.",
     "category": "zk-compression",
     "depth": 4,
-    "related": ["zk-proofs", "compressed-account"]
+    "related": ["zk-proofs", "compressed-account", "compressed-burn"]
   },
   {
     "id": "zkp-syscall",
@@ -279,5 +294,50 @@
     "category": "zk-compression",
     "depth": 4,
     "related": ["zk-proofs", "zk-compression", "validity-proof"]
+  },
+  {
+    "id": "compressed-burn",
+    "term": "Compressed Burn",
+    "definition": "Permanently destroying tokens held in a compressed account (Merkle tree leaf) via Light Protocol's cToken program. Unlike standard SPL burn which reduces an ATA balance, compressed burn nullifies the leaf and decrements the on-chain mint supply atomically. Requires a validity proof demonstrating the account exists in the state tree. Uses discriminator byte 8 on cToken V2.",
+    "category": "zk-compression",
+    "depth": 4,
+    "aliases": ["cToken Burn"],
+    "related": [
+      "compressed-token",
+      "nullifier",
+      "zk-compression",
+      "light-protocol",
+      "token-burn"
+    ]
+  },
+  {
+    "id": "nullifier-queue",
+    "term": "Nullifier Queue",
+    "definition": "A FIFO queue in Light Protocol holding hashes of spent compressed accounts. When a compressed account is transferred or burned, its nullifier is added to prevent double-spending. The Forester service asynchronously drains the queue, zeroing old Merkle tree leaves. If the queue fills before processing, a temporary liveness issue occurs — spend transactions fail until space is freed. This is a protocol-level, not application-level concern.",
+    "category": "zk-compression",
+    "depth": 5,
+    "aliases": ["Nullifier Buffer"],
+    "related": [
+      "nullifier",
+      "forester",
+      "state-tree",
+      "zk-compression",
+      "merkle-tree"
+    ]
+  },
+  {
+    "id": "state-tree",
+    "term": "State Tree",
+    "definition": "A protocol-managed concurrent Merkle tree in Light Protocol that stores compressed account state as hashed leaves. Each leaf represents a compressed account (token balance, NFT, etc.). State trees are shared across all programs — developers don't create or manage them. When a tree fills (~67M leaves), the Forester service auto-rolls to a new tree. Unlike Bubblegum trees for cNFTs, state trees are infrastructure maintained by the protocol.",
+    "category": "zk-compression",
+    "depth": 4,
+    "aliases": ["Compressed State Tree"],
+    "related": [
+      "zk-compression",
+      "merkle-tree",
+      "forester",
+      "light-protocol",
+      "concurrent-merkle-tree"
+    ]
   }
 ]
