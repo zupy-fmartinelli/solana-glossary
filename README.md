@@ -82,7 +82,15 @@ All tools support optional `locale` parameter (`"pt"` or `"es"`) for localized r
 
 ### AI Skill
 
-The package includes [`skills/SKILL.md`](skills/SKILL.md) — instructions for AI agents on when and how to use the glossary tools. Copy it into your project's `.claude/skills/` directory or reference it directly.
+The package includes an [AI skill](skills/solana-glossary/SKILL.md) with instructions for AI agents on when and how to use the glossary tools.
+
+Install it with [skills-npm](https://github.com/antfu/skills-npm):
+
+```bash
+npm skill add @stbr/solana-glossary
+```
+
+Or copy `skills/solana-glossary/SKILL.md` into your project's `.claude/skills/` directory.
 
 ---
 

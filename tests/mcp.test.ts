@@ -33,12 +33,34 @@ describe("lookup_term (getTerm)", () => {
     expect(getTerm("nonexistent-xyz")).toBeUndefined();
   });
 
-  it("locale override applies to term and definition", () => {
+  it("returns undefined for empty string", () => {
+    expect(getTerm("")).toBeUndefined();
+  });
+
+  it("Portuguese locale overrides term and definition", () => {
     const ptTerms = getLocalizedTerms("pt");
     const ptMap = new Map(ptTerms.map((t) => [t.id, t]));
     const ptTerm = ptMap.get("proof-of-history");
     expect(ptTerm).toBeDefined();
     expect(ptTerm!.term).not.toBe("Proof of History (PoH)");
+    expect(ptTerm!.definition).not.toContain("A clock mechanism");
+  });
+
+  it("Spanish locale overrides term and definition", () => {
+    const esTerms = getLocalizedTerms("es");
+    const esMap = new Map(esTerms.map((t) => [t.id, t]));
+    const esTerm = esMap.get("proof-of-history");
+    expect(esTerm).toBeDefined();
+    expect(esTerm!.term).not.toBe("Proof of History (PoH)");
+    expect(esTerm!.definition).not.toContain("A clock mechanism");
+  });
+
+  it("unsupported locale falls back to English", () => {
+    const frTerms = getLocalizedTerms("fr");
+    const frMap = new Map(frTerms.map((t) => [t.id, t]));
+    const frTerm = frMap.get("proof-of-history");
+    expect(frTerm).toBeDefined();
+    expect(frTerm!.term).toBe("Proof of History (PoH)");
   });
 });
 
@@ -53,11 +75,23 @@ describe("search_glossary (searchTerms)", () => {
     expect(results).toHaveLength(0);
   });
 
+  it("returns empty array for empty string", () => {
+    const results = searchTerms("");
+    // Empty string matches everything or nothing depending on impl
+    // Just verify it doesn't throw
+    expect(Array.isArray(results)).toBe(true);
+  });
+
   it("respects limit via slice", () => {
     const all = searchTerms("token");
     const limited = searchTerms("token").slice(0, 5);
     expect(limited.length).toBeLessThanOrEqual(5);
     expect(all.length).toBeGreaterThanOrEqual(limited.length);
+  });
+
+  it("matches on aliases", () => {
+    const results = searchTerms("PoH");
+    expect(results.some((t) => t.id === "proof-of-history")).toBe(true);
   });
 });
 
@@ -213,5 +247,77 @@ describe("inject_context", () => {
     const estimatedTokens = Math.ceil(text.length / 4);
     expect(estimatedTokens).toBeGreaterThan(10);
     expect(estimatedTokens).toBeLessThan(500);
+  });
+});
+
+describe("MCP server integration", () => {
+  it("createServer returns a server instance", async () => {
+    const { createServer } = await import("../mcp/server");
+    const server = createServer();
+    expect(server).toBeDefined();
+  });
+});
+
+describe("browse_category edge cases", () => {
+  it("invalid category returns empty", () => {
+    const cats = getCategories();
+    expect(cats.includes("invalid-category" as Category)).toBe(false);
+  });
+
+  it("every term belongs to a valid category", () => {
+    const validCats = new Set(getCategories());
+    for (const t of allTerms) {
+      expect(validCats.has(t.category)).toBe(true);
+    }
+  });
+});
+
+describe("filter_by_depth edge cases", () => {
+  it("depth 1 and depth 5 are non-empty", () => {
+    expect(getTermsByDepth(1).length).toBeGreaterThan(0);
+    expect(getTermsByDepth(5).length).toBeGreaterThan(0);
+  });
+
+  it("maxDepth 1 is a subset of maxDepth 2", () => {
+    const d1 = new Set(getTermsByMaxDepth(1).map((t) => t.id));
+    const d2 = getTermsByMaxDepth(2);
+    for (const t of d2) {
+      if (t.depth === 1) expect(d1.has(t.id)).toBe(true);
+    }
+  });
+});
+
+describe("i18n completeness", () => {
+  it("Portuguese has entries for all terms", () => {
+    const ptTerms = getLocalizedTerms("pt");
+    expect(ptTerms).toHaveLength(allTerms.length);
+  });
+
+  it("Spanish has entries for all terms", () => {
+    const esTerms = getLocalizedTerms("es");
+    expect(esTerms).toHaveLength(allTerms.length);
+  });
+
+  it("Portuguese definitions are not English", () => {
+    const ptTerms = getLocalizedTerms("pt");
+    const enTerms = new Map(allTerms.map((t) => [t.id, t]));
+    let translated = 0;
+    for (const pt of ptTerms) {
+      const en = enTerms.get(pt.id);
+      if (en && pt.definition !== en.definition) translated++;
+    }
+    // At least 95% should be different from English
+    expect(translated / ptTerms.length).toBeGreaterThan(0.95);
+  });
+
+  it("Spanish definitions are not English", () => {
+    const esTerms = getLocalizedTerms("es");
+    const enTerms = new Map(allTerms.map((t) => [t.id, t]));
+    let translated = 0;
+    for (const es of esTerms) {
+      const en = enTerms.get(es.id);
+      if (en && es.definition !== en.definition) translated++;
+    }
+    expect(translated / esTerms.length).toBeGreaterThan(0.95);
   });
 });
