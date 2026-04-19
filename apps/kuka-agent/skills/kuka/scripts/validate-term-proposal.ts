@@ -162,7 +162,7 @@ function checkRequiredFields(
   proposal: Record<string, unknown>,
   findings: Finding[],
 ): boolean {
-  const requiredFields = ["id", "term", "definition", "category"];
+  const requiredFields = ["id", "term", "definition", "category", "depth"];
   for (const field of requiredFields) {
     if (!(field in proposal)) {
       findings.push({
@@ -204,6 +204,23 @@ function checkIdAndCategory(
       category: "structure",
       issue: `Invalid category: '${category}'`,
       fix: `Use one of: ${VALID_CATEGORIES.join(", ")}`,
+    });
+  }
+}
+
+function checkDepth(proposal: Record<string, unknown>, findings: Finding[]): void {
+  const depth = proposal.depth;
+  if (
+    typeof depth !== "number" ||
+    !Number.isInteger(depth) ||
+    depth < 1 ||
+    depth > 5
+  ) {
+    findings.push({
+      severity: "critical",
+      category: "structure",
+      issue: `Invalid depth '${depth}': must be integer 1-5 (1=surface, 2=shallow, 3=deep, 4=abyss, 5=bottom)`,
+      fix: "Set 'depth' to an integer between 1 and 5 based on the target audience",
     });
   }
 }
@@ -295,6 +312,7 @@ function validateProposal(
   const definition = proposal.definition as string;
 
   checkIdAndCategory(termId, category, existingIds, findings);
+  checkDepth(proposal, findings);
   checkDefinitionLength(definition, findings);
   checkRelatedTerms(proposal, existingIds, pendingIds, findings);
   checkAliasCollisions(proposal, existingAliases, findings);

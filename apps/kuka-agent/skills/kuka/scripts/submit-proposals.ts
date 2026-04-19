@@ -48,6 +48,7 @@ interface Proposal {
   term: string;
   definition: string;
   category: Category;
+  depth: number;
   aliases?: string[];
   related?: string[];
   i18n?: Record<string, I18nEntry>;
@@ -169,7 +170,7 @@ function loadProposals(proposalsDir: string): Proposal[] {
     if (!file.endsWith(".json")) continue;
     try {
       const data = JSON.parse(readFileSync(join(proposalsDir, file), "utf-8"));
-      if (data.id && data.term && data.definition && data.category) {
+      if (data.id && data.term && data.definition && data.category && typeof data.depth === "number") {
         proposals.push(data as Proposal);
       }
     } catch {
@@ -210,6 +211,16 @@ function validateProposal(
     issues.push(`Invalid category: ${proposal.category}`);
   }
 
+  // Depth
+  if (
+    typeof proposal.depth !== "number" ||
+    !Number.isInteger(proposal.depth) ||
+    proposal.depth < 1 ||
+    proposal.depth > 5
+  ) {
+    issues.push(`Invalid depth '${proposal.depth}': must be integer 1-5`);
+  }
+
   // Definition length
   if (proposal.definition.length < 50) {
     issues.push(`Definition too short: ${proposal.definition.length} chars`);
@@ -245,7 +256,8 @@ function validateProposal(
     (i) =>
       i.includes("already exists") ||
       i.includes("Invalid kebab") ||
-      i.includes("Invalid category"),
+      i.includes("Invalid category") ||
+      i.includes("Invalid depth"),
   );
 
   let status: ValidationStatus;

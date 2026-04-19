@@ -130,6 +130,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term used to validate the proposal validator script works correctly with valid input data.",
         category: "dev-tools",
+        depth: 3,
         aliases: ["TVT"],
         related: ["anchor"],
       }),
@@ -173,6 +174,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "This is a duplicate term that should be rejected because proof-of-history already exists in the glossary.",
         category: "core-protocol",
+        depth: 2,
       }),
     );
 
@@ -200,6 +202,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term with an invalid category to verify the validator catches this correctly.",
         category: "nonexistent-category",
+        depth: 3,
       }),
     );
 
@@ -226,6 +229,7 @@ describe("validate-term-proposal.ts", () => {
         term: "Short Def",
         definition: "Too short.",
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -248,6 +252,7 @@ describe("validate-term-proposal.ts", () => {
       definition:
         "A test term piped through stdin to verify the validator can read from standard input correctly.",
       category: "dev-tools",
+      depth: 3,
     });
 
     try {
@@ -276,6 +281,7 @@ describe("validate-term-proposal.ts", () => {
         term: "Pending One",
         definition: "A pending proposal used for testing proposals-dir loading.",
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -288,6 +294,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term to verify that --proposals-dir and --verbose CLI arguments are parsed correctly.",
         category: "dev-tools",
+        depth: 3,
         related: ["pending-one"],
       }),
     );
@@ -330,6 +337,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term that verifies the proposals loader gracefully skips invalid JSON files in the proposals directory.",
         category: "dev-tools",
+        depth: 3,
         related: ["good-pending"],
       }),
     );
@@ -360,6 +368,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term with an invalid ID format to verify the kebab-case validator rejects uppercase and underscores.",
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -387,6 +396,7 @@ describe("validate-term-proposal.ts", () => {
         term: "Long Def Term",
         definition: longDef,
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -414,6 +424,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term with an alias that collides with an existing alias in the glossary to verify collision detection.",
         category: "dev-tools",
+        depth: 3,
         aliases: ["has_one"],
       }),
     );
@@ -442,6 +453,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term whose name matches an existing alias in the glossary to verify term-name vs alias collision detection.",
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -468,6 +480,7 @@ describe("validate-term-proposal.ts", () => {
         definition:
           "A test term to verify that the verbose flag produces diagnostic output on stderr.",
         category: "dev-tools",
+        depth: 3,
       }),
     );
 
@@ -484,6 +497,61 @@ describe("validate-term-proposal.ts", () => {
 
     rmSync(TMP_DIR, { recursive: true, force: true });
   });
+
+  it("fails when depth field is missing", () => {
+    mkdirSync(TMP_DIR, { recursive: true });
+    const proposalPath = join(TMP_DIR, "no-depth.json");
+    writeFileSync(
+      proposalPath,
+      JSON.stringify({
+        id: "test-no-depth",
+        term: "Test No Depth",
+        definition:
+          "A test term to verify the validator rejects proposals that are missing the required depth field.",
+        category: "dev-tools",
+      }),
+    );
+
+    const { stdout } = runScript(
+      "validate-term-proposal.ts",
+      `--proposal ${proposalPath}`,
+    );
+    const result = JSON.parse(stdout);
+    expect(result.status).toBe("fail");
+    expect(
+      result.findings.some((f: any) => f.issue.includes("Missing required field: depth")),
+    ).toBe(true);
+
+    rmSync(TMP_DIR, { recursive: true, force: true });
+  });
+
+  it("fails when depth is out of range", () => {
+    mkdirSync(TMP_DIR, { recursive: true });
+    const proposalPath = join(TMP_DIR, "bad-depth.json");
+    writeFileSync(
+      proposalPath,
+      JSON.stringify({
+        id: "test-bad-depth",
+        term: "Test Bad Depth",
+        definition:
+          "A test term to verify the validator rejects proposals with an out-of-range depth value.",
+        category: "dev-tools",
+        depth: 6,
+      }),
+    );
+
+    const { stdout } = runScript(
+      "validate-term-proposal.ts",
+      `--proposal ${proposalPath}`,
+    );
+    const result = JSON.parse(stdout);
+    expect(result.status).toBe("fail");
+    expect(
+      result.findings.some((f: any) => f.issue.includes("Invalid depth")),
+    ).toBe(true);
+
+    rmSync(TMP_DIR, { recursive: true, force: true });
+  });
 });
 
 function makeProposal(id: string, overrides: Record<string, unknown> = {}) {
@@ -492,6 +560,7 @@ function makeProposal(id: string, overrides: Record<string, unknown> = {}) {
     term: `Test ${id}`,
     definition: `A test term for ${id} used to verify the submit-proposals script injects correctly into glossary files.`,
     category: "dev-tools",
+    depth: 3,
     aliases: [],
     related: ["anchor"],
     ...overrides,
@@ -600,7 +669,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     const result = JSON.parse(stdout);
     expect(result.mode).toBe("apply");
@@ -630,7 +699,7 @@ describe("submit-proposals.ts", () => {
 
     runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
 
     // Original should be gone
@@ -652,7 +721,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout, exitCode } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     const result = JSON.parse(stdout);
     expect(result.valid).toBe(0);
@@ -680,7 +749,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout, exitCode } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     const result = JSON.parse(stdout);
     expect(result.proposals_found).toBe(2);
@@ -701,7 +770,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     const result = JSON.parse(stdout);
     expect(result.injected).toBe(2);
@@ -731,7 +800,7 @@ describe("submit-proposals.ts", () => {
 
     runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
 
     const updatedText = readFileSync(
@@ -758,7 +827,7 @@ describe("submit-proposals.ts", () => {
 
     runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
 
     const updated = JSON.parse(
@@ -927,6 +996,48 @@ describe("submit-proposals.ts", () => {
     ).toBe(true);
   });
 
+  it("rejects proposal with invalid depth", () => {
+    const proposal = makeProposal("test-invalid-depth", { depth: 6 });
+    setupFixture([proposal]);
+
+    const { stdout, exitCode } = runScript(
+      "submit-proposals.ts",
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --dry-run`,
+    );
+    const result = JSON.parse(stdout);
+    expect(result.plan[0].validation).toBe("fail");
+    expect(
+      result.plan[0].issues.some((i: string) => i.includes("Invalid depth")),
+    ).toBe(true);
+    expect(exitCode).toBe(1);
+  });
+
+  it("rejects proposal with missing depth (not loaded)", () => {
+    mkdirSync(PROPOSALS_DIR, { recursive: true });
+    mkdirSync(GLOSSARY_COPY, { recursive: true });
+    copyFileSync(join(GLOSSARY_DIR, "dev-tools.json"), join(GLOSSARY_COPY, "dev-tools.json"));
+
+    // Write proposal without depth — loadProposals should skip it
+    writeFileSync(
+      join(PROPOSALS_DIR, "test-missing-depth.json"),
+      JSON.stringify({
+        id: "test-missing-depth",
+        term: "Test Missing Depth",
+        definition:
+          "A test term to verify proposals without depth are not loaded by submit-proposals.",
+        category: "dev-tools",
+        related: ["anchor"],
+      }),
+    );
+
+    const { stdout } = runScript(
+      "submit-proposals.ts",
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --dry-run`,
+    );
+    const result = JSON.parse(stdout);
+    expect(result.proposals_found).toBe(0);
+  });
+
   it("errors when appending to a file that does not end with ]", () => {
     mkdirSync(PROPOSALS_DIR, { recursive: true });
     mkdirSync(GLOSSARY_COPY, { recursive: true });
@@ -942,7 +1053,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout, exitCode } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     // The script should fail because the file can't be parsed as an array or
     // the appendTermToFile will throw about missing trailing ']'
@@ -992,7 +1103,7 @@ describe("submit-proposals.ts", () => {
 
     const { stdout } = runScript(
       "submit-proposals.ts",
-      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply`,
+      `--proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale`,
     );
     const result = JSON.parse(stdout);
     expect(result.injected).toBe(1);
@@ -1031,7 +1142,7 @@ describe("submit-proposals.ts", () => {
 
     try {
       execSync(
-        `npx tsx ${join(SCRIPTS_DIR, "submit-proposals.ts")} --proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --verbose`,
+        `npx tsx ${join(SCRIPTS_DIR, "submit-proposals.ts")} --proposals-dir ${PROPOSALS_DIR} --glossary-dir ${GLOSSARY_COPY} --apply --ignore-stale --verbose`,
         { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] },
       );
     } catch (err: any) {

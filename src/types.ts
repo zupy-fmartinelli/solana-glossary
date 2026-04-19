@@ -23,6 +23,8 @@ export interface GlossaryTerm {
   definition: string;
   /** Which category this term belongs to */
   category: Category;
+  /** Knowledge depth level: 1=surface (anyone), 2=beginner, 3=intermediate, 4=advanced, 5=core/researcher */
+  depth: 1 | 2 | 3 | 4 | 5;
   /** Related term IDs for cross-referencing */
   related?: string[];
   /** Aliases or abbreviations, e.g. ["PoH"] */
