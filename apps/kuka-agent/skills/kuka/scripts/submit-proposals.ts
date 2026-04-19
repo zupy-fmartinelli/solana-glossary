@@ -553,6 +553,10 @@ function prepareBranchFresh(
     }
   }
 
+  updateApiTestCount(glossaryDir, false);
+  const testFile = join(glossaryDir, "../../tests/api.test.ts");
+  if (existsSync(testFile)) touched.add(testFile);
+
   const filesModified = [...touched];
   if (filesModified.length > 0) {
     execSync(`git add ${filesModified.join(" ")}`, { stdio: "pipe" });
@@ -809,6 +813,42 @@ function applyInjections(
   return injectedCount;
 }
 
+/**
+ * After injecting new terms, recount every term across all category JSON files
+ * and update the hardcoded length assertion in tests/api.test.ts so CI doesn't
+ * fail with "expected N but got M" on every proposal PR.
+ */
+function updateApiTestCount(glossaryDir: string, verbose: boolean): void {
+  let total = 0;
+  for (const file of readdirSync(glossaryDir)) {
+    if (!file.endsWith(".json")) continue;
+    try {
+      const terms: unknown[] = JSON.parse(
+        readFileSync(join(glossaryDir, file), "utf-8"),
+      );
+      if (Array.isArray(terms)) total += terms.length;
+    } catch {
+      // skip malformed files
+    }
+  }
+
+  const testFile = join(glossaryDir, "../../tests/api.test.ts");
+  if (!existsSync(testFile)) return;
+
+  const original = readFileSync(testFile, "utf-8");
+  const updated = original.replace(
+    /it\("contains exactly \d+ terms",\s*\(\)\s*=>\s*\{\s*expect\(allTerms\)\.toHaveLength\(\d+\);/,
+    `it("contains exactly ${total} terms", () => {\n    expect(allTerms).toHaveLength(${total});`,
+  );
+
+  if (updated !== original) {
+    writeFileSync(testFile, updated, "utf-8");
+    if (verbose) {
+      console.error(`Updated tests/api.test.ts term count → ${total}`);
+    }
+  }
+}
+
 function moveProposalsToDone(
   proposalsDir: string,
   validProposals: Proposal[],
@@ -887,6 +927,7 @@ function main() {
 
   if (!args.dryRun && validProposals.length > 0) {
     injectedCount = applyInjections(args, validProposals, plan, existingIds, existingAliases);
+    updateApiTestCount(args.glossaryDir, args.verbose);
     moveProposalsToDone(args.proposalsDir, validProposals);
 
     if (args.pr) {

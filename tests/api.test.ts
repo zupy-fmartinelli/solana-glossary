@@ -1,3 +1,5 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import {
   getTerm,
@@ -51,7 +53,16 @@ describe("getCategories", () => {
 });
 
 describe("allTerms", () => {
-  it("contains exactly 1001 terms", () => {
-    expect(allTerms).toHaveLength(1001);
+  it("exports every term from data files", () => {
+    const dataDir = join(__dirname, "../data/terms");
+    let expectedCount = 0;
+    for (const file of readdirSync(dataDir)) {
+      if (!file.endsWith(".json")) continue;
+      const terms: unknown[] = JSON.parse(
+        readFileSync(join(dataDir, file), "utf-8"),
+      );
+      if (Array.isArray(terms)) expectedCount += terms.length;
+    }
+    expect(allTerms).toHaveLength(expectedCount);
   });
 });
