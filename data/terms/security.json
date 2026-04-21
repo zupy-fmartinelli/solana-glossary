@@ -507,5 +507,15 @@
     "depth": 5,
     "related": ["cpi", "invoke", "state-inconsistency"],
     "tags": ["vulnerability"]
+  },
+  {
+    "id": "solana-security-txt",
+    "term": "Solana security.txt",
+    "definition": "An on-chain convention via the `solana-security-txt` crate's `security_txt!` macro that embeds a structured security-contact block into the program binary. The macro writes a designated ELF section that Solana Explorer and whitehats parse to find project name, contact email, disclosure URL, source code, and expiration. Typically gated behind `cfg(not(feature = \"no-entrypoint\"))` so it only ships in the SBF binary. Inspired by web RFC 9116.",
+    "category": "security",
+    "depth": 3,
+    "related": ["program-upgrade", "bug-bounty"],
+    "aliases": ["security.txt", "on-chain security.txt", "security_txt macro"],
+    "tags": ["security"]
   }
 ]
