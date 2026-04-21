@@ -4234,5 +4234,29 @@
   "archive-node": {
     "term": "Nó de Arquivo",
     "definition": "Um nó Solana que retém o ledger histórico completo desde o genesis, incluindo todos os dados de transações e estados históricos de contas, em vez de podar dados antigos após uma janela de retenção. Nós RPC padrão tipicamente armazenam apenas 2-3 dias de histórico de transações e o snapshot atual de estado de contas. Nós de arquivo servidos por provedores como Triton, Helius e Google BigQuery permitem consultas históricas como getTransaction para assinaturas de meses atrás e recuperação completa de getBlock para epochs passadas. Operar um nó de arquivo requer armazenamento de multi-terabytes (50+ TB e crescendo) devido ao alto throughput da Solana."
+  },
+  "compile-time-pda": {
+    "term": "PDA em Tempo de Compilação",
+    "definition": "A PDA computed at compile time by a proc-macro (e.g., `derive_light_cpi_signer!` in light-sdk-pinocchio) rather than at runtime via `find_program_address`. Expands to a `const` struct with pubkey + canonical bump, so the program spends zero CUs re-deriving it and the binary ships with the address baked in. Used for well-known authority PDAs that depend only on program ID + fixed seed. Trade-off: changing the program ID forces a rebuild, and the off-chain SDK must derive the same address."
+  },
+  "cpi-authority-pda": {
+    "term": "PDA de Autoridade para CPI",
+    "definition": "A Program Derived Address, typically derived from a fixed seed like `cpi_authority`, that a program uses exclusively as the signer for outgoing CPIs via `invoke_signed`. Gives the callee a stable, program-owned identity it can whitelist instead of accepting arbitrary signers. Used by Light Protocol (cToken, System), Metaplex, and any protocol that restricts CPIs to registered partner programs. The pubkey is deterministic and can be precomputed off-chain or via a compile-time macro."
+  },
+  "deterministic-token-split": {
+    "term": "Split Determinístico de Tokens",
+    "definition": "An on-chain arithmetic pattern that divides an input token amount into multiple outputs using integer math with a fixed rounding policy, so outputs always sum to the input. Computes shares via u128 intermediates, floors divisions, and routes the dust remainder to one designated receiver. Uses `checked_add` for the sum invariant and `try_into` (not `as u64`) when narrowing u128 to u64 so overflow errors instead of truncating. Common in loyalty, royalty, and revenue-share."
+  },
+  "dual-path-cpi": {
+    "term": "CPI de Caminho Duplo",
+    "definition": "A pattern where a Solana program exposes two distinct CPI routes to reach the same business outcome depending on source state layout. Common in ZK Compression integrations: Path A takes SPL token accounts and compresses them into a state tree, while Path B operates compressed-to-compressed. Each path has its own account ordering, authority PDAs, and CU profile. Choosing the path at the instruction level — not mid-instruction — keeps account validation linear and reviewable."
+  },
+  "registered-program-pda": {
+    "term": "PDA de Programa Registrado",
+    "definition": "A PDA owned by the Light System Program that records partner programs authorized to invoke compressed-state operations via CPI. On each incoming CPI, the system reads this PDA to verify the caller is registered and enforce per-program limits. Registration is a one-time governance action; the PDA key is a well-known constant shipped in client SDKs. Acts as the on-chain allowlist that keeps the Light compression surface from being abused by arbitrary programs."
+  },
+  "solana-security-txt": {
+    "term": "security.txt on-chain",
+    "definition": "An on-chain convention via the `solana-security-txt` crate's `security_txt!` macro that embeds a structured security-contact block into the program binary. The macro writes a designated ELF section that Solana Explorer and whitehats parse to find project name, contact email, disclosure URL, source code, and expiration. Typically gated behind `cfg(not(feature = \"no-entrypoint\"))` so it only ships in the SBF binary. Inspired by web RFC 9116."
   }
 }

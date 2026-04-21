@@ -762,5 +762,45 @@
     "category": "programming-model",
     "depth": 4,
     "related": ["sysvar", "instruction-introspection", "ed25519", "cpi"]
+  },
+  {
+    "id": "compile-time-pda",
+    "term": "Compile-Time PDA",
+    "definition": "A PDA computed at compile time by a proc-macro (e.g., `derive_light_cpi_signer!` in light-sdk-pinocchio) rather than at runtime via `find_program_address`. Expands to a `const` struct with pubkey + canonical bump, so the program spends zero CUs re-deriving it and the binary ships with the address baked in. Used for well-known authority PDAs that depend only on program ID + fixed seed. Trade-off: changing the program ID forces a rebuild, and the off-chain SDK must derive the same address.",
+    "category": "programming-model",
+    "depth": 4,
+    "related": ["pda", "find-program-address", "cpi-authority-pda", "pinocchio", "zero-copy-attribute"],
+    "aliases": ["Const PDA", "Macro-Derived PDA", "Precomputed PDA"],
+    "tags": ["dev"]
+  },
+  {
+    "id": "cpi-authority-pda",
+    "term": "CPI Authority PDA",
+    "definition": "A Program Derived Address, typically derived from a fixed seed like `cpi_authority`, that a program uses exclusively as the signer for outgoing CPIs via `invoke_signed`. Gives the callee a stable, program-owned identity it can whitelist instead of accepting arbitrary signers. Used by Light Protocol (cToken, System), Metaplex, and any protocol that restricts CPIs to registered partner programs. The pubkey is deterministic and can be precomputed off-chain or via a compile-time macro.",
+    "category": "programming-model",
+    "depth": 4,
+    "related": ["pda", "cpi", "invoke-signed", "program-as-authority", "compile-time-pda", "authority-separation"],
+    "aliases": ["CPI Signer PDA", "Program CPI Authority", "Named Authority PDA"],
+    "tags": ["dev", "security"]
+  },
+  {
+    "id": "deterministic-token-split",
+    "term": "Deterministic Token Split",
+    "definition": "An on-chain arithmetic pattern that divides an input token amount into multiple outputs using integer math with a fixed rounding policy, so outputs always sum to the input. Computes shares via u128 intermediates, floors divisions, and routes the dust remainder to one designated receiver. Uses `checked_add` for the sum invariant and `try_into` (not `as u64`) when narrowing u128 to u64 so overflow errors instead of truncating. Common in loyalty, royalty, and revenue-share.",
+    "category": "programming-model",
+    "depth": 4,
+    "related": ["token-2022", "authority-separation"],
+    "aliases": ["Split Math", "On-Chain Split Policy", "Proportional Token Split"],
+    "tags": ["dev"]
+  },
+  {
+    "id": "dual-path-cpi",
+    "term": "Dual-Path CPI",
+    "definition": "A pattern where a Solana program exposes two distinct CPI routes to reach the same business outcome depending on source state layout. Common in ZK Compression integrations: Path A takes SPL token accounts and compresses them into a state tree, while Path B operates compressed-to-compressed. Each path has its own account ordering, authority PDAs, and CU profile. Choosing the path at the instruction level — not mid-instruction — keeps account validation linear and reviewable.",
+    "category": "programming-model",
+    "depth": 5,
+    "related": ["cpi", "light-protocol", "compressed-pda", "state-compression", "cpi-authority-pda", "registered-program-pda"],
+    "aliases": ["Path A / Path B", "Dual CPI Route", "Compression Path Split"],
+    "tags": ["dev", "zk"]
   }
 ]

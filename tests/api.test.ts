@@ -117,7 +117,7 @@ describe("getAllTags", () => {
 });
 
 describe("allTerms", () => {
-  it("contains exactly 1059 terms", () => {
-    expect(allTerms).toHaveLength(1059);
+  it("contains exactly 1065 terms", () => {
+    expect(allTerms).toHaveLength(1065);
   });
 });

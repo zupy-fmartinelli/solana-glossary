@@ -369,5 +369,15 @@
       "concurrent-merkle-tree"
     ],
     "tags": ["zk"]
+  },
+  {
+    "id": "registered-program-pda",
+    "term": "Registered Program PDA",
+    "definition": "A PDA owned by the Light System Program that records partner programs authorized to invoke compressed-state operations via CPI. On each incoming CPI, the system reads this PDA to verify the caller is registered and enforce per-program limits. Registration is a one-time governance action; the PDA key is a well-known constant shipped in client SDKs. Acts as the on-chain allowlist that keeps the Light compression surface from being abused by arbitrary programs.",
+    "category": "zk-compression",
+    "depth": 5,
+    "related": ["light-protocol", "light-token-program", "compressed-pda", "state-compression", "cpi-authority-pda"],
+    "aliases": ["Light Registered Program", "Program Registry PDA"],
+    "tags": ["zk"]
   }
 ]
