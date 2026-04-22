@@ -11,7 +11,7 @@
  *     [--glossary-dir data/terms]
  *     [--dry-run]
  *     [--pr]
- *     [--pr-repo solanabr/solana-glossary]
+ *     [--pr-repo zupy-fmartinelli/solana-glossary]
  *     [--verbose]
  *
  * Modes:
@@ -95,7 +95,7 @@ function parseArgs(): Args {
     glossaryDir: "data/terms",
     dryRun: true,
     pr: false,
-    prRepo: "solanabr/solana-glossary",
+    prRepo: "zupy-fmartinelli/solana-glossary",
     ignoreStale: false,
     verbose: false,
   };
@@ -111,7 +111,7 @@ Options:
   --dry-run                Show plan without modifying files (default)
   --apply                  Modify glossary files and move proposals to .done/
   --pr                     After apply, open a PR via gh CLI
-  --pr-repo <owner/repo>   Target repo for PR (default: solanabr/solana-glossary)
+  --pr-repo <owner/repo>   Target repo for PR (default: zupy-fmartinelli/solana-glossary)
   --ignore-stale           Skip the pre-flight stale-tree check (DANGEROUS)
   --verbose                Print diagnostics to stderr
   --help, -h               Show this help
@@ -591,7 +591,7 @@ ${termList}
 
 ### How these were generated
 
-These terms were discovered by the [Kuka teaching agent](https://github.com/solanabr/solana-glossary/tree/main/apps/kuka-agent) during conversations with developers. When Kuka encounters a concept not in the glossary, it automatically generates a structured proposal matching the glossary schema, validates it, and stages it for review.
+These terms were discovered by the [Kuka teaching agent](https://github.com/zupy-fmartinelli/solana-glossary/tree/main/apps/kuka-agent) during conversations with developers. When Kuka encounters a concept not in the glossary, it automatically generates a structured proposal matching the glossary schema, validates it, and stages it for review.
 
 ### Validation
 

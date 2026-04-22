@@ -8,7 +8,7 @@
  *   npx tsx@4 apps/kuka-agent/skills/kuka/scripts/sync-glossary.ts \
  *     --glossary-dir data/terms
  *     [--proposals-dir .kuka/proposals]
- *     [--upstream solanabr/solana-glossary]
+ *     [--upstream zupy-fmartinelli/solana-glossary]
  *     [--branch main]
  *     [--dry-run]
  *     [--apply]
@@ -67,7 +67,7 @@ function parseArgs(): Args {
   const args: Args = {
     glossaryDir: "data/terms",
     proposalsDir: ".kuka/proposals",
-    upstream: "solanabr/solana-glossary",
+    upstream: "zupy-fmartinelli/solana-glossary",
     branch: "main",
     dryRun: true,
     verbose: false,
@@ -81,7 +81,7 @@ Glossary Sync — synchronize local glossary with upstream repository.
 Options:
   --glossary-dir <path>    Local glossary data/terms/ directory (default: data/terms)
   --proposals-dir <path>   Local proposals staging (default: .kuka/proposals)
-  --upstream <owner/repo>  Upstream repo (default: solanabr/solana-glossary)
+  --upstream <owner/repo>  Upstream repo (default: zupy-fmartinelli/solana-glossary)
   --branch <name>          Upstream branch (default: main)
   --dry-run                Show sync plan without changes (default)
   --apply                  Pull upstream and reconcile proposals
