@@ -14,6 +14,8 @@ export type Category =
   | "ai-ml"
   | "solana-ecosystem";
 
+export type Depth = 1 | 2 | 3 | 4 | 5;
+
 export interface GlossaryTerm {
   /** URL-safe unique identifier, e.g. "proof-of-history" */
   id: string;
@@ -23,10 +25,12 @@ export interface GlossaryTerm {
   definition: string;
   /** Which category this term belongs to */
   category: Category;
-  /** Knowledge depth level: 1=surface (anyone), 2=beginner, 3=intermediate, 4=advanced, 5=core/researcher */
-  depth: 1 | 2 | 3 | 4 | 5;
+  /** Knowledge depth: 1 (surface) to 5 (bottom) */
+  depth: Depth;
   /** Related term IDs for cross-referencing */
   related?: string[];
   /** Aliases or abbreviations, e.g. ["PoH"] */
   aliases?: string[];
+  /** Optional tags for cross-cutting concerns, e.g. ["token-2022", "deprecated"] */
+  tags?: string[];
 }

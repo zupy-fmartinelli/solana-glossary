@@ -47,6 +47,21 @@ describe("data integrity", () => {
     }
   });
 
+  it("all terms have a valid depth (integer 1-5)", () => {
+    const invalid = allTerms.filter(
+      (t) => !Number.isInteger(t.depth) || t.depth < 1 || t.depth > 5,
+    );
+    expect(
+      invalid,
+      `Terms with invalid depth: ${invalid.map((t) => `${t.id}:${t.depth}`).join(", ")}`,
+    ).toHaveLength(0);
+  });
+
+  it("depth values are distributed across at least 4 levels", () => {
+    const depths = new Set(allTerms.map((t) => t.depth));
+    expect(depths.size).toBeGreaterThanOrEqual(4);
+  });
+
   it("no term has an empty aliases array", () => {
     const emptyAliases = allTerms.filter(
       (t) => Array.isArray(t.aliases) && t.aliases.length === 0,
@@ -55,5 +70,49 @@ describe("data integrity", () => {
       emptyAliases,
       `Terms with empty aliases: ${emptyAliases.map((t) => t.id).join(", ")}`,
     ).toHaveLength(0);
+  });
+
+  it("no term has an empty tags array", () => {
+    const emptyTags = allTerms.filter(
+      (t) => Array.isArray(t.tags) && t.tags.length === 0,
+    );
+    expect(
+      emptyTags,
+      `Terms with empty tags: ${emptyTags.map((t) => t.id).join(", ")}`,
+    ).toHaveLength(0);
+  });
+
+  it("all tags are lowercase kebab-case strings", () => {
+    const invalid: string[] = [];
+    for (const t of allTerms) {
+      for (const tag of t.tags ?? []) {
+        if (
+          tag !== tag.toLowerCase() ||
+          !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(tag)
+        ) {
+          invalid.push(`${t.id}: "${tag}"`);
+        }
+      }
+    }
+    expect(invalid, `Invalid tags: ${invalid.join(", ")}`).toHaveLength(0);
+  });
+
+  it("all aliases are unique across terms", () => {
+    const aliasOwner = new Map<string, string>();
+    const conflicts: string[] = [];
+    for (const t of allTerms) {
+      for (const alias of t.aliases ?? []) {
+        const key = alias.toLowerCase();
+        if (aliasOwner.has(key)) {
+          conflicts.push(
+            `"${alias}" on both ${aliasOwner.get(key)} and ${t.id}`,
+          );
+        }
+        aliasOwner.set(key, t.id);
+      }
+    }
+    expect(conflicts, `Alias conflicts: ${conflicts.join(", ")}`).toHaveLength(
+      0,
+    );
   });
 });
